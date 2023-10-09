@@ -15,29 +15,32 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 180, unique: true)]
+    #[ORM\Column(length: 100, unique: true)]
     private ?string $email = null;
 
     #[ORM\Column]
     private array $roles = [];
 
     /**
-     * @var string The hashed password
+     * @var ?string The hashed password
      */
     #[ORM\Column]
     private ?string $password = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 50)]
     private ?string $nom = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 50)]
     private ?string $prenom = null;
 
-    #[ORM\Column(length: 10)]
+    #[ORM\Column(length: 20, nullable: true)]
     private ?string $telephone = null;
 
     #[ORM\Column]
     private ?bool $actif = null;
+
+    #[ORM\Column(length: 50, unique: true)]
+    private ?string $pseudo = null;
 
     public function getId(): ?int
     {
@@ -153,6 +156,18 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     public function setActif(bool $actif): static
     {
         $this->actif = $actif;
+
+        return $this;
+    }
+
+    public function getPseudo(): ?string
+    {
+        return $this->pseudo;
+    }
+
+    public function setPseudo(string $pseudo): static
+    {
+        $this->pseudo = $pseudo;
 
         return $this;
     }
