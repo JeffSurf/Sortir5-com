@@ -12,6 +12,55 @@
         {% endblock %}
     </head>
     <body>
+        {% block header %}
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <!-- Container wrapper -->
+                <div class="container">
+                    <!-- Navbar brand -->
+                    <a class="navbar-brand me-2" href={{ path('app_home') }}>
+                        <img
+                                height="16"
+                                alt="Sortir Logo"
+                                loading="lazy"
+                                style="margin-top: -1px;"
+                        />
+                    </a>
+
+                    <!-- Collapsible wrapper -->
+                    <div class="collapse navbar-collapse" id="navbarButtonsExample">
+                        <!-- Left links -->
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Sorties</a>
+                            </li>
+                        </ul>
+                        <!-- Left links -->
+
+                        <div class="d-flex align-items-center">
+                            {% if is_granted("ROLE_USER") %}
+                                <a
+                                        class="btn btn-dark px-3"
+                                        href={{ path('app_logout') }}
+                                        role="button"
+                                >
+                                    Mon profil (déco)
+                                </a>
+                            {% else %}
+                                <a href="{{ path('app_login') }}">
+                                    <button type="button" class="btn btn-link px-3 me-2">
+                                        Se connecter
+                                    </button>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <!-- Collapsible wrapper -->
+                </div>
+                <!-- Container wrapper -->
+            </nav>
+            <!-- Navbar -->
+        {% endblock %}
         {% block body %}{% endblock %}
     </body>
 </html>
