@@ -23,7 +23,7 @@ class Sortie
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?DateTimeInterface $dateHeureDebut = null;
 
-    #[ORM\Column(type: Types::TIME_MUTABLE)]
+    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
     private ?DateTimeInterface $duree = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
@@ -32,7 +32,7 @@ class Sortie
     #[ORM\Column]
     private ?int $nbInscriptionsMax = null;
 
-    #[ORM\Column(type: Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $infosSortie = null;
 
     #[ORM\Column(type: "string", enumType: Etat::class)]
@@ -48,6 +48,12 @@ class Sortie
 
     #[ORM\ManyToMany(targetEntity: Participant::class, mappedBy: 'sorties')]
     private Collection $participants;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $motifAnnulation = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $photoSortie = null;
 
     public function __construct() {
         $this->etat = Etat::CREEE;
@@ -143,24 +149,24 @@ class Sortie
 
     public function getLieu(): ?Lieu
     {
-        return $this->Lieu;
+        return $this->lieu;
     }
 
-    public function setLieu(?Lieu $Lieu): static
+    public function setLieu(?Lieu $lieu): static
     {
-        $this->Lieu = $Lieu;
+        $this->lieu = $lieu;
 
         return $this;
     }
 
     public function getOrganisateur(): ?Participant
     {
-        return $this->Organisateur;
+        return $this->organisateur;
     }
 
-    public function setOrganisateur(?Participant $Organisateur): static
+    public function setOrganisateur(?Participant $organisateur): static
     {
-        $this->Organisateur = $Organisateur;
+        $this->organisateur = $organisateur;
 
         return $this;
     }
@@ -188,6 +194,30 @@ class Sortie
         if ($this->participants->removeElement($participant)) {
             $participant->removeSorty($this);
         }
+
+        return $this;
+    }
+
+    public function getMotifAnnulation(): ?string
+    {
+        return $this->motifAnnulation;
+    }
+
+    public function setMotifAnnulation(?string $motifAnnulation): static
+    {
+        $this->motifAnnulation = $motifAnnulation;
+
+        return $this;
+    }
+
+    public function getPhotoSortie(): ?string
+    {
+        return $this->photoSortie;
+    }
+
+    public function setPhotoSortie(?string $photoSortie): static
+    {
+        $this->photoSortie = $photoSortie;
 
         return $this;
     }

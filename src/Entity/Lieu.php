@@ -27,7 +27,7 @@ class Lieu
     #[ORM\Column(nullable: true)]
     private ?float $longitude = null;
 
-    #[ORM\ManyToOne(inversedBy: 'lieus')]
+    #[ORM\ManyToOne(inversedBy: 'lieu')]
     private ?Ville $ville = null;
 
     #[ORM\OneToMany(mappedBy: 'lieu', targetEntity: Sortie::class)]
@@ -92,12 +92,12 @@ class Lieu
 
     public function getVille(): ?Ville
     {
-        return $this->Ville;
+        return $this->ville;
     }
 
-    public function setVille(?Ville $Ville): static
+    public function setVille(?Ville $ville): static
     {
-        $this->Ville = $Ville;
+        $this->ville = $ville;
 
         return $this;
     }
