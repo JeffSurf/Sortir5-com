@@ -16,13 +16,13 @@ class Lieu
     #[ORM\Column(length: 50)]
     private ?string $nom = null;
 
-    #[ORM\Column(length: 50, nullable: true)]
+    #[ORM\Column(length: 50)]
     private ?string $rue = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column]
     private ?float $latitude = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column]
     private ?float $longitude = null;
 
     #[ORM\ManyToOne(inversedBy: 'lieus')]

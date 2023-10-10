@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h2>Gestion des villes</h2>
+    <input type="text" name="Rechercher" label="Rechercher"/>
+    <table>
+        <tr>
+            <td>Nom</td>
+            <td>Code Postal</td>
+            <td>Actions</td>
+        </tr>
+        {% for ville in villes %}
+            <tr>
+                <td>{{ ville.nom }}</td>
+                <td>{{ ville.codepostal}}</td>
+                <td><button type="button">Modifier</button></td>
+                <td><button type="button">Supprimer</button></td>
+                </br>
+            </tr>
+        {% endfor %}
+
+    </table>
+
+{% endblock %}
