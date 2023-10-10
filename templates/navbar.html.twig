@@ -26,7 +26,7 @@
                 <div class="nav-item dropdown d-flex">
                     <a class="nav-link dropdown-toggle d-flex align-items-center no-arrow" href="#" id="navbarDropdownMenuLink"
                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ app.user.pseudo | default('') }}</span>
+                        <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ app.user.pseudo | default('anonyme') }}</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="navbarDropdownMenuLink">
 
@@ -38,8 +38,13 @@
                         <li><a class="dropdown-item" href="#">Sites</a></li>
                         <li><a class="dropdown-item" href="#">Villes</a></li>
                     {% endif %}
+
+                    {% if is_granted('ROLE_USER') %}
                         <li class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="{{ path('app_logout') }}">Se déconnecter</a></li>
+                    {% else %}
+                        <li><a class="dropdown-item" href="{{ path('app_logout') }}">Se connecter</a></li>
+                    {% endif %}
                     </ul>
                 </div>
             </div>

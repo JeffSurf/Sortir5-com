@@ -3,6 +3,13 @@
 {% block title %}Profil{% endblock %}
 
 {% block body %}
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
     <section class="h-100 gradient-custom-2">
         <div class="container justify-content-center py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
@@ -10,29 +17,38 @@
                     <div class="card">
                         <div class="rounded-top text-white d-flex flex-row" style=" background: rgb(255,255,255); background: linear-gradient(189deg, rgba(255,255,255,1) 0%, rgba(46,46,46,1) 100%);  height:200px;">
                             <div class="ms-4 mt-5 d-flex flex-column" style="width: 150px;">
-
+                                {# Image profil #}
                             </div>
                             <div class="ms-3" style="margin-top: 130px;">
                                 <h5>{{ app.user.nom|upper }} {{ app.user.prenom }}</h5>
                                 <p>@{{ app.user.pseudo }}</p>
                             </div>
                         </div>
+
+                        <div class="p-4 text-black" style="background-color: #f8f9fa;">
+                            <div class="d-flex justify-content-end text-center py-1">
+                                <div>
+                                    <p class="small text-muted mb-0">Site</p>
+                                    <p class="mb-1 h5">{{ app.user.site.nom }}</p>
+                                </div>
+                                <div class="px-3">
+                                    <p class="small text-muted mb-0">Adresse email</p>
+                                    <p class="mb-1 h5">{{ app.user.email }}</p>
+                                </div>
+                                <div class="px-3">
+                                    <p class="small text-muted mb-0">Téléphone</p>
+                                    <p class="mb-1 h5">{{ app.user.telephone }}</p>
+                                </div>
+                                <div class="px-3">
+                                    <p class="small text-muted mb-0">Sorties</p>
+                                    <p class="mb-1 h5">{{ app.user.sorties.count }}</p>
+                                </div>
+                            </div>
+                        </div>
                         <a href="{{ path('app_profil_editer') }}" type="button" class="btn btn-outline-dark" data-mdb-ripple-color="dark"
                            style="z-index: 1;">
                             Editer le profil
                         </a>
-                        <div class="p-4 text-black" style="background-color: #f8f9fa;">
-                            <div class="d-flex justify-content-end text-center py-1">
-                                <div>
-                                    <p class="small text-muted mb-0">Téléphone: </p>
-                                    <p class="mb-1 h5">{{ app.user.telephone }}</p>
-                                </div>
-                                <div class="px-3">
-                                    <p class="small text-muted mb-0">sorties</p>
-                                    <p class="mb-1 h5">(nb sorties)</p>
-                                </div>
-                            </div>
-                        </div>
                         <div class="card-body p-4 text-black">
                             {#<div class="mb-5">
                                 <p class="lead fw-normal mb-1">About</p>
@@ -43,18 +59,21 @@
                                 </div>
                             </div>#}
                             <div class="d-flex justify-content-between align-items-center mb-4">
-                                <p class="lead fw-normal mb-0">Mes sorties</p>
-                                <p class="mb-0"><a href="#" class="text-muted">Tout voir</a></p>
+                                {% if app.user.sorties.count == 0 %}
+                                    <p class="lead fw-normal mb-0">Aucune sortie</p>
+                                {% else %}
+                                    <p class="lead fw-normal mb-0">Mes sorties</p>
+                                    <p class="mb-0"><a href="#" class="text-muted">Tout voir</a></p>
+                                {% endif %}
                             </div>
                             <div class="row g-2">
-                                {#{% for application in app.user.applications|slice(0,3) %}
+                                {% for sortie in app.user.sorties|slice(0,3) %}
                                     <div class="col-6 mb-2">
-                                        <a href="{{ path('app_application_voir', {'id': application.id}) }}">
-                                            <img src="{{ application.image ? asset('uploads/'~application.image) : asset('build/images/colorBar.jpg') }}"
-                                                 alt="app" class="w-100 rounded-3">
+                                        <a href="#">
+                                            {{ sortie.nom }}
                                         </a>
                                     </div>
-                                {% endfor %}#}
+                                {% endfor %}
                             </div>
                         </div>
                     </div>
