@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\SortieRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -35,8 +37,20 @@ class Sortie
     #[ORM\Column(type: "string", enumType: Etat::class)]
     private Etat $etat;
 
+    #[ORM\ManyToOne(inversedBy: 'sorties')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Lieu $Lieu = null;
+
+    #[ORM\ManyToOne(inversedBy: 'sorties')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Participant $Organisateur = null;
+
+    #[ORM\OneToMany(mappedBy: 'Sortie', targetEntity: Inscription::class)]
+    private Collection $inscriptions;
+
     public function __construct() {
         $this->etat = Etat::CREEE;
+        $this->inscriptions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -124,5 +138,59 @@ class Sortie
     public function setEtat(Etat $etat): void
     {
         $this->etat = $etat;
+    }
+
+    public function getLieu(): ?Lieu
+    {
+        return $this->Lieu;
+    }
+
+    public function setLieu(?Lieu $Lieu): static
+    {
+        $this->Lieu = $Lieu;
+
+        return $this;
+    }
+
+    public function getOrganisateur(): ?Participant
+    {
+        return $this->Organisateur;
+    }
+
+    public function setOrganisateur(?Participant $Organisateur): static
+    {
+        $this->Organisateur = $Organisateur;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Inscription>
+     */
+    public function getInscriptions(): Collection
+    {
+        return $this->inscriptions;
+    }
+
+    public function addInscription(Inscription $inscription): static
+    {
+        if (!$this->inscriptions->contains($inscription)) {
+            $this->inscriptions->add($inscription);
+            $inscription->setSortie($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInscription(Inscription $inscription): static
+    {
+        if ($this->inscriptions->removeElement($inscription)) {
+            // set the owning side to null (unless already changed)
+            if ($inscription->getSortie() === $this) {
+                $inscription->setSortie(null);
+            }
+        }
+
+        return $this;
     }
 }
