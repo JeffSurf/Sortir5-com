@@ -1,0 +1,54 @@
+{% extends '/base.html.twig' %}
+
+{% block title %}{{ action }} un participant{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>{{ action }} un participant</h1>
+        {{  form_start(form) }}
+
+        <div class="form-row">
+            {{  form_row(form.pseudo) }}
+        </div>
+
+        <div class="form-row">
+            {{  form_row(form.imageProfil) }}
+        </div>
+
+        <div class="form-row">
+            {{  form_row(form.prenom) }}
+        </div>
+
+        <div class="form-row">
+            {{  form_row(form.nom) }}
+        </div>
+
+        <div class="form-row">
+            {{  form_row(form.email) }}
+        </div>
+
+        <div class="form-row">
+            {{  form_row(form.telephone) }}
+        </div>
+
+        <div class="form-row">
+            {{  form_row(form.site) }}
+        </div>
+
+        <div class="form-row">
+            {{  form_row(form.choixRole) }}
+        </div>
+
+        <div class="form-row">
+            {{  form_row(form.actif) }}
+        </div>
+
+        <div class="form-row">
+            {{  form_row(form.plainPassword) }}
+        </div>
+
+        {{  form_end(form) }}
+    </div>
+
+
+{% endblock %}

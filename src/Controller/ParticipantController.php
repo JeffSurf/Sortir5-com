@@ -18,14 +18,15 @@ class ParticipantController extends AbstractController {
     #[Route('/', name: '_list')]
     public function lister(ParticipantRepository $participantRepository): Response {
         return $this->render('participant/list.html.twig', [
-            'champions' => $participantRepository->findAll(),
+            'participants' => $participantRepository->findAll(),
         ]);
     }
 
     #[Route('/ajouter', name: '_add')]
     #[Route('/modifier/{id}', name: '_update')]
-    public function edit(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger, UploadService $uploadService, Participant $participant): Response {
+    public function edit(Request $request, EntityManagerInterface $entityManager, UploadService $uploadService, ParticipantRepository $participantRepository, int $id = null): Response {
 
+        $participant = $id == null ? new Participant() : $participantRepository->find($id);
         $msg = $participant->getId() == null ? 'Le participant a été ajouté avec succès !' : 'Le participant a été modifié avec succès !';
         $form = $this->createForm(ParticipantType::class, $participant);
         $form->handleRequest($request);
@@ -39,6 +40,11 @@ class ParticipantController extends AbstractController {
                 $participant->setImageProfil($newFilename);
             }
 
+            if ($form->get('choixRole')->getData() == 'admin') {
+                $participant->setRoles(['ROLE_ADMIN']);
+            } elseif ($form->get('choixRole')->getData() == 'user') {
+                $participant->setRoles(['ROLE_USER']);
+            }
 
             $entityManager->persist($participant);
             $entityManager->flush();
@@ -48,14 +54,15 @@ class ParticipantController extends AbstractController {
 
         return $this->render('participant/add.html.twig', [
             'form' => $form,
-            'champion' => $participant->getNom(),
+            'participant' => $participant->getPseudo(),
             'action' => $participant->getId() == null ? 'Ajouter' : 'Modifier'
         ]);
     }
 
     #[Route('/supprimer/{id}', name: '_delete')]
-    public function delete(EntityManagerInterface $entityManager, Participant $participant): Response {
+    public function delete(EntityManagerInterface $entityManager, ParticipantRepository $participantRepository, int $id): Response {
 
+        $participant = $participantRepository->find($id);
         $entityManager->remove($participant);
         $entityManager->flush();
         $this->addFlash('success', 'Le participant a été supprimé avec succès !');
