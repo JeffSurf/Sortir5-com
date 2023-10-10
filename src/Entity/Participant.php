@@ -6,10 +6,13 @@ use App\Repository\ParticipantRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
+#[UniqueEntity(fields: ['email', 'pseudo'], message: 'Il y a déjà un compte avec cet identifiant')]
 class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -17,29 +20,36 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 180, unique: true)]
+    #[ORM\Column(length: 100, unique: true)]
+    #[Assert\NotBlank(message: "L'email ne peut pas être vide")]
     private ?string $email = null;
 
     #[ORM\Column]
     private array $roles = [];
 
     /**
-     * @var string The hashed password
+     * @var ?string The hashed password
      */
     #[ORM\Column]
     private ?string $password = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 50)]
+    #[Assert\NotBlank(message: "Le nom ne peut pas être vide")]
     private ?string $nom = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 50)]
+    #[Assert\NotBlank(message: "Le prénom ne peut pas être vide")]
     private ?string $prenom = null;
 
-    #[ORM\Column(length: 10)]
+    #[ORM\Column(length: 20, nullable: true)]
     private ?string $telephone = null;
 
     #[ORM\Column]
-    private ?bool $actif = null;
+    private ?bool $actif = true;
+
+    #[ORM\Column(length: 50, unique: true)]
+    #[Assert\NotBlank(message: "Le pseudo ne peut pas être vide")]
+    private ?string $pseudo = null;
 
     #[ORM\ManyToOne(inversedBy: 'participants')]
     #[ORM\JoinColumn(nullable: false)]
@@ -52,7 +62,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $inscriptions;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $image_profil = null;
+    private ?string $imageProfil = null;
 
     public function __construct()
     {
@@ -178,6 +188,18 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function getPseudo(): ?string
+    {
+        return $this->pseudo;
+    }
+
+    public function setPseudo(string $pseudo): static
+    {
+        $this->pseudo = $pseudo;
+
+        return $this;
+    }
+
     public function getSite(): ?Site
     {
         return $this->Site;
@@ -252,12 +274,12 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getImageProfil(): ?string
     {
-        return $this->image_profil;
+        return $this->imageProfil;
     }
 
-    public function setImageProfil(?string $image_profil): static
+    public function setImageProfil(?string $imageProfil): static
     {
-        $this->image_profil = $image_profil;
+        $this->imageProfil = $imageProfil;
 
         return $this;
     }

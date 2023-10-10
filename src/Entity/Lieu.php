@@ -18,13 +18,13 @@ class Lieu
     #[ORM\Column(length: 50)]
     private ?string $nom = null;
 
-    #[ORM\Column(length: 50)]
-    private ?string $rue = null;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $adresse = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?float $latitude = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?float $longitude = null;
 
     #[ORM\ManyToOne(inversedBy: 'lieus')]
@@ -55,17 +55,16 @@ class Lieu
         return $this;
     }
 
-    public function getRue(): ?string
+    public function getAdresse(): ?string
     {
-        return $this->rue;
+        return $this->adresse;
     }
 
-    public function setRue(string $rue): static
+    public function setAdresse(?string $adresse): void
     {
-        $this->rue = $rue;
-
-        return $this;
+        $this->adresse = $adresse;
     }
+
 
     public function getLatitude(): ?float
     {
