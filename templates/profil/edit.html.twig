@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Editer le profil{% endblock %}
+
+{% block body %}
+
+    <div class="container">
+        <h1>Modifier le profil</h1>
+
+        {{ form_start(profilForm) }}
+
+        {{ form_errors(profilForm) }}
+
+        <div class="row">
+            <div class="col-4">
+                {{ form_row(profilForm.nom) }}
+            </div>
+
+            <div class="col-4">
+                {{ form_row(profilForm.prenom) }}
+            </div>
+
+            <div class="col-4">
+                {{ form_row(profilForm.pseudo) }}
+            </div>
+
+            <div class="col-4">
+                {{ form_row(profilForm.telephone) }}
+            </div>
+
+            <div class="col-4">
+                {{ form_row(profilForm.email) }}
+            </div>
+
+            <div class="col-4">
+                {{ form_row(profilForm.plainPassword.first) }}
+            </div>
+
+            <div class="col-4">
+                {{ form_row(profilForm.plainPassword.second) }}
+            </div>
+
+        </div>
+
+        <button type="submit" class="btn btn-outline-primary">Soumettre</button>
+
+        {{ form_end(profilForm) }}
+    </div>
+
+{% endblock %}
