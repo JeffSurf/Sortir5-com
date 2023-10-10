@@ -22,15 +22,11 @@ class ProfilFormType extends AbstractType
             ->add('prenom')
             ->add('telephone', TelType::class, ["required" => false])
             ->add('pseudo')
-            ->add('plainPassword', RepeatedType::class, [
+            ->add('plainPassword', PasswordType::class, [
                 'mapped' => false,
-                'options' => ['attr' => ['class' => 'password-field']],
-                'type' => PasswordType::class,
-                'invalid_message' => 'Le mot de passe doit être identitque',
                 'required' => true,
+                'label' => "Mot de passe",
                 'attr' => ['autocomplete' => 'new-password'],
-                'first_options'  => ['label' => 'Mot de passe'],
-                'second_options' => ['label' => 'Répétez le mot de passe'],
                 'constraints' => [
                     new NotBlank([
                         'message' => 'Entrez un mot de passe',

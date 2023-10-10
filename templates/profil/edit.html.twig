@@ -12,13 +12,26 @@
         {{ form_errors(profilForm) }}
 
         <div class="row">
-            <div class="col-4">
-                {{ form_row(profilForm.nom) }}
-            </div>
 
-            <div class="col-4">
-                {{ form_row(profilForm.prenom) }}
-            </div>
+            <label for="nom-profil">Nom</label>
+            <input
+                    id="nom-profil"
+                    name="{{ field_name(profilForm.nom) }}"
+                    value="{{ field_value(profilForm.nom) }}"
+                    placeholder="{{ field_label(profilForm.nom) }}"
+                    class="form-control"
+                    {{ not is_granted("ROLE_ADMIN") ? "readonly" : "" }}
+            />
+
+            <label for="prenom-profil">Prenom</label>
+            <input
+                    id="prenom-profil"
+                    name="{{ field_name(profilForm.prenom) }}"
+                    value="{{ field_value(profilForm.prenom) }}"
+                    placeholder="{{ field_label(profilForm.prenom) }}"
+                    class="form-control"
+                    {{ not is_granted("ROLE_ADMIN") ? "readonly" : "" }}
+            />
 
             <div class="col-4">
                 {{ form_row(profilForm.pseudo) }}
@@ -33,11 +46,7 @@
             </div>
 
             <div class="col-4">
-                {{ form_row(profilForm.plainPassword.first) }}
-            </div>
-
-            <div class="col-4">
-                {{ form_row(profilForm.plainPassword.second) }}
+                {{ form_row(profilForm.plainPassword) }}
             </div>
 
         </div>
