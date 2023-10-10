@@ -60,18 +60,11 @@ class ParticipantType extends AbstractType
                 "class" => Site::class,
                 "choice_label" => "nom"
             ])
-            ->add('choixRole', ChoiceType::class, [
-                'mapped' => false,
-                'label' => 'Rôle',
-                'multiple' => false,
-                'choices' => Participant::ROLES,
-                'required' => true
-            ])
             ->add('actif', CheckboxType::class, [
                 'label' => "L'utilisateur est actif",
                 'required' => true
             ])
-            ->add('plainPassword', RepeatedType::class, [
+            ->add('mdp', RepeatedType::class, [
                 'mapped' => false,
                 'options' => ['attr' => ['class' => 'password-field']],
                 'type' => PasswordType::class,

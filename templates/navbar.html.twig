@@ -5,45 +5,58 @@
         <!-- Navbar brand -->
         <a class="navbar-brand me-2" href={{ path('app_home') }}>
             <img
-                    height="16"
+                    height="50px"
                     alt="Sortir Logo"
                     loading="lazy"
                     style="margin-top: -1px;"
+                    src="{{ asset('images/logo.jpg') }}"
             />
         </a>
 
-        <!-- Collapsible wrapper -->
-        <div class="collapse navbar-collapse" id="navbarButtonsExample">
-            <!-- Left links -->
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Sorties</a>
-                </li>
-            </ul>
-            <!-- Left links -->
+        {% if app.user %}
+            <!-- Collapsible wrapper -->
+            <div class="collapse navbar-collapse" id="navbarButtonsExample">
+                <!-- Left links -->
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="#">Sorties</a></li>
+                </ul>
+                <!-- Left links -->
 
-            <div class="d-flex align-items-center">
-                <div class="nav-item dropdown d-flex">
-                    <a class="nav-link dropdown-toggle d-flex align-items-center no-arrow" href="#" id="navbarDropdownMenuLink"
-                       role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ app.user.pseudo | default('') }}</span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="navbarDropdownMenuLink">
+                {% if is_granted("ROLE_ADMIN") %}
+                    <div class="d-flex align-items-center">
+                        <div class="nav-item dropdown d-flex">
+                            <a class="nav-link dropdown-toggle d-flex align-items-center no-arrow" href="#" id="navbarDropdownMenuLink"
+                               role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Admin</span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="navbarDropdownMenuLink">
+                                <li><a class="dropdown-item" href="{{ path('participant_list') }}">Participants</a></li>
+                                <li><a class="dropdown-item" href="{{ path('ville_list') }}">Villes</a></li>
+                                <li><a class="dropdown-item" href="{{ path('ville_list') }}">Sites</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                {% endif %}
 
-                    {% if is_granted("ROLE_USER") %}
-                        <li><a class="dropdown-item" href="{{ path('app_profil_voir') }}">Profil</a></li>
-                        <li><a class="dropdown-item" href="#">Mes sorties</a></li>
-                    {% endif %}
-                    {% if is_granted("ROLE_ADMIN") %}
-                        <li><a class="dropdown-item" href="#">Sites</a></li>
-                        <li><a class="dropdown-item" href="#">Villes</a></li>
-                    {% endif %}
-                        <li class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="{{ path('app_logout') }}">Se déconnecter</a></li>
-                    </ul>
+                <div class="d-flex align-items-center">
+                    <div class="nav-item dropdown d-flex">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center no-arrow" href="#" id="navbarDropdownMenuLink"
+                           role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ app.user.pseudo }}</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="navbarDropdownMenuLink">
+
+                        {% if is_granted("ROLE_USER") %}
+                            <li><a class="dropdown-item" href="{{ path('app_profil_voir') }}">Profil</a></li>
+                            <li><a class="dropdown-item" href="#">Mes sorties</a></li>
+                            <li class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ path('app_logout') }}">Se déconnecter</a></li>
+                        {% endif %}
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
+        {% endif %}
         <!-- Collapsible wrapper -->
     </div>
     <!-- Container wrapper -->

@@ -2,7 +2,7 @@
 <html lang="fr">
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Sortir -{% endblock %}</title>
+        <title>Sortir - {% block title %}{% endblock %}</title>
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
         {% endblock %}
@@ -15,7 +15,9 @@
         {% block navabr %}
            {{ include('navbar.html.twig') }}
         {% endblock %}
+
         {% block body %}{% endblock %}
+
         {% block footer %}
             {{ include('footer.html.twig') }}
         {% endblock %}

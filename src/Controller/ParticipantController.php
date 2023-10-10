@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
@@ -24,7 +25,8 @@ class ParticipantController extends AbstractController {
 
     #[Route('/ajouter', name: '_add')]
     #[Route('/modifier/{id}', name: '_update')]
-    public function edit(Request $request, EntityManagerInterface $entityManager, UploadService $uploadService, ParticipantRepository $participantRepository, int $id = null): Response {
+    public function edit(Request $request, EntityManagerInterface $entityManager,  ParticipantRepository $participantRepository, int $id = null ,
+                         UploadService $uploadService, UserPasswordHasherInterface $userPasswordHasher): Response {
 
         $participant = $id == null ? new Participant() : $participantRepository->find($id);
         $msg = $participant->getId() == null ? 'Le participant a été ajouté avec succès !' : 'Le participant a été modifié avec succès !';
@@ -40,10 +42,13 @@ class ParticipantController extends AbstractController {
                 $participant->setImageProfil($newFilename);
             }
 
-            if ($form->get('choixRole')->getData() == 'admin') {
-                $participant->setRoles(['ROLE_ADMIN']);
-            } elseif ($form->get('choixRole')->getData() == 'user') {
-                $participant->setRoles(['ROLE_USER']);
+            if ($form->get('mdp')->getData() != null) {
+                $participant->setPassword(
+                    $userPasswordHasher->hashPassword(
+                        $participant,
+                        $form->get('mdp')->getData()
+                    )
+                );
             }
 
             $entityManager->persist($participant);
