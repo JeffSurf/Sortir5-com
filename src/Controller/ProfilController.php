@@ -3,9 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Participant;
+use App\Form\PasswordFormType;
 use App\Form\ProfilFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -18,13 +20,13 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class ProfilController extends AbstractController
 {
     #[Route('', name: 'voir')]
-    public function voir(): Response
+    public function index(): Response
     {
         return $this->render('profil/index.html.twig');
     }
 
     #[Route('/edit', name: 'editer')]
-    public function editer(Request $request,  UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $em): \Symfony\Component\HttpFoundation\RedirectResponse|Response
+    public function edit(Request $request,  UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $em): \Symfony\Component\HttpFoundation\RedirectResponse|Response
     {
         $dataUser = $this->getUser();
 
@@ -38,30 +40,68 @@ class ProfilController extends AbstractController
             $user = $this->getUser();
             if(!$userPasswordHasher->isPasswordValid($user, $form->get('plainPassword')->getData()))
             {
-                $this->addFlash("danger", "Le mot de passe n'est pas valide");
-                throw new HttpException(400, "Le mot de passe n'est pas valide");
-            }
-
-            if($this->isGranted("ROLE_ADMIN"))
-            {
-                $user = $dataUser;
+                $form->get("plainPassword")->addError(new FormError( "Le mot de passe n'est pas correct"));
             }
             else
             {
-                $user
-                    ->setTelephone($dataUser->getTelephone())
-                    ->setPseudo($dataUser->getPseudo())
-                    ->setEmail($dataUser->getEmail());
+                if($this->isGranted("ROLE_ADMIN"))
+                {
+                    $user = $dataUser;
+                }
+                else
+                {
+                    $user
+                        ->setTelephone($dataUser->getTelephone())
+                        ->setPseudo($dataUser->getPseudo())
+                        ->setEmail($dataUser->getEmail());
+                }
+
+                $em->persist($user);
+                $em->flush();
+
+                $this->addFlash("success", "Votre profil a bien été modifié !");
+                return $this->redirectToRoute("app_profil_voir");
             }
-
-            $em->persist($user);
-            $em->flush();
-
-            return $this->redirectToRoute("app_profil_voir");
         }
 
         return $this->render('profil/edit.html.twig', [
             "profilForm" => $form
+        ]);
+    }
+
+    #[Route('/edit/password', name: 'edit_password')]
+    public function editPassword(Request $request,  UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $em): Response {
+        $form = $this->createForm(PasswordFormType::class);
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid())
+        {
+            /** @var Participant $user */
+            $user = $this->getUser();
+
+            if(!$userPasswordHasher->isPasswordValid($user, $form->get('oldPassword')->getData()))
+            {
+                $form->get("oldPassword")->addError(new FormError( "L'ancien mot de passe n'est pas correct"));
+            }
+            else
+            {
+                $user->setPassword(
+                    $userPasswordHasher->hashPassword(
+                        $user,
+                        $form->get('newPassword')->getData())
+                );
+
+                $em->persist($user);
+                $em->flush();
+
+                $this->addFlash("success", "Votre mot de passe a bien été modifié !");
+                return $this->redirectToRoute("app_profil_voir");
+            }
+        }
+
+        return $this->render('profil/password.html.twig', [
+            "form" => $form
         ]);
     }
 }
