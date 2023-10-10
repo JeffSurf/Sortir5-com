@@ -15,7 +15,7 @@ class SortieController extends AbstractController
     {
         $sorties = $sortieRepository->findAll();
 
-        return $this->render('sortie/list.html.twig', [
+        return $this->render('sortie/index.html.twig', [
             'form' => $sorties
         ]);
     }

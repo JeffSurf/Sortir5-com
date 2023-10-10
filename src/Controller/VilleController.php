@@ -12,48 +12,43 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/ville', name: 'ville')]
-class VilleController extends AbstractController
-{
-    #[Route('/list', name: '_list')]
-    public function list(VilleRepository $repository): Response
-    {
-        $villes = $repository->findAll();
-
-        return $this->render('ville/list.html.twig', [
-            'villes' => $villes
+class VilleController extends AbstractController {
+    #[Route('/', name: '_list')]
+    public function lister(VilleRepository $villeRepository): Response {
+        return $this->render('ville/index.html.twig', [
+            'villes' => $villeRepository->findAll(),
         ]);
     }
 
-    #[Route('/create', name: '_create')]
-    public function create(Request $request, EntityManagerInterface $em): Response {
-        $ville = new Ville();
-        $villeFormulaire = $this->createForm(VilleType::class, $ville);
+    #[Route('/ajouter', name: '_add')]
+    #[Route('/modifier/{id}', name: '_update')]
+    public function edit(Request $request, EntityManagerInterface $entityManager,  VilleRepository $villeRepository, int $id = null): Response {
 
-        $villeFormulaire->handleRequest($request);
+        $ville = $id == null ? new Ville() : $villeRepository->find($id);
+        $msg = $ville->getId() == null ? 'La ville a été ajoutée avec succès !' : 'La ville a été modifiée avec succès !';
+        $form = $this->createForm(VilleType::class, $ville);
+        $form->handleRequest($request);
 
-        if($villeFormulaire->isSubmitted() && $villeFormulaire->isValid()){
-            $em->persist($ville);
-            $em->flush();
-
-            $this->addFlash("success", "Ville ajoutée avec succès !");
-
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($ville);
+            $entityManager->flush();
+            $this->addFlash('success', $msg);
             return $this->redirectToRoute('ville_list');
         }
 
-        return $this->redirectToRoute('ville_create', [
-            'form' => $villeFormulaire
+        return $this->render('ville/edit.html.twig', [
+            'form' => $form,
+            'action' => $ville->getId() == null ? 'Ajouter' : 'Modifier'
         ]);
     }
 
-    /*
-    #[Route('/update/{id}', name: '_update', requirements: ['id' => '\d+'])]
-    public function update(): Response {
+    #[Route('/supprimer/{id}', name: '_delete')]
+    public function delete(EntityManagerInterface $entityManager, VilleRepository $villeRepository, int $id): Response {
 
+        $ville = $villeRepository->find($id);
+        $entityManager->remove($ville);
+        $entityManager->flush();
+        $this->addFlash('success', 'La ville a été supprimée avec succès !');
+        return $this->redirectToRoute('ville_list');
     }
-
-    #[Route('/delete/{id}', name: '_delete', requirements: ['id' => '\d+'])]
-    public function delete():Response {
-
-    }
-    */
 }

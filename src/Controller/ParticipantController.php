@@ -12,13 +12,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route('/participant', name: 'participant')]
 class ParticipantController extends AbstractController {
     #[Route('/', name: '_list')]
     public function lister(ParticipantRepository $participantRepository): Response {
-        return $this->render('participant/list.html.twig', [
+        return $this->render('participant/index.html.twig', [
             'participants' => $participantRepository->findAll(),
         ]);
     }
@@ -57,9 +56,8 @@ class ParticipantController extends AbstractController {
             return $this->redirectToRoute('participant_list');
         }
 
-        return $this->render('participant/add.html.twig', [
+        return $this->render('participant/edit.html.twig', [
             'form' => $form,
-            'participant' => $participant->getPseudo(),
             'action' => $participant->getId() == null ? 'Ajouter' : 'Modifier'
         ]);
     }

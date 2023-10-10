@@ -1,0 +1,18 @@
+{% extends '/base.html.twig' %}
+
+{% block title %}{{ action }} un site{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>{{ action }} un site</h1>
+        {{  form_start(form) }}
+
+        <div class="form-row">
+            {{  form_row(form.nom) }}
+        </div>
+
+        {{  form_end(form) }}
+    </div>
+
+
+{% endblock %}
