@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Participant;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
@@ -22,7 +23,7 @@ class RegistrationFormType extends AbstractType
             ->add('nom', TextType::class)
             ->add('prenom',TextType::class)
             ->add('pseudo', TextType::class)
-            ->add('telephone', TextType::class, ["required" => false])
+            ->add('telephone', TelType::class, ["required" => false])
             ->add('email')
             ->add('plainPassword', RepeatedType::class, [
                 'mapped' => false,
