@@ -31,12 +31,6 @@ class ProfilFormType extends AbstractType
                     new NotBlank([
                         'message' => 'Entrez un mot de passe',
                     ]),
-                    new Length([
-                        'min' => 3,
-                        'minMessage' => 'Le mot de passe doit faire au moins {{ limit }} caractères',
-                        // max length allowed by Symfony for security reasons
-                        'max' => 4096,
-                    ]),
                 ],
             ]);
     }
