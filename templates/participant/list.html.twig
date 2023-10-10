@@ -1,24 +1,51 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}Participants | ADMIN{% endblock %}
+
 {% block body %}
-    <h2>Gestion des villes</h2>
-    <input type="text" name="Rechercher" label="Rechercher"/>
-    <table>
-        <tr>
-            <td>Nom</td>
-            <td>Code Postal</td>
-            <td>Actions</td>
-        </tr>
-        {% for ville in villes %}
+
+    <div class="container">
+
+        <h1>Liste des participants</h1>
+
+        <table class="table" >
+            <thead>
             <tr>
-                <td>{{ ville.nom }}</td>
-                <td>{{ ville.codepostal}}</td>
-                <td><button type="button">Modifier</button></td>
-                <td><button type="button">Supprimer</button></td>
-                </br>
+                <th scope="col">ID</th>
+                <th scope="col">Pseudo</th>
+                <th scope="col">Prénom Nom</th>
+                <th scope="col">Email</th>
+                <th scope="col">Téléphone</th>
+                <th scope="col">Rôle</th>
+                <th scope="col">Statut</th>
+                <th scope="col">Actions</th>
+                <th scope="col">
+                    <a href="{{ path('participant_add') }}">➕</a>
+                </th>
+
             </tr>
-        {% endfor %}
+            </thead>
 
-    </table>
+            <tbody>
+            {% for participant in participant %}
+                <tr>
+                    <th scope="row">{{ participant.id }}</th>
+                    <td>{{ participant.pseudo }}</td>
+                    <td class="img-name">
+                        <img src="{{ asset('uploads/participants/' ~ participant.imageProfil ~ '.png') }}">
+                        <span>{{ participant.prenom }} {{ participant.nom | upper}}</span>
+                    </td>
+                    <td>{{ participant.email }}</td>
+                    <td>{{ participant.telephone | default("Non renseigné")}}</td>
+                    <td>{{ participant.roles == ['ROLE_ADMIN'] ? 'Administrateur' : 'Utilisateur'}}</td>
+                    <td>
+                        <a href="{{ path('participant_update', {'id': participant.id}) }}">🖊️</a>
+                        <a onclick="return confirm('Êtes-vous sûr de vouloir supprimer {{ participant.prenom }} {{ participant.nom |upper }} ? Attention cette action est irréversible.')" href="{{ path('participant_delet', {'id': participant.id}) }}">🗑️</a>
+                    </td>
+                </tr>
+            {%  endfor %}
+            </tbody>
+        </table>
 
+    </div>
 {% endblock %}
