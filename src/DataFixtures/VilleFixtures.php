@@ -2,11 +2,12 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Ville;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 ;
 
-class Ville extends Fixture
+class VilleFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
@@ -24,7 +25,7 @@ class Ville extends Fixture
         ];
 
         foreach ($villes as $ville) {
-            $city = new \App\Entity\Ville();
+            $city = new Ville();
             $city->setNom($ville['nom']);
             $city->setCodePostal($ville['codePostal']);
             $manager->persist($city);
