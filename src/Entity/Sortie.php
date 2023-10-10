@@ -32,9 +32,12 @@ class Sortie
     #[ORM\Column(type: Types::TEXT)]
     private ?string $infosSortie = null;
 
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Etat $etat = null;
+    #[ORM\Column(type: "string", enumType: Etat::class)]
+    private Etat $etat;
+
+    public function __construct() {
+        $this->etat = Etat::CREEE;
+    }
 
     public function getId(): ?int
     {
@@ -113,15 +116,13 @@ class Sortie
         return $this;
     }
 
-    public function getEtat(): ?Etat
+    public function getEtat(): Etat
     {
         return $this->etat;
     }
 
-    public function setEtat(?Etat $etat): static
+    public function setEtat(Etat $etat): void
     {
         $this->etat = $etat;
-
-        return $this;
     }
 }
