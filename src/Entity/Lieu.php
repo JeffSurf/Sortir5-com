@@ -28,9 +28,9 @@ class Lieu
     private ?float $longitude = null;
 
     #[ORM\ManyToOne(inversedBy: 'lieus')]
-    private ?Ville $Ville = null;
+    private ?Ville $ville = null;
 
-    #[ORM\OneToMany(mappedBy: 'Lieu', targetEntity: Sortie::class)]
+    #[ORM\OneToMany(mappedBy: 'lieu', targetEntity: Sortie::class)]
     private Collection $sorties;
 
     public function __construct()

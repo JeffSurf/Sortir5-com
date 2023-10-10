@@ -55,19 +55,20 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\JoinColumn(nullable: false)]
     private ?Site $Site = null;
 
-    #[ORM\OneToMany(mappedBy: 'Organisateur', targetEntity: Sortie::class)]
+    #[ORM\OneToMany(mappedBy: 'organisateur', targetEntity: Sortie::class)]
     private Collection $sortiesOrganisateur;
-
-    #[ORM\OneToMany(mappedBy: 'Participant', targetEntity: Inscription::class)]
-    private Collection $inscriptions;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $imageProfil = null;
+
+    #[ORM\ManyToMany(targetEntity: Sortie::class, inversedBy: 'participants')]
+    private Collection $sorties;
 
     public function __construct()
     {
         $this->sortiesOrganisateur = new ArrayCollection();
         $this->inscriptions = new ArrayCollection();
+        $this->sorties = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -242,36 +243,6 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Inscription>
-     */
-    public function getInscriptions(): Collection
-    {
-        return $this->inscriptions;
-    }
-
-    public function addInscription(Inscription $inscription): static
-    {
-        if (!$this->inscriptions->contains($inscription)) {
-            $this->inscriptions->add($inscription);
-            $inscription->setParticipant($this);
-        }
-
-        return $this;
-    }
-
-    public function removeInscription(Inscription $inscription): static
-    {
-        if ($this->inscriptions->removeElement($inscription)) {
-            // set the owning side to null (unless already changed)
-            if ($inscription->getParticipant() === $this) {
-                $inscription->setParticipant(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function getImageProfil(): ?string
     {
         return $this->imageProfil;
@@ -280,6 +251,30 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     public function setImageProfil(?string $imageProfil): static
     {
         $this->imageProfil = $imageProfil;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Sortie>
+     */
+    public function getSorties(): Collection
+    {
+        return $this->sorties;
+    }
+
+    public function addSorty(Sortie $sorty): static
+    {
+        if (!$this->sorties->contains($sorty)) {
+            $this->sorties->add($sorty);
+        }
+
+        return $this;
+    }
+
+    public function removeSorty(Sortie $sorty): static
+    {
+        $this->sorties->removeElement($sorty);
 
         return $this;
     }
