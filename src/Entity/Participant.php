@@ -12,7 +12,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
-#[UniqueEntity(fields: ['email', 'pseudo'], message: 'Il y a déjà un compte avec cet identifiant')]
+#[UniqueEntity(fields: ['email'], message: 'Il y a déjà un compte avec cet email')]
+#[UniqueEntity(fields: ['pseudo'], message: 'Il y a déjà un compte avec ce pseudo')]
 class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 {
 
@@ -28,6 +29,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 100, unique: true)]
     #[Assert\NotBlank(message: "L'email ne peut pas être vide")]
+    #[Assert\Email(message: "Le format n'est pas valide")]
     private ?string $email = null;
 
     #[ORM\Column]
@@ -47,7 +49,8 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotBlank(message: "Le prénom ne peut pas être vide")]
     private ?string $prenom = null;
 
-    #[ORM\Column(length: 20, nullable: true)]
+    #[ORM\Column(length: 15, nullable: true)]
+    #[Assert\Length(max: 15, maxMessage: "Le numéro de téléphone est supérieur à {{ limit }} caractères")]
     private ?string $telephone = null;
 
     #[ORM\Column]
