@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<section class="w-100 p-4 d-flex justify-content-center pb-4">
+    <form method="post" style="width: 22rem;">
+    {% if error %}
+        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+    {% endif %}
+    <!-- CSRF Token -->
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+        <!-- Email input -->
+        <div class="form-outline mb-4">
+            <input type="text" name="_username" id="identifiant" class="form-control" placeholder="email ou pseudo" required/>
+            <label class="form-label" for="identifiant">Identifiant *</label>
+        </div>
+
+        <!-- Password input -->
+        <div class="form-outline mb-4">
+            <input type="password" name="_password" id="pwd" class="form-control" required/>
+            <label class="form-label" for="pwd">Mot de passe *</label>
+        </div>
+
+        <!-- 2 column grid layout for inline styling -->
+        <div class="row mb-4">
+            <div class="col d-flex justify-content-center">
+                <!-- Checkbox -->
+                <div class="form-check">
+                    <input class="form-check-input" name="_remember_me" type="checkbox" value="" id="form1Example3" checked />
+                    <label class="form-check-label" for="form1Example3"> Se souvenir de moi </label>
+                </div>
+            </div>
+
+            <div class="col">
+                <!-- Simple link -->
+                <a href="#">Mot de passe oublié</a>
+            </div>
+        </div>
+
+        <!-- Submit button -->
+        <button type="submit" class="btn btn-primary btn-block">Se connecter</button>
+        <div class="text-center">
+            <p>Pas membre ? <a href="{{ path('app_register') }}">S'inscrire</a></p>
+        </div>
+    </form>
+</section>
+{% endblock %}
