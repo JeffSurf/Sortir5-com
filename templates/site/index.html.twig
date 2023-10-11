@@ -27,10 +27,10 @@
                 <tr>
                     <td>{{ site.nom }}</td>
                     <td>
-                        <a href="{{ path('site_update', {'id': site.id}) }}">
+                        <a href="{{ path('app_admin_site_update', {'id': site.id}) }}">
                             <button class="btn btn-primary btn-sm">Modifier</button>
                         </a>
-                        <a onclick="return confirm('Êtes-vous sûr de vouloir supprimer {{ site.nom }} ? Attention cette action est irréversible.')" href="{{ path('site_delete', {'id': site.id}) }}">
+                        <a onclick="return confirm('Êtes-vous sûr de vouloir supprimer {{ site.nom }} ? Attention cette action est irréversible.')" href="{{ path('app_admin_site_delete', {'id': site.id}) }}">
                             <button class="btn btn-danger btn-sm">Supprimer</button>
                         </a>
                     </td>
