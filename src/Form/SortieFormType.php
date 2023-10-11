@@ -10,7 +10,10 @@ use App\Repository\VilleRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+<<<<<<< HEAD
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+=======
+>>>>>>> f439d50 (Mercredi 11 octobre 18h20 - Fin de journée :)
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
