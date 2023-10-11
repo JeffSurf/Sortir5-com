@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Admin;
 
 use App\Entity\Site;
 use App\Form\SearchFormType;
@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/site', name: 'site')]
+#[Route('/admin/site', name: 'app_admin_site')]
 class SiteController extends AbstractController {
     #[Route('', name: '_list')]
     public function lister(Request $request, EntityManagerInterface $entityManager, SiteRepository $siteRepository): Response {

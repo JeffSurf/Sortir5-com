@@ -17,7 +17,7 @@
                     <div class="card">
                         <div class="rounded-top text-white d-flex flex-row" style=" background: rgb(255,255,255); background: linear-gradient(189deg, rgba(255,255,255,1) 0%, rgba(46,46,46,1) 100%);  height:200px;">
                             <div class="ms-4 mt-5 d-flex flex-column" style="width: 150px;">
-                                <img src="{{ app.user.imageProfil ? asset('uploads/participants/' ~ app.user.imageProfil) : asset('images/defautPfp.jpg')}}" alt="Photo de profil">
+                                <img src="{{ asset('uploads/participants/' ~ app.user.imageProfil) }}" alt="Photo de profil">
                             </div>
                             <div class="ms-3" style="margin-top: 130px;">
                                 <h5>{{ app.user.prenom }} {{ app.user.nom | upper }}</h5>

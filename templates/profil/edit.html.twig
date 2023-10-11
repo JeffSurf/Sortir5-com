@@ -64,6 +64,9 @@
             <div class="col-6">
                 {{ form_row(profilForm.image) }}
             </div>
+            <div class="col-2">
+                <img style="height: 100px;" src="{{ asset('uploads/participants/' ~ app.user.imageProfil) }}" alt="Photo de profil">
+            </div>
         </div>
 
         <button type="submit" class="btn btn-outline-primary">Soumettre</button>

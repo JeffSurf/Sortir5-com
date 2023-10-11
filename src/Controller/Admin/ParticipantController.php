@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Admin;
 
 use App\Entity\Participant;
 use App\Form\ParticipantType;
@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/participant', name: 'participant')]
+#[Route('/admin/participant', name: 'app_admin_participant')]
 class ParticipantController extends AbstractController {
     #[Route('', name: '_list')]
     public function lister(ParticipantRepository $participantRepository): Response {
@@ -24,7 +24,7 @@ class ParticipantController extends AbstractController {
 
     #[Route('/ajouter', name: '_add')]
     #[Route('/modifier/{id}', name: '_update', requirements: ['id' => '\d+'])]
-    public function edit(Request $request, EntityManagerInterface $entityManager,  ParticipantRepository $participantRepository, int $id = null ,
+    public function edit(Request $request, EntityManagerInterface $entityManager,  ParticipantRepository $participantRepository, int $id = null,
                          UploadService $uploadService, UserPasswordHasherInterface $userPasswordHasher): Response {
 
         $participant = $id == null ? new Participant() : $participantRepository->find($id);
@@ -34,10 +34,17 @@ class ParticipantController extends AbstractController {
 
         if ($form->isSubmitted() && $form->isValid()) {
 
+            /** @var Participant $user */
+            $user = $this->getUser();
             $file = $form->get('imageProfil')->getData();
 
             if ($file) {
                 $newFilename = $uploadService->uploadFile($file, $this->getParameter('uploads_participants_directory'));
+
+                if ($file != 'default_profile_picture.png') {
+                    $uploadService->delete($user->getImageProfil(), $this->getParameter('uploads_participants_directory'));
+                }
+
                 $participant->setImageProfil($newFilename);
             }
 

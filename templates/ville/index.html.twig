@@ -29,10 +29,10 @@
                     <td>{{ ville.nom }}</td>
                     <td>({{ ville.codepostal }})</td>
                     <td>
-                        <a href="{{ path('ville_update', {'id': ville.id}) }}">
+                        <a href="{{ path('app_admin_ville_update', {'id': ville.id}) }}">
                             <button class="btn btn-primary btn-sm">Modifier</button>
                         </a>
-                        <a onclick="return confirm('Êtes-vous sûr de vouloir supprimer {{ ville.nom }} ? Attention cette action est irréversible.')" href="{{ path('ville_delete', {'id': ville.id}) }}">
+                        <a onclick="return confirm('Êtes-vous sûr de vouloir supprimer {{ ville.nom }} ? Attention cette action est irréversible.')" href="{{ path('app_admin_ville_delete', {'id': ville.id}) }}">
                             <button class="btn btn-danger btn-sm">Supprimer</button>
                         </a>
                     </td>

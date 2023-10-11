@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Admin;
 
 use App\Entity\Ville;
 use App\Form\SearchFormType;
@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/ville', name: 'ville')]
+#[Route('/admin/ville', name: 'app_admin_ville')]
 class VilleController extends AbstractController {
     #[Route('', name: '_list')]
     public function lister(Request $request, EntityManagerInterface $entityManager, VilleRepository $villeRepository): Response {
