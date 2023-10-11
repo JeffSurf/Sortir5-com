@@ -3,8 +3,10 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Participant;
+use App\Entity\Site;
 use App\Form\ParticipantType;
 use App\Repository\ParticipantRepository;
+use App\Repository\SiteRepository;
 use App\Service\UploadService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,6 +16,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\CsvEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[Route('/admin/participant', name: 'app_admin_participant')]
 class ParticipantController extends AbstractController {
@@ -62,7 +65,7 @@ class ParticipantController extends AbstractController {
             $entityManager->persist($participant);
             $entityManager->flush();
             $this->addFlash('success', $msg);
-            return $this->redirectToRoute('participant_list');
+            return $this->redirectToRoute('app_admin_participant_list');
         }
 
         return $this->render('participant/edit.html.twig', [
@@ -78,16 +81,52 @@ class ParticipantController extends AbstractController {
         $entityManager->remove($participant);
         $entityManager->flush();
         $this->addFlash('success', 'Le participant a été supprimé avec succès !');
-        return $this->redirectToRoute('participant_list');
+        return $this->redirectToRoute('app_admin_participant_list');
     }
 
     #[Route('/ajouter/csv', name: '_addbycsv', methods: "POST")]
-    public function addByCsv(Request $request): Response
+    public function addByCsv(Request $request, EntityManagerInterface $entityManager, SiteRepository $siteRepository, ValidatorInterface $validator): Response
     {
-        $encoder = new CsvEncoder();
+        $data = $request->getContent();
+        $lines = explode(PHP_EOL, $data);
 
-        $encoder->decode($request->getContent(), 'text', [CsvEncoder::DELIMITER_KEY => ',']);
+        $error = "";
 
-        return $this->redirectToRoute('participant_list');
+        foreach ($lines as $key => $line)
+        {
+            $participant = new Participant();
+
+            $attributes = str_getcsv($line);
+
+            $site = $siteRepository->find($attributes[5]);
+
+            if(!$site)
+                return new Response("Ligne $key: Le site avec l'id $attributes[5] n'existe pas", 400);
+
+            $participant
+                ->setPrenom($attributes[0])
+                ->setNom($attributes[1])
+                ->setEmail($attributes[2])
+                ->setPseudo($attributes[3])
+                ->setRoles(json_decode($attributes[4]))
+                ->setSite($site)
+                ->setTelephone($attributes[6])
+                ->setPassword($attributes[7])
+                ->setActif($attributes[8] == 1)
+            ;
+
+            $errors = $validator->validate($participant);
+
+            if($errors->count() > 0)
+                return new Response( "Ligne $key: " . $errors, 400);
+
+            $entityManager->persist($participant);
+
+        }
+
+
+        $entityManager->flush();
+
+        return new Response("Votre csv a bien été traité", 200);
     }
 }
