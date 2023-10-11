@@ -17,11 +17,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 {
 
-    const ROLES = [
-        'Utilisateur' => 'user',
-        'Administrateur' => 'admin'
-    ];
-
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -73,7 +68,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $sortiesOrganisateur;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $imageProfil = null;
+    private ?string $imageProfil = 'default_profile_picture.png';
 
     #[ORM\ManyToMany(targetEntity: Sortie::class, inversedBy: 'participants')]
     private Collection $sorties;
