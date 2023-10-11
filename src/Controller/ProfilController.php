@@ -5,9 +5,11 @@ namespace App\Controller;
 use App\Entity\Participant;
 use App\Form\PasswordFormType;
 use App\Form\ProfilFormType;
+use App\Service\UploadService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -26,7 +28,7 @@ class ProfilController extends AbstractController
     }
 
     #[Route('/edit', name: 'editer')]
-    public function edit(Request $request,  UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $em): \Symfony\Component\HttpFoundation\RedirectResponse|Response
+    public function edit(Request $request,  UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $em, UploadService $fileUploader): \Symfony\Component\HttpFoundation\RedirectResponse|Response
     {
         $dataUser = $this->getUser();
 
@@ -54,6 +56,24 @@ class ProfilController extends AbstractController
                         ->setTelephone($dataUser->getTelephone())
                         ->setPseudo($dataUser->getPseudo())
                         ->setEmail($dataUser->getEmail());
+                }
+
+                /**
+                 * @var UploadedFile $imageFile
+                 */
+                $imageFile = $form->get('image')->getData();
+
+                if($imageFile)
+                {
+                    $imageFilename = $fileUploader->uploadFile($imageFile, $this->getParameter('uploads_participants_directory'));
+
+                    $fileUploader->delete($user->getImageProfil(), $this->getParameter('uploads_participants_directory'));
+
+                    $user->setImageProfil($imageFilename);
+                }
+                else
+                {
+                    $form->get('image')->addError(new FormError("Problème avec l'image"));
                 }
 
                 $em->persist($user);
