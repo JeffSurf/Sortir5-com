@@ -4,11 +4,13 @@ namespace App\Form;
 
 use App\Entity\Participant;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
@@ -32,6 +34,24 @@ class ProfilFormType extends AbstractType
                         'message' => 'Entrez un mot de passe',
                     ]),
                 ],
+            ])
+            ->add('image', FileType::class, [
+                "label" => "Image de profil",
+                "mapped" => false,
+                "required" => false,
+                "help" => "Taille maxi (2MB)",
+                "constraints" => [
+                    new File([
+                        "maxSize" => "2048k",
+                        "maxSizeMessage" => "Le fichier est trop volumineux ({{ size }} {{ suffix }}). Taille maximale {{ limit }} {{ suffix }}",
+                        "mimeTypes" => [
+                            "image/png",
+                            "image/jpeg",
+                            "image/svg+xml"
+                        ],
+                        "mimeTypesMessage" => "Le type {{ type }} est invalide. Les formats valides sont {{ types }}"
+                    ])
+                ]
             ]);
     }
 
