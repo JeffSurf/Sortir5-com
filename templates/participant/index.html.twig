@@ -2,6 +2,11 @@
 
 {% block title %}Participants{% endblock %}
 
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('participant') }}
+{% endblock %}
+
 {% block body %}
 
     <div class="container admin-page">
@@ -9,11 +14,12 @@
         <h1>Liste des participants</h1>
 
         <div>
-            <a href="{{ path('participant_add') }}">
-                <button>Ajouter manuellement un utilisateur</button>
+            <a class="btn btn-outline-secondary" href="{{ path('participant_add') }}">
+                Ajouter manuellement un utilisateur
             </a>
 
-            <button>Ajouter des utilisateurs via un fichier CSV</button>
+            <button id="btn-csv" class="btn btn-outline-secondary">Ajouter des utilisateurs via un fichier CSV</button>
+            <input id="input-csv" name="file-csv" type="file" accept="text/csv" hidden/>
         </div>
 
         <table class="table" >

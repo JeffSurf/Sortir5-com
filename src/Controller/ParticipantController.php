@@ -12,6 +12,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Encoder\CsvEncoder;
+use Symfony\Component\Serializer\SerializerInterface;
 
 #[Route('/participant', name: 'participant')]
 class ParticipantController extends AbstractController {
@@ -69,6 +71,16 @@ class ParticipantController extends AbstractController {
         $entityManager->remove($participant);
         $entityManager->flush();
         $this->addFlash('success', 'Le participant a été supprimé avec succès !');
+        return $this->redirectToRoute('participant_list');
+    }
+
+    #[Route('/ajouter/csv', name: '_addbycsv', methods: "POST")]
+    public function addByCsv(Request $request): Response
+    {
+        $encoder = new CsvEncoder();
+
+        $encoder->decode($request->getContent(), 'text', [CsvEncoder::DELIMITER_KEY => ',']);
+
         return $this->redirectToRoute('participant_list');
     }
 }
