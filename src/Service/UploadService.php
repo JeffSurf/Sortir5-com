@@ -35,8 +35,11 @@ class UploadService {
         return $newFilename;
     }
 
-    public function delete(string $filename, string $directory): void
+    public function delete(?string $filename, string $directory): void
     {
+        if(!$filename)
+            return;
+
         if($this->filesystem->exists($directory . '/' . $filename))
             $this->filesystem->remove($directory . '/' . $filename);
     }
