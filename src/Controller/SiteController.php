@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/site', name: 'site')]
 class SiteController extends AbstractController {
-    #[Route('/', name: '_list')]
+    #[Route('', name: '_list')]
     public function lister(Request $request, EntityManagerInterface $entityManager, SiteRepository $siteRepository): Response {
         $sites = $siteRepository->findAll();
 
@@ -69,9 +69,16 @@ class SiteController extends AbstractController {
     public function delete(EntityManagerInterface $entityManager, SiteRepository $siteRepository, int $id): Response {
 
         $site = $siteRepository->find($id);
-        $entityManager->remove($site);
-        $entityManager->flush();
-        $this->addFlash('success', 'Le site a été supprimé avec succès !');
+
+        if($site->getParticipants()->count() > 0)
+            $this->addFlash('danger', 'Le site ' . $site->getNom() .' est rattaché à un ou plusieurs participants, vous ne pouvez pas le supprimer');
+        else
+        {
+            $entityManager->remove($site);
+            $entityManager->flush();
+            $this->addFlash('success', 'Le site a été supprimé avec succès !');
+        }
+
         return $this->redirectToRoute('site_list');
     }
 }

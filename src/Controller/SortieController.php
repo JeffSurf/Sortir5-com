@@ -10,7 +10,7 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/sortie', name: 'sortie')]
 class SortieController extends AbstractController
 {
-    #[Route('/list', name: '_list')]
+    #[Route('', name: '_list')]
     public function list(SortieRepository $sortieRepository): Response
     {
         $sorties = $sortieRepository->findAll();

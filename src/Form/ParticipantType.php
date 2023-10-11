@@ -62,27 +62,18 @@ class ParticipantType extends AbstractType
             ])
             ->add('actif', CheckboxType::class, [
                 'label' => "L'utilisateur est actif",
-                'required' => true
+                'required' => false
             ])
-            ->add('mdp', RepeatedType::class, [
+            ->add('mdp', PasswordType::class, [
                 'mapped' => false,
-                'options' => ['attr' => ['class' => 'password-field']],
-                'type' => PasswordType::class,
-                'invalid_message' => 'Le mot de passe doit être identitque',
-                'required' => true,
+                'required' => false,
+                'label' => "Mot de passe",
                 'attr' => ['autocomplete' => 'new-password'],
-                'first_options'  => ['label' => 'Mot de passe'],
-                'second_options' => ['label' => 'Répétez le mot de passe'],
                 'constraints' => [
-                    new NotBlank([
-                        'message' => 'Entrez un mot de passe',
-                    ]),
                     new Length([
-                        'min' => 3,
-                        'minMessage' => 'Le mot de passe doit faire au moins {{ limit }} caractères',
-                        // max length allowed by Symfony for security reasons
-                        'max' => 4096,
-                    ]),
+                        'min' => 3, 'minMessage' => 'Le mot de passe doit faire au moins {{ limit }} caractères',
+                        'max' => 4096, 'maxMessage' => 'Le mot de passe ne peut pas excéder {{ limit }} caractères'
+                    ])
                 ],
             ])
             ->add('valider', SubmitType::class, ['attr' => ['class' => 'btn btn-primary btn-sm']])
