@@ -58,6 +58,11 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 50, unique: true)]
     #[Assert\NotBlank(message: "Le pseudo ne peut pas être vide")]
+    #[Assert\Regex(
+        pattern: '/^([a-zA-Z]|\d|_\-)+$/',
+        message: 'Le pseudo peut contenir des lettres (a à z), des chiffres, - et _',
+        match: true,
+    )]
     private ?string $pseudo = null;
 
     #[ORM\ManyToOne(inversedBy: 'participants')]
