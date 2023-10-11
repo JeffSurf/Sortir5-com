@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/ville', name: 'ville')]
 class VilleController extends AbstractController {
-    #[Route('/', name: '_list')]
+    #[Route('', name: '_list')]
     public function lister(Request $request, EntityManagerInterface $entityManager, VilleRepository $villeRepository): Response {
 
         //add
@@ -58,9 +58,16 @@ class VilleController extends AbstractController {
     public function delete(EntityManagerInterface $entityManager, VilleRepository $villeRepository, int $id): Response {
 
         $ville = $villeRepository->find($id);
-        $entityManager->remove($ville);
-        $entityManager->flush();
-        $this->addFlash('success', 'La ville a été supprimée avec succès !');
+
+        if($ville->getLieux()->count() > 0)
+            $this->addFlash('danger', 'La ville possède des lieux, vous ne pouvez pas la supprimer');
+        else
+        {
+            $entityManager->remove($ville);
+            $entityManager->flush();
+            $this->addFlash('success', 'La ville a été supprimée avec succès !');
+        }
+
         return $this->redirectToRoute('ville_list');
     }
 }
