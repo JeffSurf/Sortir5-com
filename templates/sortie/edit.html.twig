@@ -1,0 +1,14 @@
+{% extends '/base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="text-center">{{ action }} une sortie</h1>
+        {{  form_start(form) }}
+
+        {{ form_label(form) }}
+        {{ form_errors(form) }}
+        {{ form_widget(form) }}
+
+        {{  form_end(form) }}
+    </div>
+{% endblock %}
