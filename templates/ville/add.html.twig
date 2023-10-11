@@ -1,18 +1,18 @@
 <tr>
-    {{  form_start(form) }}
+    {{  form_start(addForm) }}
 
     <td>
-        <div class="form-row">{{  form_widget(form.nom) }}</div>
+        <div class="form-row">{{  form_widget(addForm.nom) }}</div>
     </td>
 
     <td>
-        <div class="form-row">{{  form_widget(form.codePostal) }}</div>
+        <div class="form-row">{{  form_widget(addForm.codePostal) }}</div>
     </td>
 
 
     <td>
-        <div class="form-row">{{  form_widget(form.valider, {'label': 'Ajouter'}) }}</div>
+        <div class="form-row">{{  form_widget(addForm.valider, {'label': 'Ajouter'}) }}</div>
     </td>
 
-    {{  form_end(form) }}
+    {{  form_end(addForm) }}
 </tr>

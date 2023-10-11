@@ -8,7 +8,9 @@
 
         <h1>Liste des sites</h1>
 
-        <input placeholder="Rechercher">
+        {{  form_start(searchForm) }}
+            <div class="form-row">{{  form_widget(searchForm.search) }}</div>
+        {{  form_end(searchForm) }}
 
         <table class="table">
             <thead>
@@ -26,10 +28,10 @@
                     <td>{{ site.nom }}</td>
                     <td>
                         <a href="{{ path('site_update', {'id': site.id}) }}">
-                            <button class="btn btn-primary">Modifier</button>
+                            <button class="btn btn-primary btn-sm">Modifier</button>
                         </a>
                         <a onclick="return confirm('Êtes-vous sûr de vouloir supprimer {{ site.nom }} ? Attention cette action est irréversible.')" href="{{ path('site_delete', {'id': site.id}) }}">
-                            <button class="btn btn-danger">Supprimer</button>
+                            <button class="btn btn-danger btn-sm">Supprimer</button>
                         </a>
                     </td>
                 </tr>

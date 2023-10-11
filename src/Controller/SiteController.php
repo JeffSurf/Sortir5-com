@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Site;
+use App\Form\SearchFormType;
 use App\Form\SiteType;
 use App\Repository\SiteRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -15,22 +16,32 @@ use Symfony\Component\Routing\Annotation\Route;
 class SiteController extends AbstractController {
     #[Route('/', name: '_list')]
     public function lister(Request $request, EntityManagerInterface $entityManager, SiteRepository $siteRepository): Response {
+        $sites = $siteRepository->findAll();
 
         //add
         $site = new Site();
-        $form = $this->createForm(SiteType::class, $site);
-        $form->handleRequest($request);
+        $addForm = $this->createForm(SiteType::class, $site);
+        $addForm->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($addForm->isSubmitted() && $addForm->isValid()) {
             $entityManager->persist($site);
             $entityManager->flush();
             $this->addFlash('success', 'Le site a été ajouté avec succès !');
-            return $this->redirectToRoute('site_list');
+        }
+
+        //filter
+        $searchForm = $this->createForm(SearchFormType::class);
+        $searchForm->handleRequest($request);
+        $searchValue = $searchForm->get('search')->getData();
+
+        if ($searchForm->isSubmitted() && $searchForm->isValid() && $searchValue != '') {
+            $sites = $siteRepository->filterByText($searchValue);
         }
 
         return $this->render('site/index.html.twig', [
-            'sites' => $siteRepository->findAll(),
-            'form' => $form
+            'sites' => $sites,
+            'searchForm' => $searchForm,
+            'addForm' => $addForm,
         ]);
     }
 

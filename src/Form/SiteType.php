@@ -16,7 +16,7 @@ class SiteType extends AbstractType
             ->add('nom', null, [
                 'required' => true
             ])
-            ->add('valider', SubmitType::class, ['attr' => ['class' => 'btn btn-primary']])
+            ->add('valider', SubmitType::class, ['attr' => ['class' => 'btn btn-primary btn-sm']])
         ;
     }
 
