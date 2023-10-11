@@ -4,9 +4,17 @@
 
 {% block body %}
 
-    <div class="container">
+    <div class="container admin-page">
 
         <h1>Liste des participants</h1>
+
+        <div>
+            <a href="{{ path('participant_add') }}">
+                <button>Ajouter manuellement un utilisateur</button>
+            </a>
+
+            <button>Ajouter des utilisateurs via un fichier CSV</button>
+        </div>
 
         <table class="table" >
             <thead>
@@ -19,10 +27,6 @@
                 <th scope="col">Rôle</th>
                 <th scope="col">Statut</th>
                 <th scope="col">Actions</th>
-                <th scope="col">
-                    <a href="{{ path('participant_add') }}">➕</a>
-                </th>
-
             </tr>
             </thead>
 
@@ -31,7 +35,9 @@
                 <tr>
                     <th scope="row">{{ participant.id }}</th>
                     <td>
-                        <img height="30" src="{{ asset('uploads/participants/' ~ participant.imageProfil) }}">
+                        {% if participant.imageProfil %}
+                            <img height="30" src="{{ asset('uploads/participants/' ~ participant.imageProfil) }}" alt="">
+                        {% endif %}
                         <span>{{ participant.pseudo }}</span>
                     </td>
                     <td>{{ participant.prenom }} {{ participant.nom | upper}}</td>
@@ -40,8 +46,12 @@
                     <td>{{ 'ROLE_ADMIN' in participant.roles ? 'Administrateur' : 'Utilisateur'}}</td>
                     <td>{{ participant.actif ? 'Actif' : 'Inactif' }}</td>
                     <td>
-                        <a href="{{ path('participant_update', {'id': participant.id}) }}">🖊️</a>
-                        <a onclick="return confirm('Êtes-vous sûr de vouloir supprimer {{ participant.prenom }} {{ participant.nom | upper }} ? Attention cette action est irréversible.')" href="{{ path('participant_delete', {'id': participant.id}) }}">🗑️</a>
+                        <a href="{{ path('participant_update', {'id': participant.id}) }}">
+                            <button class="btn btn-primary">Modifier</button>
+                        </a>
+                        <a onclick="return confirm('Êtes-vous sûr de vouloir supprimer {{ participant.prenom }} {{ participant.nom | upper }} ? Attention cette action est irréversible.')" href="{{ path('participant_delete', {'id': participant.id}) }}">
+                            <button class="btn btn-danger">Supprimer</button>
+                        ️</a>
                     </td>
                 </tr>
             {%  endfor %}

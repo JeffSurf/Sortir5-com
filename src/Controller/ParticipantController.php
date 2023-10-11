@@ -23,7 +23,7 @@ class ParticipantController extends AbstractController {
     }
 
     #[Route('/ajouter', name: '_add')]
-    #[Route('/modifier/{id}', name: '_update')]
+    #[Route('/modifier/{id}', name: '_update', requirements: ['id' => '\d+'])]
     public function edit(Request $request, EntityManagerInterface $entityManager,  ParticipantRepository $participantRepository, int $id = null ,
                          UploadService $uploadService, UserPasswordHasherInterface $userPasswordHasher): Response {
 
@@ -62,7 +62,7 @@ class ParticipantController extends AbstractController {
         ]);
     }
 
-    #[Route('/supprimer/{id}', name: '_delete')]
+    #[Route('/supprimer/{id}', name: '_delete', requirements: ['id' => '\d+'])]
     public function delete(EntityManagerInterface $entityManager, ParticipantRepository $participantRepository, int $id): Response {
 
         $participant = $participantRepository->find($id);

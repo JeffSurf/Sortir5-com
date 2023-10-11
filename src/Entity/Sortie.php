@@ -17,14 +17,14 @@ class Sortie
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 50)]
     private ?string $nom = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?DateTimeInterface $dateHeureDebut = null;
 
-    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
-    private ?DateTimeInterface $duree = null;
+    #[ORM\Column(nullable: true)]
+    private ?int $duree = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?DateTimeInterface $dateLimiteInscription = null;
@@ -89,16 +89,14 @@ class Sortie
         return $this;
     }
 
-    public function getDuree(): ?DateTimeInterface
+    public function getDuree(): ?int
     {
         return $this->duree;
     }
 
-    public function setDuree(DateTimeInterface $duree): static
+    public function setDuree(?int $duree): void
     {
         $this->duree = $duree;
-
-        return $this;
     }
 
     public function getDateLimiteInscription(): ?DateTimeInterface

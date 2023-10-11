@@ -1,0 +1,18 @@
+<tr>
+    {{  form_start(form) }}
+
+    <td>
+        <div class="form-row">{{  form_widget(form.nom) }}</div>
+    </td>
+
+    <td>
+        <div class="form-row">{{  form_widget(form.codePostal) }}</div>
+    </td>
+
+
+    <td>
+        <div class="form-row">{{  form_widget(form.valider, {'label': 'Ajouter'}) }}</div>
+    </td>
+
+    {{  form_end(form) }}
+</tr>

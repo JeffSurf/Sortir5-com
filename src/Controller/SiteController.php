@@ -14,35 +14,47 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/site', name: 'site')]
 class SiteController extends AbstractController {
     #[Route('/', name: '_list')]
-    public function lister(SiteRepository $siteRepository): Response {
-        return $this->render('site/index.html.twig', [
-            'sites' => $siteRepository->findAll(),
-        ]);
-    }
+    public function lister(Request $request, EntityManagerInterface $entityManager, SiteRepository $siteRepository): Response {
 
-    #[Route('/ajouter', name: '_add')]
-    #[Route('/modifier/{id}', name: '_update')]
-    public function edit(Request $request, EntityManagerInterface $entityManager,  SiteRepository $siteRepository, int $id = null): Response {
-
-        $site = $id == null ? new Site() : $siteRepository->find($id);
-        $msg = $site->getId() == null ? 'Le site a été ajouté avec succès !' : 'Le site a été modifié avec succès !';
+        //add
+        $site = new Site();
         $form = $this->createForm(SiteType::class, $site);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($site);
             $entityManager->flush();
-            $this->addFlash('success', $msg);
+            $this->addFlash('success', 'Le site a été ajouté avec succès !');
             return $this->redirectToRoute('site_list');
         }
 
-        return $this->render('site/edit.html.twig', [
-            'form' => $form,
-            'action' => $site->getId() == null ? 'Ajouter' : 'Modifier'
+        return $this->render('site/index.html.twig', [
+            'sites' => $siteRepository->findAll(),
+            'form' => $form
         ]);
     }
 
-    #[Route('/supprimer/{id}', name: '_delete')]
+    #[Route('/modifier/{id}', name: '_update', requirements: ['id' => '\d+'])]
+    public function update(Request $request, EntityManagerInterface $entityManager, SiteRepository $siteRepository, int $id = null): Response {
+
+        $site = $siteRepository->find($id);
+        $form = $this->createForm(SiteType::class, $site);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($site);
+            $entityManager->flush();
+            $this->addFlash('success', 'Le site a été modifié avec succès !');
+            return $this->redirectToRoute('site_list');
+        }
+
+        return $this->render('site/update.html.twig', [
+            'form' => $form,
+            'action' => 'Modifier'
+        ]);
+    }
+
+    #[Route('/supprimer/{id}', name: '_delete', requirements: ['id' => '\d+'])]
     public function delete(EntityManagerInterface $entityManager, SiteRepository $siteRepository, int $id): Response {
 
         $site = $siteRepository->find($id);

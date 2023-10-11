@@ -4,29 +4,35 @@
 
 {% block body %}
 
-    <div class="container">
+    <div class="container admin-page">
 
         <h1>Liste des villes</h1>
+
+        <input placeholder="Rechercher">
 
         <table class="table">
             <thead>
             <tr>
-                <th scope="col">Nom (Code postal)</th>
+                <th scope="col">Nom</th>
+                <th scope="col">Code postal</th>
                 <th scope="col">Actions</th>
-                <th scope="col">
-                    <a href="{{ path('ville_add') }}">➕</a>
-                </th>
 
             </tr>
             </thead>
 
             <tbody>
+            {{ include('ville/add.html.twig') }}
             {% for ville in villes %}
                 <tr>
-                    <td>{{ ville.nom }} ({{ ville.codepostal }})</td>
+                    <td>{{ ville.nom }}</td>
+                    <td>({{ ville.codepostal }})</td>
                     <td>
-                        <a href="{{ path('ville_update', {'id': ville.id}) }}">🖊️</a>
-                        <a onclick="return confirm('Êtes-vous sûr de vouloir supprimer {{ ville.nom }} ? Attention cette action est irréversible.')" href="{{ path('ville_delete', {'id': ville.id}) }}">🗑️</a>
+                        <a href="{{ path('ville_update', {'id': ville.id}) }}">
+                            <button class="btn btn-primary">Modifier</button>
+                        </a>
+                        <a onclick="return confirm('Êtes-vous sûr de vouloir supprimer {{ ville.nom }} ? Attention cette action est irréversible.')" href="{{ path('ville_delete', {'id': ville.id}) }}">
+                            <button class="btn btn-danger">Supprimer</button>
+                        </a>
                     </td>
                 </tr>
             {%  endfor %}

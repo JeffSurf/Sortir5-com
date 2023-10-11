@@ -4,29 +4,33 @@
 
 {% block body %}
 
-    <div class="container">
+    <div class="container admin-page">
 
         <h1>Liste des sites</h1>
+
+        <input placeholder="Rechercher">
 
         <table class="table">
             <thead>
             <tr>
                 <th scope="col">Nom</th>
                 <th scope="col">Actions</th>
-                <th scope="col">
-                    <a href="{{ path('site_add') }}">➕</a>
-                </th>
 
             </tr>
             </thead>
 
             <tbody>
+            {{ include('site/add.html.twig') }}
             {% for site in sites %}
                 <tr>
                     <td>{{ site.nom }}</td>
                     <td>
-                        <a href="{{ path('site_add', {'id': site.id}) }}">🖊️</a>
-                        <a onclick="return confirm('Êtes-vous sûr de vouloir supprimer {{ site.nom }} ? Attention cette action est irréversible.')" href="{{ path('site_delete', {'id': site.id}) }}">🗑️</a>
+                        <a href="{{ path('site_update', {'id': site.id}) }}">
+                            <button class="btn btn-primary">Modifier</button>
+                        </a>
+                        <a onclick="return confirm('Êtes-vous sûr de vouloir supprimer {{ site.nom }} ? Attention cette action est irréversible.')" href="{{ path('site_delete', {'id': site.id}) }}">
+                            <button class="btn btn-danger">Supprimer</button>
+                        </a>
                     </td>
                 </tr>
             {%  endfor %}

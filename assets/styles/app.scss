@@ -1,1 +1,9 @@
 @import "~bootstrap/scss/bootstrap";
+
+.admin-page {
+    table {
+        a {
+            text-decoration: none;
+        }
+    }
+}
