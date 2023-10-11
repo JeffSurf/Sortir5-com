@@ -12,6 +12,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 #[UniqueEntity(fields: ['email'], message: 'Il y a déjà un compte avec cet email')]
 #[UniqueEntity(fields: ['pseudo'], message: 'Il y a déjà un compte avec ce pseudo')]
 class Participant implements UserInterface, PasswordAuthenticatedUserInterface
@@ -69,7 +70,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\JoinColumn(nullable: false)]
     private ?Site $site = null;
 
-    #[ORM\OneToMany(mappedBy: 'organisateur', targetEntity: Sortie::class)]
+    #[ORM\OneToMany(mappedBy: 'organisateur', targetEntity: Sortie::class, orphanRemoval: true)]
     private Collection $sortiesOrganisateur;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -290,5 +291,13 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
         $this->sorties->removeElement($sortie);
 
         return $this;
+    }
+
+    #[ORM\PreRemove]
+    public function removeAllSorties() : void
+    {
+        foreach ($this->sorties as &$sortie)
+            $sortie->removeParticipant($this);
+        unset($sortie);
     }
 }
