@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/participant', name: 'participant')]
 class ParticipantController extends AbstractController {
-    #[Route('/', name: '_list')]
+    #[Route('', name: '_list')]
     public function lister(ParticipantRepository $participantRepository): Response {
         return $this->render('participant/index.html.twig', [
             'participants' => $participantRepository->findAll(),
