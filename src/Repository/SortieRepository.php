@@ -34,6 +34,7 @@ class SortieRepository extends ServiceEntityRepository
 
         return $result;
     }
+
     public function getSortieAfterOneMonth() : \Doctrine\ORM\QueryBuilder
     {
         return $this->createQueryBuilder('s')
