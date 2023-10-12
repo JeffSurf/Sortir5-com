@@ -35,10 +35,16 @@
                                     <p class="small text-muted mb-0">Adresse email</p>
                                     <p class="mb-1 h5">{{ user.email }}</p>
                                 </div>
-                                <div class="px-3">
-                                    <p class="small text-muted mb-0">Téléphone</p>
-                                    <p class="mb-1 h5">{{ user.telephone }}</p>
-                                </div>
+                                {% if app.user.telephone %}
+                                    <div class="px-3">
+                                        <p class="small text-muted mb-0">Téléphone</p>
+                                        <p class="mb-1 h5">{{ user.telephone }}</p>
+                                    </div>
+                                {% else %}
+                                    <div class="px-3">
+                                        <p class="small text-muted mb-0">Pas de téléphone</p>
+                                    </div>
+                                {% endif %}
                                 <div class="px-3">
                                     <p class="small text-muted mb-0">Sorties</p>
                                     <p class="mb-1 h5">{{ user.sorties.count }}</p>
