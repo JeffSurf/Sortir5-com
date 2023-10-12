@@ -67,6 +67,19 @@ class ParticipantRepository extends ServiceEntityRepository implements PasswordU
         ;
     }
 
+    public function filterByText($value): ?array {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.pseudo LIKE :val')
+            ->orWhere('p.email LIKE :val')
+            ->orWhere('p.prenom LIKE :val')
+            ->orWhere('p.nom LIKE :val')
+            ->orWhere('p.telephone LIKE :val')
+            ->setParameter('val', '%' . $value . '%')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
 //    /**
 //     * @return Participant[] Returns an array of Participant objects
 //     */

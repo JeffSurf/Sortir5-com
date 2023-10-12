@@ -3,7 +3,7 @@
 {% block title %}{{ action }} un lieu{% endblock %}
 
 {% block body %}
-    <div class="container">
+    <div class="container container-page admin-page">
         <h1>{{ action }} un lieu</h1>
         {{  form_start(form) }}
 
@@ -25,6 +25,11 @@
 
         <div class="form-row">
             {{  form_row(form.ville) }}
+        </div>
+
+        <div class="form-row d-flex flex-row gap-3">
+            <button class="btn btn-outline-primary"  type="submit">Valider</button>
+            <a class="btn btn-outline-danger" href="{{ path('app_admin_lieu_list') }}">Annuler</a>
         </div>
 
         {{  form_end(form) }}

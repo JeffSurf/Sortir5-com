@@ -3,7 +3,7 @@
 {% block title %}{{ action }} un participant{% endblock %}
 
 {% block body %}
-    <div class="container admin-page">
+    <div class="container container-page admin-page">
         <h1>{{ action }} un participant</h1>
         {{  form_start(form) }}
 
@@ -15,6 +15,7 @@
             {{  form_label(form.imageProfil) }}
             <img class="profile-pic" src="{{ asset('uploads/participants/' ~ participant.imageProfil) }}" alt="Photo de profil">
             {{  form_widget(form.imageProfil) }}
+            {{  form_row(form.rgpd) }}
         </div>
 
         <div class="form-row">
@@ -43,6 +44,11 @@
 
         <div class="form-row">
             {{  form_row(form.mdp) }}
+        </div>
+
+        <div class="form-row d-flex flex-row gap-3">
+            {{  form_widget(form.valider) }}
+            <a href="{{ path('app_admin_participant_list') }}">{{  form_widget(form.annuler) }}</a>
         </div>
 
         {{  form_end(form) }}

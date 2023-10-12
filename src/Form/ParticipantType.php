@@ -6,6 +6,7 @@ use App\Entity\Participant;
 use App\Entity\Site;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -43,6 +44,10 @@ class ParticipantType extends AbstractType
                     ])
                 ],
             ])
+            ->add('rgpd', CheckboxType::class, [
+                'label' => "Accepter que les utilisateurs puissent voir votre photo",
+                'required' => true
+            ])
             ->add('prenom', null, [
                 "required" => true
             ])
@@ -62,7 +67,7 @@ class ParticipantType extends AbstractType
             ])
             ->add('actif', CheckboxType::class, [
                 'label' => "L'utilisateur est actif",
-                'required' => false
+                'required' => true
             ])
             ->add('mdp', PasswordType::class, [
                 'mapped' => false,
@@ -76,7 +81,8 @@ class ParticipantType extends AbstractType
                     ])
                 ],
             ])
-            ->add('valider', SubmitType::class, ['attr' => ['class' => 'btn btn-primary']])
+            ->add('valider', SubmitType::class, ['attr' => ['class' => 'btn btn-outline-primary']])
+            ->add('annuler', ButtonType::class, ['attr' => ['class' => 'btn btn-outline-danger']])
         ;
         ;
     }

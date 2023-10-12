@@ -6,6 +6,7 @@ use App\Entity\Participant;
 use App\Entity\Site;
 use App\Form\ButtonType;
 use App\Form\ParticipantType;
+use App\Form\SearchFormType;
 use App\Repository\ParticipantRepository;
 use App\Repository\SiteRepository;
 use App\Service\UploadService;
@@ -22,9 +23,21 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 #[Route('/admin/participant', name: 'app_admin_participant')]
 class ParticipantController extends AbstractController {
     #[Route('', name: '_list')]
-    public function lister(ParticipantRepository $participantRepository): Response {
+    public function lister(Request $request, ParticipantRepository $participantRepository): Response {
+        $participants = $participantRepository->findAll();
+
+        //filter
+        $searchForm = $this->createForm(SearchFormType::class);
+        $searchForm->handleRequest($request);
+        $searchValue = $searchForm->get('search')->getData();
+
+        if ($searchForm->isSubmitted() && $searchForm->isValid() && $searchValue != '') {
+            $participants = $participantRepository->filterByText($searchValue);
+        }
+
         return $this->render('admin/participant/index.html.twig', [
-            'participants' => $participantRepository->findAll(),
+            'participants' => $participants,
+            'searchForm' => $searchForm
         ]);
     }
 

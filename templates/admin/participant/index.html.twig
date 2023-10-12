@@ -9,18 +9,30 @@
 
 {% block body %}
 
-    <div class="container admin-page">
+    <div class="container container-page admin-page">
 
         <h1>Liste des participants</h1>
 
-        <div>
-            <a class="btn btn-outline-secondary" href="{{ path('app_admin_participant_add') }}">
-                Ajouter manuellement un utilisateur
-            </a>
 
-            <button id="btn-csv" class="btn btn-outline-secondary">Ajouter des utilisateurs via un fichier CSV</button>
-            <input id="input-csv" name="file-csv" type="file" accept="text/csv" hidden/>
+
+
+        <div class="row">
+            <div class="col-4">
+                {{  form_start(searchForm) }}
+                    {{  form_widget(searchForm.search) }}
+                {{  form_end(searchForm) }}
+            </div>
+            <div class="btn-grp col-8">
+                <a class="btn btn-outline-secondary" href="{{ path('app_admin_participant_add') }}">
+                    Ajouter manuellement un utilisateur
+                </a>
+
+                <button id="btn-csv" class="btn btn-outline-secondary">Ajouter des utilisateurs via un fichier CSV</button>
+                <input id="input-csv" name="file-csv" type="file" accept="text/csv" hidden/>
+            </div>
         </div>
+
+
 
         <table class="table" >
             <thead>

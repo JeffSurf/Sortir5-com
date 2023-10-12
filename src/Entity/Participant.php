@@ -74,6 +74,9 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Sortie::class, inversedBy: 'participants')]
     private Collection $sorties;
 
+    #[ORM\Column]
+    private ?bool $rgpd = false;
+
     public function __construct()
     {
         $this->sortiesOrganisateur = new ArrayCollection();
@@ -294,5 +297,17 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
         foreach ($this->sorties as &$sortie)
             $sortie->removeParticipant($this);
         unset($sortie);
+    }
+
+    public function isRgpd(): ?bool
+    {
+        return $this->rgpd;
+    }
+
+    public function setRgpd(bool $rgpd): static
+    {
+        $this->rgpd = $rgpd;
+
+        return $this;
     }
 }

@@ -4,12 +4,14 @@
 
 {% block body %}
 
-    <div class="container admin-page">
+    <div class="container container-page admin-page">
 
         <h1>Liste des sites</h1>
 
         {{  form_start(searchForm) }}
-            <div class="form-row">{{  form_widget(searchForm.search) }}</div>
+        <div class="form-row">
+            <div class="col-4">{{  form_widget(searchForm.search) }}</div>
+        </div>
         {{  form_end(searchForm) }}
 
         <table class="table">

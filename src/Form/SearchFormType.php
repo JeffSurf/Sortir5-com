@@ -13,9 +13,9 @@ class SearchFormType extends AbstractType
     {
         $builder
             ->add('search', null, [
-                'label' => 'Rechercher',
+                'label' => 'Filtre',
                 'required' => false,
-                'attr' => ['placeholder' => 'Rechercher']
+                'attr' => ['placeholder' => 'Rechercher par mot-clé']
             ])
         ;
     }
