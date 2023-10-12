@@ -16,7 +16,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     name: 'app:sortie:cleanup',
     description: "Supprimer les sorties qui sont terminées depuis plus d'un mois",
 )]
-#[AsCronJob('*/5 * * * *')]
 class SortieCleanupCommand extends Command
 {
     private SortieRepository $sortieRepository;
