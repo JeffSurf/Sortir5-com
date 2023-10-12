@@ -10,6 +10,12 @@
             vertical-align: middle;
         }
     }
+
+    .participant-img {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
 }
 
 nav {

@@ -62,15 +62,18 @@
 
         <div class="row">
             <div class="col-6">
-                {{ form_row(profilForm.image) }}
+                {{ form_row(
+                    profilForm.image,
+                    {'label': user.imageProfil == 'default_profile_picture.png' ? 'Ajouter une' : 'Modifier votre' ~ ' image de profil'}
+                ) }}
             </div>
             <div class="col-2">
-                <img style="height: 100px;" src="{{ asset('uploads/participants/' ~ app.user.imageProfil) }}" alt="Photo de profil">
+                <img style="height: 100px;" src="{{ asset('uploads/participants/' ~ user.imageProfil) }}" alt="Photo de profil">
             </div>
         </div>
 
         <button type="submit" class="btn btn-outline-primary">Soumettre</button>
-        <a class="btn btn-link" href="{{ path('app_profil_edit_password') }}">Modifier votre mot de passe ?</a>
+        <a class="btn btn-link" href="{{ path('app_profil_edit_password', {'pseudo': user.pseudo}) }}">Modifier votre mot de passe ?</a>
 
         {{ form_end(profilForm) }}
     </div>

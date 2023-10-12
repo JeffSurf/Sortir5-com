@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Participant;
 use App\Entity\Site;
+use App\Form\ButtonType;
 use App\Form\ParticipantType;
 use App\Repository\ParticipantRepository;
 use App\Repository\SiteRepository;
@@ -39,15 +40,13 @@ class ParticipantController extends AbstractController {
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            /** @var Participant $user */
-            $user = $this->getUser();
             $file = $form->get('imageProfil')->getData();
 
             if ($file) {
                 $newFilename = $uploadService->uploadFile($file, $this->getParameter('uploads_participants_directory'));
 
                 if ($file != 'default_profile_picture.png') {
-                    $uploadService->delete($user->getImageProfil(), $this->getParameter('uploads_participants_directory'));
+                    $uploadService->delete($participant->getImageProfil(), $this->getParameter('uploads_participants_directory'));
                 }
 
                 $participant->setImageProfil($newFilename);
@@ -70,6 +69,7 @@ class ParticipantController extends AbstractController {
 
         return $this->render('participant/edit.html.twig', [
             'form' => $form,
+            'participant' => $participant,
             'action' => $participant->getId() == null ? 'Ajouter' : 'Modifier'
         ]);
     }

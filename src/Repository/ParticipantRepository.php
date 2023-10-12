@@ -58,6 +58,15 @@ class ParticipantRepository extends ServiceEntityRepository implements PasswordU
             ->getOneOrNullResult();
     }
 
+    public function findByPseudo($value): ?Participant {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.pseudo = :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getOneOrNullResult();
+        ;
+    }
+
 //    /**
 //     * @return Participant[] Returns an array of Participant objects
 //     */

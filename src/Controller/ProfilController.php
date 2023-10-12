@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Participant;
+use App\Form\ButtonType;
 use App\Form\PasswordFormType;
 use App\Form\ProfilFormType;
+use App\Repository\ParticipantRepository;
 use App\Service\UploadService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,25 +23,31 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_USER')]
 class ProfilController extends AbstractController
 {
-    #[Route('', name: 'voir')]
-    public function index(): Response
-    {
-        return $this->render('profil/index.html.twig');
+    #[Route('/{pseudo}', name: 'voir')]
+    public function index(ParticipantRepository $participantRepository, string $pseudo): Response {
+        $user = $participantRepository->findByPseudo($pseudo);
+
+        if ($user == null) {
+            return $this->render('error/404.html.twig');
+        }
+
+        return $this->render('profil/index.html.twig',[
+            'user' => $user
+        ]);
     }
 
-    #[Route('/edit', name: 'editer')]
-    public function edit(Request $request,  UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $em, UploadService $fileUploader): \Symfony\Component\HttpFoundation\RedirectResponse|Response
+    #[Route('/edit/{pseudo}', name: 'editer')]
+    public function edit(Request $request, ParticipantRepository $participantRepository, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $em, UploadService $fileUploader,  string $pseudo): \Symfony\Component\HttpFoundation\RedirectResponse|Response
     {
-        $dataUser = $this->getUser();
+        $dataUser = $participantRepository->findByPseudo($pseudo);
 
         $form = $this->createForm(ProfilFormType::class, $dataUser);
-
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid())
         {
             /** @var Participant $user */
-            $user = $this->getUser();
+            $user = $participantRepository->findByPseudo($pseudo);
             if(!$userPasswordHasher->isPasswordValid($user, $form->get('plainPassword')->getData()))
             {
                 $form->get("plainPassword")->addError(new FormError( "Le mot de passe n'est pas correct"));
@@ -67,7 +75,9 @@ class ProfilController extends AbstractController
                 {
                     $imageFilename = $fileUploader->uploadFile($imageFile, $this->getParameter('uploads_participants_directory'));
 
-                    $fileUploader->delete($user->getImageProfil(), $this->getParameter('uploads_participants_directory'));
+                    if ($imageFile != 'default_profile_picture.png') {
+                        $fileUploader->delete($user->getImageProfil(), $this->getParameter('uploads_participants_directory'));
+                    }
 
                     $user->setImageProfil($imageFilename);
                 }
@@ -80,17 +90,20 @@ class ProfilController extends AbstractController
                 $em->flush();
 
                 $this->addFlash("success", "Votre profil a bien été modifié !");
-                return $this->redirectToRoute("app_profil_voir");
+                return $this->redirectToRoute("app_profil_voir", ['pseudo' => $user->getPseudo()]);
             }
         }
 
         return $this->render('profil/edit.html.twig', [
-            "profilForm" => $form
+            "profilForm" => $form,
+            'user' => $dataUser
         ]);
     }
 
-    #[Route('/edit/password', name: 'edit_password')]
-    public function editPassword(Request $request,  UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $em): Response {
+    #[Route('/edit/password/{pseudo}', name: 'edit_password')]
+    public function editPassword(Request $request, ParticipantRepository $participantRepository, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $em, string $pseudo): Response {
+
+        $dataUser = $participantRepository->findByPseudo($pseudo);
         $form = $this->createForm(PasswordFormType::class);
 
         $form->handleRequest($request);
@@ -98,7 +111,7 @@ class ProfilController extends AbstractController
         if($form->isSubmitted() && $form->isValid())
         {
             /** @var Participant $user */
-            $user = $this->getUser();
+            $user = $participantRepository->findByPseudo($pseudo);
 
             if(!$userPasswordHasher->isPasswordValid($user, $form->get('oldPassword')->getData()))
             {
@@ -116,12 +129,13 @@ class ProfilController extends AbstractController
                 $em->flush();
 
                 $this->addFlash("success", "Votre mot de passe a bien été modifié !");
-                return $this->redirectToRoute("app_profil_voir");
+                return $this->redirectToRoute("app_profil_voir", ['pseudo' => $user->getPseudo()]);
             }
         }
 
         return $this->render('profil/password.html.twig', [
-            "form" => $form
+            "form" => $form,
+            'user' => $dataUser
         ]);
     }
 }

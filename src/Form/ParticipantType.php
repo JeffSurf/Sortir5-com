@@ -76,7 +76,7 @@ class ParticipantType extends AbstractType
                     ])
                 ],
             ])
-            ->add('valider', SubmitType::class, ['attr' => ['class' => 'btn btn-primary btn-sm']])
+            ->add('valider', SubmitType::class, ['attr' => ['class' => 'btn btn-primary']])
         ;
         ;
     }

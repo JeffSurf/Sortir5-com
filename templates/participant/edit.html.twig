@@ -3,7 +3,7 @@
 {% block title %}{{ action }} un participant{% endblock %}
 
 {% block body %}
-    <div class="container">
+    <div class="container admin-page">
         <h1>{{ action }} un participant</h1>
         {{  form_start(form) }}
 
@@ -11,8 +11,10 @@
             {{  form_row(form.pseudo) }}
         </div>
 
-        <div class="form-row">
-            {{  form_row(form.imageProfil) }}
+        <div class="form-row participant-img">
+            {{  form_label(form.imageProfil) }}
+            <img style="height: 100px;" src="{{ asset('uploads/participants/' ~ participant.imageProfil) }}" alt="Photo de profil">
+            {{  form_widget(form.imageProfil) }}
         </div>
 
         <div class="form-row">

@@ -21,7 +21,6 @@
         "build": "encore production --progress"
     },
     "dependencies": {
-        "jquery": "^3.7.1",
-        "xlsx": "^0.18.5"
+        "jquery": "^3.7.1"
     }
 }
