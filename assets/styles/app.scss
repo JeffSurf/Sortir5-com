@@ -18,6 +18,19 @@
     }
 }
 
+.profile-pic {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+}
+
+.w-fit-content {
+    width: fit-content;
+}
+.h-fit-content {
+    height: fit-content;
+}
+
 nav {
 
     &.navbar-admin {
