@@ -56,6 +56,7 @@ class RegistrationFormType extends AbstractType
             ])
             ->add('image', FileType::class, [
                 "label" => "Image de profil",
+                "attr" => ["class" => "image-file"],
                 "mapped" => false,
                 "required" => false,
                 "help" => "Taille maxi (2MB)",
