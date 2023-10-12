@@ -34,6 +34,20 @@ class SortieRepository extends ServiceEntityRepository
 
         return $result;
     }
+
+    public function findByFilters($nom, $etat): ?array {
+        $qb = $this->createQueryBuilder('s');
+        if ($nom !== null){
+            $qb->andWhere('s.nom LIKE :nom')
+                ->setParameter('nom', '%'.$nom.'%');
+        } elseif ($etat !== null) {
+            $qb->andWhere('s.etat = :etat')
+                ->setParameter('etat', $etat);
+        }
+        $result = $qb->getQuery()->getResult();
+
+        return $result;
+    }
     public function getSortieAfterOneMonth() : \Doctrine\ORM\QueryBuilder
     {
         return $this->createQueryBuilder('s')
