@@ -74,7 +74,7 @@
                         {{ form_row(profilForm.plainPassword) }}
                     </div>
                     <div class="col-4">
-                        <a class="btn btn-link" href="{{ path('app_profil_edit_password') }}">Modifier votre mot de passe ?</a>
+                        <a class="btn btn-link" href="{{ path('app_profil_edit_password',{'pseudo' : app.user.pseudo}) }}">Modifier votre mot de passe ?</a>
                     </div>
                 </div>
 
@@ -87,7 +87,7 @@
                 <div class="row">
                     <div class="col-4">
                         <button type="submit" class="btn btn-outline-primary">Soumettre</button>
-                        <a href="{{ path('app_profil_voir') }}" class="btn btn-outline-secondary">Annuler</a>
+                        <a href="{{ path('app_profil_voir', {"pseudo" : app.user.pseudo}) }}" class="btn btn-outline-secondary">Annuler</a>
                     </div>
                 </div>
 
