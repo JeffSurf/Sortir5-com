@@ -2,6 +2,8 @@
 
 {% block title %}Editer le profil{% endblock %}
 
+{% block javascripts %} {{ encore_entry_script_tags('participant') }} {% endblock %}
+
 {% block body %}
 
     <div class="container">
@@ -11,68 +13,92 @@
 
         {{ form_errors(profilForm) }}
 
-
         <div class="row">
-            <div class="col-4">
-                <div class="mb-3">
-                    <label class="form-label" for="nom-profil">Nom</label>
-                    <input
-                            id="nom-profil"
-                            name="{{ field_name(profilForm.nom) }}"
-                            value="{{ field_value(profilForm.nom) }}"
-                            placeholder="{{ field_label(profilForm.nom) }}"
-                            class="form-control"
-                            {{ not is_granted("ROLE_ADMIN") ? "readonly" : "" }}
-                    />
-                </div>
-            </div>
-
-            <div class="col-4">
-                <div class="mb-3">
-                    <label class="form-label" for="prenom-profil">Prenom</label>
-                    <input
-                            id="prenom-profil"
-                            name="{{ field_name(profilForm.prenom) }}"
-                            value="{{ field_value(profilForm.prenom) }}"
-                            placeholder="{{ field_label(profilForm.prenom) }}"
-                            class="form-control"
-                            {{ not is_granted("ROLE_ADMIN") ? "readonly" : "" }}
-                    />
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-4">
-                {{ form_row(profilForm.pseudo) }}
-            </div>
-
-            <div class="col-4">
-                {{ form_row(profilForm.telephone) }}
-            </div>
-
-            <div class="col-4">
-                {{ form_row(profilForm.email) }}
-            </div>
-
-            <div class="col-4">
-                {{ form_row(profilForm.plainPassword) }}
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-6">
-                {{ form_row(profilForm.image) }}
-            </div>
             <div class="col-2">
-                <img style="height: 100px;" src="{{ asset('uploads/participants/' ~ app.user.imageProfil) }}" alt="Photo de profil">
+                <img id="preview" style="height: 100px;" src="{{ asset('uploads/participants/' ~ app.user.imageProfil) }}" alt="Photo de profil">
+            </div>
+            <div class="col-10">
+                <div class="row">
+                    <div class="col-4">
+                        <div class="mb-3">
+                            <label class="form-label" for="nom-profil">Nom*</label>
+                            <input
+                                    id="nom-profil"
+                                    name="{{ field_name(profilForm.nom) }}"
+                                    value="{{ field_value(profilForm.nom) }}"
+                                    placeholder="{{ field_label(profilForm.nom) }}"
+                                    class="form-control"
+                                    {{ not is_granted("ROLE_ADMIN") ? "readonly" : "" }}
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-4">
+                        <div class="mb-3">
+                            <label class="form-label" for="prenom-profil">Prenom*</label>
+                            <input
+                                    id="prenom-profil"
+                                    name="{{ field_name(profilForm.prenom) }}"
+                                    value="{{ field_value(profilForm.prenom) }}"
+                                    placeholder="{{ field_label(profilForm.prenom) }}"
+                                    class="form-control"
+                                    {{ not is_granted("ROLE_ADMIN") ? "readonly" : "" }}
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-4">
+                        {{ form_row(profilForm.pseudo) }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-4">
+                        {{ form_row(profilForm.telephone) }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-4">
+                        {{ form_row(profilForm.email) }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-4">
+                        {{ form_row(profilForm.plainPassword) }}
+                    </div>
+                    <div class="col-4">
+                        <a class="btn btn-link" href="{{ path('app_profil_edit_password') }}">Modifier votre mot de passe ?</a>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-4">
+                        {{ form_row(profilForm.image) }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-4">
+                        <button type="submit" class="btn btn-outline-primary">Soumettre</button>
+                        <a href="{{ path('app_profil_voir') }}" class="btn btn-outline-secondary">Annuler</a>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-4">
+
+                    </div>
+                </div>
+
+                {{ form_end(profilForm) }}
             </div>
         </div>
-
-        <button type="submit" class="btn btn-outline-primary">Soumettre</button>
-        <a class="btn btn-link" href="{{ path('app_profil_edit_password') }}">Modifier votre mot de passe ?</a>
-
-        {{ form_end(profilForm) }}
     </div>
 
 {% endblock %}
