@@ -8,6 +8,7 @@ use App\Form\LieuType;
 use App\Repository\LieuRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -24,10 +25,18 @@ class LieuController extends AbstractController {
         $addForm->handleRequest($request);
 
         if ($addForm->isSubmitted() && $addForm->isValid()) {
-            $entityManager->persist($lieu);
-            $entityManager->flush();
-            $this->addFlash('success', 'La lieu a été ajouté avec succès !');
-            return $this->redirectToRoute('app_admin_lieu_list');
+
+            if(!$lieu->getVille())
+            {
+                $addForm->get("ville")->addError(new FormError("Ville obligatoire"));
+            }
+            else
+            {
+                $entityManager->persist($lieu);
+                $entityManager->flush();
+                $this->addFlash('success', 'La lieu a été ajouté avec succès !');
+                return $this->redirectToRoute('app_admin_lieu_list');
+            }
         }
 
         //filter
