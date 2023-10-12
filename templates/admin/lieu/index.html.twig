@@ -1,0 +1,51 @@
+{% extends '/admin/base.html.twig' %}
+
+{% block title %}Lieux{% endblock %}
+
+{% block body %}
+
+    <div class="container admin-page">
+
+        <h1>Liste des lieux</h1>
+
+        {{  form_start(searchForm) }}
+            <div class="form-row">{{  form_widget(searchForm.search) }}</div>
+        {{  form_end(searchForm) }}
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Nom</th>
+                <th scope="col">Adresse</th>
+                <th scope="col">Latitude</th>
+                <th scope="col">Longitude</th>
+                <th scope="col">Ville</th>
+                <th scope="col">Actions</th>
+
+            </tr>
+            </thead>
+
+            <tbody>
+            {{ include('/admin/lieu/add.html.twig') }}
+            {% for lieu in lieux %}
+                <tr>
+                    <td>{{ lieu.nom }}</td>
+                    <td>{{ lieu.adresse }}</td>
+                    <td>{{ lieu.latitude }}</td>
+                    <td>{{ lieu.longitude }}</td>
+                    <td>{{ lieu.ville.nom }}</td>
+                    <td>
+                        <a href="{{ path('app_admin_lieu_update', {'id': lieu.id}) }}">
+                            <button class="btn btn-primary btn-sm">Modifier</button>
+                        </a>
+                        <a onclick="return confirm('Êtes-vous sûr de vouloir supprimer {{ lieu.nom }} ? Attention cette action est irréversible.')" href="{{ path('app_admin_lieu_delete', {'id': lieu.id}) }}">
+                            <button class="btn btn-danger btn-sm">Supprimer</button>
+                        </a>
+                    </td>
+                </tr>
+            {%  endfor %}
+            </tbody>
+        </table>
+
+    </div>
+{% endblock %}

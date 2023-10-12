@@ -66,20 +66,16 @@ class ProfilController extends AbstractController
                         ->setEmail($dataUser->getEmail());
                 }
 
-                /**
-                 * @var UploadedFile $imageFile
-                 */
-                $imageFile = $form->get('image')->getData();
+                $inputIMG = $form->get('image')->getData();
 
-                if($imageFile)
-                {
-                    $imageFilename = $fileUploader->uploadFile($imageFile, $this->getParameter('uploads_participants_directory'));
-
-                    if ($imageFile != 'default_profile_picture.png') {
-                        $fileUploader->delete($user->getImageProfil(), $this->getParameter('uploads_participants_directory'));
+                if($inputIMG) {
+                    $currentIMGName = $user->getImageProfil();
+                    if ($currentIMGName != 'default_profile_picture.png') {
+                        $fileUploader->delete($currentIMGName, $this->getParameter('uploads_participants_directory'));
                     }
 
-                    $user->setImageProfil($imageFilename);
+                    $newIMGName = $fileUploader->uploadFile($inputIMG, $this->getParameter('uploads_participants_directory'));
+                    $user->setImageProfil($newIMGName);
                 }
                 else
                 {

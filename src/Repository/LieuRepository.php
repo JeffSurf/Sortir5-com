@@ -21,6 +21,18 @@ class LieuRepository extends ServiceEntityRepository
         parent::__construct($registry, Lieu::class);
     }
 
+    public function filterByText($value): ?array {
+        return $this->createQueryBuilder('l')
+            ->join('l.ville', 'v')
+            ->andWhere('l.nom LIKE :val')
+            ->orWhere('l.adresse LIKE :val')
+            ->orWhere('v.nom LIKE :val')
+            ->setParameter('val', '%' . $value . '%')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
 //    /**
 //     * @return Lieu[] Returns an array of Lieu objects
 //     */

@@ -1,4 +1,4 @@
-{% extends '/base.html.twig' %}
+{% extends '/admin/base.html.twig' %}
 
 {% block title %}{{ action }} un site{% endblock %}
 
@@ -9,10 +9,6 @@
 
         <div class="form-row">
             {{  form_row(form.nom) }}
-        </div>
-
-        <div class="form-row">
-            {{  form_row(form.codePostal) }}
         </div>
 
         {{  form_end(form) }}

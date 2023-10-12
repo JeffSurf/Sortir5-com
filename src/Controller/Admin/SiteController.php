@@ -27,6 +27,7 @@ class SiteController extends AbstractController {
             $entityManager->persist($site);
             $entityManager->flush();
             $this->addFlash('success', 'Le site a été ajouté avec succès !');
+            return $this->redirectToRoute('app_admin_site_list');
         }
 
         //filter
@@ -38,7 +39,7 @@ class SiteController extends AbstractController {
             $sites = $siteRepository->filterByText($searchValue);
         }
 
-        return $this->render('site/index.html.twig', [
+        return $this->render('admin/site/index.html.twig', [
             'sites' => $sites,
             'searchForm' => $searchForm,
             'addForm' => $addForm,
@@ -56,10 +57,10 @@ class SiteController extends AbstractController {
             $entityManager->persist($site);
             $entityManager->flush();
             $this->addFlash('success', 'Le site a été modifié avec succès !');
-            return $this->redirectToRoute('site_list');
+            return $this->redirectToRoute('app_admin_site_list');
         }
 
-        return $this->render('site/update.html.twig', [
+        return $this->render('admin/site/update.html.twig', [
             'form' => $form,
             'action' => 'Modifier'
         ]);
@@ -79,6 +80,6 @@ class SiteController extends AbstractController {
             $this->addFlash('success', 'Le site a été supprimé avec succès !');
         }
 
-        return $this->redirectToRoute('site_list');
+        return $this->redirectToRoute('app_admin_site_list');
     }
 }

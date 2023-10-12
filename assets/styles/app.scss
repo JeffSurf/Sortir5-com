@@ -19,8 +19,18 @@
 }
 
 nav {
+
+    &.navbar-admin {
+        background-color: var(--bs-primary) !important;
+        color: white;
+        .nav-link {
+            color: white !important;
+        }
+    }
+
     .img-profile {
         height: 30px;
         width: 30px;
     }
+
 }

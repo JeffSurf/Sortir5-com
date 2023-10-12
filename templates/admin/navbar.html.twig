@@ -1,0 +1,67 @@
+<!-- Navbar -->
+<nav class="navbar navbar-admin navbar-expand-lg navbar-light bg-light">
+    <!-- Container wrapper -->
+    <div class="container">
+        <!-- Navbar brand -->
+        <a class="navbar-brand me-4" href={{ path('app_home') }}>
+            <img
+                    height="50px"
+                    alt="Sortir Logo"
+                    loading="lazy"
+                    style="margin-top: -1px;"
+                    src="{{ asset('images/whitelogo.png') }}"
+            />
+        </a>
+
+        {% if app.user %}
+            <!-- Collapsible wrapper -->
+            <div class="collapse navbar-collapse" id="navbarButtonsExample">
+                {% if is_granted("ROLE_ADMIN") %}
+                    <div class="d-flex align-items-center me-2">
+                        <div class="nav-item dropdown d-flex">
+                            <a class="nav-link dropdown-toggle d-flex align-items-center no-arrow" href="#" id="navbarDropdownMenuLink"
+                               role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Administration</span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="navbarDropdownMenuLink">
+                                <li><a class="dropdown-item" href="{{ path('app_admin_participant_list') }}">Participants</a></li>
+                                <li><a class="dropdown-item" href="{{ path('app_admin_ville_list') }}">Villes</a></li>
+                                <li><a class="dropdown-item" href="{{ path('app_admin_site_list') }}">Sites</a></li>
+                                <li><a class="dropdown-item" href="{{ path('app_admin_lieu_list') }}">Lieux</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                {% endif %}
+                <!-- Left links -->
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href={{ path('app_home') }}>Sorties</a></li>
+                </ul>
+                <!-- Left links -->
+
+
+                <div class="d-flex align-items-center">
+                    <div class="nav-item dropdown d-flex">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center no-arrow" href="#" id="navbarDropdownMenuLink"
+                           role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ app.user.pseudo }}</span>
+                            <img src="{{ asset('uploads/participants/' ~ app.user.imageProfil) }}" class="img-profile rounded-circle ms-1"
+                                 alt="Avatar" loading="lazy" height="70em" width="70em" />
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="navbarDropdownMenuLink">
+
+                        {% if is_granted("ROLE_USER") %}
+                            <li><a class="dropdown-item" href="{{ path('app_profil_voir', {'pseudo': app.user.pseudo}) }}">Profil</a></li>
+                            <li><a class="dropdown-item" href="#">Mes sorties</a></li>
+                            <li class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ path('app_logout') }}">Se déconnecter</a></li>
+                        {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        <!-- Collapsible wrapper -->
+    </div>
+    <!-- Container wrapper -->
+</nav>
+<!-- Navbar -->

@@ -27,7 +27,7 @@ class VilleController extends AbstractController {
             $entityManager->persist($ville);
             $entityManager->flush();
             $this->addFlash('success', 'La ville a été ajoutée avec succès !');
-            return $this->redirectToRoute('ville_list');
+            return $this->redirectToRoute('app_admin_ville_list');
         }
 
         //filter
@@ -39,7 +39,7 @@ class VilleController extends AbstractController {
             $villes = $villeRepository->filterByText($searchValue);
         }
 
-        return $this->render('ville/index.html.twig', [
+        return $this->render('admin/ville/index.html.twig', [
             'villes' => $villes,
             'searchForm' => $searchForm,
             'addForm' => $addForm,
@@ -57,10 +57,10 @@ class VilleController extends AbstractController {
             $entityManager->persist($ville);
             $entityManager->flush();
             $this->addFlash('success', 'La ville a été modifiée avec succès !');
-            return $this->redirectToRoute('ville_list');
+            return $this->redirectToRoute('app_admin_ville_list');
         }
 
-        return $this->render('ville/update.html.twig', [
+        return $this->render('admin/ville/update.html.twig', [
             'form' => $form,
             'action' => 'Modifier'
         ]);
@@ -80,6 +80,6 @@ class VilleController extends AbstractController {
             $this->addFlash('success', 'La ville a été supprimée avec succès !');
         }
 
-        return $this->redirectToRoute('ville_list');
+        return $this->redirectToRoute('app_admin_ville_list');
     }
 }

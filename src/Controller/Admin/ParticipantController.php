@@ -23,7 +23,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class ParticipantController extends AbstractController {
     #[Route('', name: '_list')]
     public function lister(ParticipantRepository $participantRepository): Response {
-        return $this->render('participant/index.html.twig', [
+        return $this->render('admin/participant/index.html.twig', [
             'participants' => $participantRepository->findAll(),
         ]);
     }
@@ -40,19 +40,21 @@ class ParticipantController extends AbstractController {
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $file = $form->get('imageProfil')->getData();
+            //Ajouter ou modifier image de profil
+            $inputIMG = $form->get('imageProfil')->getData();
 
-            if ($file) {
-                $newFilename = $uploadService->uploadFile($file, $this->getParameter('uploads_participants_directory'));
-
-                if ($file != 'default_profile_picture.png') {
-                    $uploadService->delete($participant->getImageProfil(), $this->getParameter('uploads_participants_directory'));
+            if ($inputIMG) {
+                $currentIMGName = $participant->getImageProfil();
+                if ($currentIMGName != 'default_profile_picture.png') { //On supprime l'ancienne du dossier uploads (sauf si c'est celle par défaut)
+                    $uploadService->delete($currentIMGName, $this->getParameter('uploads_participants_directory'));
                 }
 
-                $participant->setImageProfil($newFilename);
+                $newIMGName = $uploadService->uploadFile($inputIMG, $this->getParameter('uploads_participants_directory'));
+                $participant->setImageProfil($newIMGName);
             }
 
-            if ($form->get('mdp')->getData() != null) {
+            //Mot de passe (si vide on ne le modifie pas)
+            if ($form->get('mdp')->getData() != null || $form->get('mdp')->getData() != '' ) {
                 $participant->setPassword(
                     $userPasswordHasher->hashPassword(
                         $participant,
@@ -67,7 +69,7 @@ class ParticipantController extends AbstractController {
             return $this->redirectToRoute('app_admin_participant_list');
         }
 
-        return $this->render('participant/edit.html.twig', [
+        return $this->render('admin/participant/edit.html.twig', [
             'form' => $form,
             'participant' => $participant,
             'action' => $participant->getId() == null ? 'Ajouter' : 'Modifier'

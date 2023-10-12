@@ -1,12 +1,12 @@
-{% extends 'base.html.twig' %}
+{% extends '/admin/base.html.twig' %}
 
-{% block title %}Villes{% endblock %}
+{% block title %}Sites{% endblock %}
 
 {% block body %}
 
     <div class="container admin-page">
 
-        <h1>Liste des villes</h1>
+        <h1>Liste des sites</h1>
 
         {{  form_start(searchForm) }}
             <div class="form-row">{{  form_widget(searchForm.search) }}</div>
@@ -16,23 +16,21 @@
             <thead>
             <tr>
                 <th scope="col">Nom</th>
-                <th scope="col">Code postal</th>
                 <th scope="col">Actions</th>
 
             </tr>
             </thead>
 
             <tbody>
-            {{ include('ville/add.html.twig') }}
-            {% for ville in villes %}
+            {{ include('/admin/site/add.html.twig') }}
+            {% for site in sites %}
                 <tr>
-                    <td>{{ ville.nom }}</td>
-                    <td>({{ ville.codepostal }})</td>
+                    <td>{{ site.nom }}</td>
                     <td>
-                        <a href="{{ path('app_admin_ville_update', {'id': ville.id}) }}">
+                        <a href="{{ path('app_admin_site_update', {'id': site.id}) }}">
                             <button class="btn btn-primary btn-sm">Modifier</button>
                         </a>
-                        <a onclick="return confirm('Êtes-vous sûr de vouloir supprimer {{ ville.nom }} ? Attention cette action est irréversible.')" href="{{ path('app_admin_ville_delete', {'id': ville.id}) }}">
+                        <a onclick="return confirm('Êtes-vous sûr de vouloir supprimer {{ site.nom }} ? Attention cette action est irréversible.')" href="{{ path('app_admin_site_delete', {'id': site.id}) }}">
                             <button class="btn btn-danger btn-sm">Supprimer</button>
                         </a>
                     </td>
