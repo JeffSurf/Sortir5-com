@@ -1,5 +1,5 @@
 <!-- Navbar -->
-<nav class="navbar navbar-admin navbar-expand-lg navbar-light bg-light">
+<nav class="navbar {{ app.current_route starts with 'app_admin' ? "navbar-admin" : "" }} navbar-expand-lg navbar-light bg-light">
     <!-- Container wrapper -->
     <div class="container">
         <!-- Navbar brand -->
@@ -9,7 +9,7 @@
                     alt="Sortir Logo"
                     loading="lazy"
                     style="margin-top: -1px;"
-                    src="{{ asset('images/whitelogo.png') }}"
+                    src="{{ app.current_route starts with 'app_admin' ? asset('images/whitelogo.png') : asset('images/logo.png') }}"
             />
         </a>
 
@@ -49,12 +49,12 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="navbarDropdownMenuLink">
 
-                        {% if is_granted("ROLE_USER") %}
-                            <li><a class="dropdown-item" href="{{ path('app_profil_voir', {'pseudo': app.user.pseudo}) }}">Profil</a></li>
-                            <li><a class="dropdown-item" href="#">Mes sorties</a></li>
-                            <li class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{{ path('app_logout') }}">Se déconnecter</a></li>
-                        {% endif %}
+                            {% if is_granted("ROLE_USER") %}
+                                <li><a class="dropdown-item" href="{{ path('app_profil_voir', {'pseudo': app.user.pseudo}) }}">Profil</a></li>
+                                <li><a class="dropdown-item" href="#">Mes sorties</a></li>
+                                <li class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{{ path('app_logout') }}">Se déconnecter</a></li>
+                            {% endif %}
                         </ul>
                     </div>
                 </div>
