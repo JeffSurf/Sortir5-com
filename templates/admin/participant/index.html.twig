@@ -42,7 +42,7 @@
                     <th scope="row">{{ participant.id }}</th>
                     <td>
                         {% if participant.imageProfil %}
-                            <img height="30" src="{{ asset('uploads/participants/' ~ participant.imageProfil) }}" alt="">
+                            <img class="profile-pic list" src="{{ asset('uploads/participants/' ~ participant.imageProfil) }}" alt="">
                         {% endif %}
                         <span>{{ participant.pseudo }}</span>
                     </td>

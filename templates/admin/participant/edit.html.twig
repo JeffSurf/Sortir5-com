@@ -13,7 +13,7 @@
 
         <div class="form-row participant-img">
             {{  form_label(form.imageProfil) }}
-            <img style="height: 100px;" src="{{ asset('uploads/participants/' ~ participant.imageProfil) }}" alt="Photo de profil">
+            <img class="profile-pic" src="{{ asset('uploads/participants/' ~ participant.imageProfil) }}" alt="Photo de profil">
             {{  form_widget(form.imageProfil) }}
         </div>
 
