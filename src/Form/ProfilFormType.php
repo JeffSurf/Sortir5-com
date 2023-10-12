@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Participant;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -59,7 +60,11 @@ class ProfilFormType extends AbstractType
                         "mimeTypesMessage" => "Le type {{ type }} est invalide. Les formats valides sont {{ types }}"
                     ])
                 ]
-            ]);
+            ])
+            ->add('rgpd', CheckboxType::class, [
+                "label" => "Accepter que les utilisateurs puissent voir votre photo"
+            ])
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

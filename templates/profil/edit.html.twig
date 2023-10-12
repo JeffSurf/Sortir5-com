@@ -21,6 +21,7 @@
         <div class="row">
             <div class="col-2">
                 <img id="preview" class="profile-pic" src="{{ asset('uploads/participants/' ~ app.user.imageProfil) }}" alt="Photo de profil">
+                {{ form_row(profilForm.rgpd) }}
             </div>
 
             <div class="col-5">

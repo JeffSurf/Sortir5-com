@@ -72,7 +72,11 @@ class RegistrationFormType extends AbstractType
                         "mimeTypesMessage" => "Le type {{ type }} est invalide. Les formats valides sont {{ types }}"
                     ])
                 ]
-            ]);
+            ])
+            ->add("rgpd", CheckboxType::class, [
+                "label" => "Accepter que les utilisateurs puissent voir votre photo"
+            ])
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
