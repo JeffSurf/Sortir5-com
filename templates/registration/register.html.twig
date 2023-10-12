@@ -2,13 +2,23 @@
 
 {% block title %}S'inscrire{% endblock %}
 
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('participant') }}
+    {{ encore_entry_script_tags('preview') }}
+{% endblock %}
+
 {% block body %}
     <h1>Inscription</h1>
 
     {{ form_errors(registrationForm) }}
 
     {{ form_start(registrationForm) }}
-    <div class="row">
+    <div class="row justify-content-center">
+        <div class="col-2 ms-3">
+            <img id="preview" style="height: 100px;" src="{{ asset('uploads/participants/default_profile_picture.png') }}" alt="Photo de profil">
+            <p class="text-muted">Avatar</p>
+        </div>
         <div class="col-6">
             {{ form_row(registrationForm.nom) }}
             {{ form_row(registrationForm.prenom) }}
@@ -18,13 +28,11 @@
             {{ form_row(registrationForm.site) }}
             {{ form_row(registrationForm.plainPassword.first) }}
             {{ form_row(registrationForm.plainPassword.second) }}
-        </div>
-        <div class="col-6">
             {{ form_row(registrationForm.image) }}
         </div>
     </div>
 
 
-        <button class="btn btn-primary" type="submit" class="btn">S'inscrire</button>
+        <button class="btn btn-primary" type="submit">S'inscrire</button>
     {{ form_end(registrationForm) }}
 {% endblock %}
