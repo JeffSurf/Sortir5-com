@@ -30,8 +30,8 @@ class ParticipantController extends AbstractController {
 
     #[Route('/ajouter', name: '_add')]
     #[Route('/modifier/{id}', name: '_update', requirements: ['id' => '\d+'])]
-    public function edit(Request $request, EntityManagerInterface $entityManager,  ParticipantRepository $participantRepository, int $id = null,
-                         UploadService $uploadService, UserPasswordHasherInterface $userPasswordHasher): Response {
+    public function edit(Request $request, EntityManagerInterface $entityManager,  ParticipantRepository $participantRepository,
+                         UploadService $uploadService, UserPasswordHasherInterface $userPasswordHasher, int $id = null): Response {
 
         $participant = $id == null ? new Participant() : $participantRepository->find($id);
         $msg = $participant->getId() == null ? 'Le participant a été ajouté avec succès !' : 'Le participant a été modifié avec succès !';
@@ -105,6 +105,7 @@ class ParticipantController extends AbstractController {
             if(!$site)
                 return new Response("Ligne $key: Le site avec l'id $attributes[5] n'existe pas", 400);
 
+            // prenom,nom,email,pseudo,roles,site,telephone,password,actif,imageProfil
             $participant
                 ->setPrenom($attributes[0])
                 ->setNom($attributes[1])
@@ -115,6 +116,7 @@ class ParticipantController extends AbstractController {
                 ->setTelephone($attributes[6])
                 ->setPassword($attributes[7])
                 ->setActif($attributes[8] == 1)
+                ->setImageProfil($attributes[9])
             ;
 
             $errors = $validator->validate($participant);

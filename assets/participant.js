@@ -1,6 +1,10 @@
 const $ = require("jquery");
-const {msg} = require("@babel/core/lib/config/validation/option-assertions");
 
+/**
+ * Gérer le message de retour du csv
+ * @param {string} data - les données de la réponse du serveur
+ * @param {string} [type=success] - le type du message (alert bootstrap)
+ */
 const handleCsvMessage = (data, type = "success") => {
     const bodyHtml = $("body");
     const idMsgCsv = "#msg-csv";
@@ -30,4 +34,4 @@ $("#input-csv").on("change", (e) => {
         };
         reader.readAsBinaryString(file);
     }
-})
+});
