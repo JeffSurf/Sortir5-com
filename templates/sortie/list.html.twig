@@ -108,16 +108,40 @@
 
                         <td>{{ sortie.organisateur.nom|upper }} {{ sortie.organisateur.prenom }}</td>
                         <td>
-                            <a class="btn btn-outline-info">Afficher</a>
-                            {% if (sortie.organisateur == app.user) and ((sortie.etat.name == "OUVERTE") or (sortie.etat.name == "CLOTUREE")) %}
+                            {# Gestion du bouton AFFICHER #}
+                            {% if (sortie.etat.name == "OUVERTE" or sortie.etat.name == "CLOTUREE" or sortie.etat.name == "ENCOURS") %}
+                                <a class="btn btn-outline-info">Afficher</a>
+                            {% endif %}
+
+                            {# Gestion du bouton ANNULER #}
+                            {% if (sortie.organisateur == app.user) and (sortie.etat.name in ["OUVERTE", "CLOTUREE", "TERMINEE"]) %}
                                 <a class="btn btn-outline-danger">Annuler</a>
                             {% endif %}
+
+                            {# Gestion du bouton MODIFIER #}
                             {% if (sortie.organisateur == app.user) and sortie.etat.name == "CREEE" %}
                                 <a href="{{ path('sortie_update', {'id': sortie.id}) }}" class="btn btn-outline-primary">Modifier</a>
                             {% endif %}
-                            <a class="btn btn-outline-warning">Publier</a>
-                            <a class="btn btn-outline-success">S'inscrire</a>
-                            <a class="btn btn-outline-dark">Se désister</a>
+
+                            {# Gestion du bouton PUBLIER #}
+                            {% if (sortie.organisateur == app.user) and sortie.etat.name == "CREEE" %}
+                                <a href="{{ path('sortie_publish', {'id': sortie.id}) }}" class="btn btn-outline-warning">Publier</a>
+                            {% endif %}
+
+                            {# Gestion des boutons S'INSCRIRE et SE DESISTER #}
+                            {% if (sortie.participants is empty) and (sortie.etat.name in ['OUVERTE']) %}
+                                <a href="{{ path('sortie_inscrire', {'id': sortie.id}) }}" class="btn btn-outline-success">S'inscrire</a>
+                            {% else %}
+                                {% for participant in sortie.participants %}
+                                    {% if (participant == app.user) and (sortie.etat.name in ['OUVERTE']) %}
+                                        <a href="{{ path('sortie_desister', {'id': sortie.id}) }}" class="btn btn-outline-dark">Se désister</a>
+                                        {% set break = true %}
+                                    {% elseif sortie.etat.name in ['OUVERTE'] %}
+                                        <a href="{{ path('sortie_inscrire', {'id': sortie.id}) }}" class="btn btn-outline-success">S'inscrire</a>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif%}
+
                         </td>
                     </tr>
                     {% endfor %}
