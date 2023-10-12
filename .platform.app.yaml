@@ -57,3 +57,12 @@ hooks:
         set -x -e
 
         symfony-deploy
+
+
+crons:
+    sortie_cleanup:
+        spec: '00 00 * * *'
+        cmd: |
+            if ["$PLATFORM_ENVIRONMENT_TYPE" = "production"]; then
+                croncape symfony console app:sortie:cleanup
+            fi
