@@ -57,7 +57,6 @@ class SortieFormType extends AbstractType
             ])
             ->add('duree', NumberType::class, [
                 'label' => 'Durée :',
-                'required' => false,
                 'row_attr' => [
                     'class' => 'col-lg-5 mx-lg-3 my-lg-4'
                 ]
@@ -91,13 +90,11 @@ class SortieFormType extends AbstractType
 
             ->add('latitude', TextType::class, [
                 'label' => 'Latitude :',
-                'required' => false,
                 'mapped' => false
             ])
 
             ->add('longitude', TextType::class, [
                 'label' => 'Longitude :',
-                'required' => false,
                 'mapped' => false
             ])
 
