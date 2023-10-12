@@ -4,6 +4,8 @@ namespace App\Repository;
 
 use App\Entity\Sortie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -19,6 +21,25 @@ class SortieRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Sortie::class);
+    }
+
+    public function getSortieAfterOneMonth() : \Doctrine\ORM\QueryBuilder
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere("s.dateHeureDebut < :current_date")
+            ->setParameter('current_date', new \DateTime(-1 . ' month'));
+    }
+
+    /**
+     * @throws NonUniqueResultException
+     * @throws NoResultException
+     */
+    public function countSortieAfterOneMonth() : int {
+        return $this->getSortieAfterOneMonth()->select("COUNT(s.id)")->getQuery()->getSingleScalarResult();
+    }
+
+    public function deleteSortieAfterOneMonth() : int {
+        return $this->getSortieAfterOneMonth()->delete()->getQuery()->execute();
     }
 
 //    /**
