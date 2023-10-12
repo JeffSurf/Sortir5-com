@@ -34,7 +34,6 @@ class SortieController extends AbstractController
 
     #[Route('/ajouter', name: '_add')]
     #[Route('/modifier/{id}', name: '_update', requirements: ['id' => '\d+'])]
-    #[Route('/afficher/{id}', name: '_detail', requirements: ['id' => '\d+'])]
     public function edit(Request $request, EntityManagerInterface $entityManager, SortieRepository $sortieRepository, int $id = null): Response {
         $sortie = $id == null ? new Sortie() : $sortieRepository->find($id);
         $sortie->setOrganisateur($this->getUser());
@@ -55,6 +54,18 @@ class SortieController extends AbstractController
         return $this->render('sortie/edit.html.twig', [
             'form' => $form,
             'action' => $sortie->getId() == null ? 'Ajouter' : 'Modifier'
+        ]);
+    }
+
+    #[Route('/afficher/{id}', name: '_detail', requirements: ['id' => '\d+'])]
+    public function show(Request $request, EntityManagerInterface $entityManager, SortieRepository $sortieRepository, int $id = null): Response {
+
+        $sortie = $sortieRepository->find($id);
+        $form = $this->createForm(SortieFormType::class, $sortie);
+        $form->handleRequest($request);
+
+        return $this->render('sortie/show.html.twig', [
+            'sortie' => $form
         ]);
     }
 

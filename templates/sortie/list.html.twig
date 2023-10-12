@@ -110,7 +110,7 @@
                         <td>
                             {# Gestion du bouton AFFICHER #}
                             {% if (sortie.etat.name == "OUVERTE" or sortie.etat.name == "CLOTUREE" or sortie.etat.name == "ENCOURS") %}
-                                <a class="btn btn-outline-info">Afficher</a>
+                                <a href="{{ path('sortie_detail', {'id': sortie.id}) }}" class="btn btn-outline-info">Afficher</a>
                             {% endif %}
 
                             {# Gestion du bouton ANNULER #}
