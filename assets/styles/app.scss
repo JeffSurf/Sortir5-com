@@ -1,4 +1,13 @@
 @import "~bootstrap/scss/bootstrap";
+@import url('https://fonts.googleapis.com/css?family=Nunito+Sans');
+
+:root {
+    --blue: #68C7DE;
+    --darkblue: #173863;
+    --red: #EB2123;
+    --orange: #F8971C;
+    --yellow: #F5EB14;
+}
 
 html {
     height: 100%;
@@ -15,7 +24,7 @@ body {
 nav {
 
     &.navbar-admin {
-        background-color: var(--bs-primary) !important;
+        background-color: var(--darkblue) !important;
         color: white;
         .nav-link {
             color: white !important;
@@ -67,6 +76,101 @@ nav {
         gap: 1rem;
         justify-content: center;
         align-items: center;
+    }
+}
+
+.error-page {
+    &.main {
+        margin-top: 5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Nunito Sans", serif;
+        color: var(--darkblue);
+        font-size: 1em;
+    }
+
+    .glass {
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.09);
+        backdrop-filter: blur(6.159999847412109px);
+        padding: 0 50px;
+    }
+
+    button {
+        font-family: "Nunito Sans", serif;
+    }
+
+    ul {
+        list-style-type: none;
+        padding-inline-start: 35px;
+    }
+
+    svg {
+        width: 100%;
+        visibility: hidden;
+    }
+
+    h1 {
+        font-size: 7.5em;
+        margin: 15px 0;
+        font-weight:bold;
+    }
+
+    h2 {
+        font-weight:bold;
+    }
+
+    .btn {
+        z-index: 1;
+        overflow: hidden;
+        background: transparent;
+        position: relative;
+        padding: 8px 50px;
+        border-radius: 30px;
+        cursor: pointer;
+        font-size: 1em;
+        letter-spacing: 2px;
+        transition: 0.2s ease;
+        font-weight: bold;
+        margin: 5px 0px;
+
+        &.blue {
+            border: 4px solid var(--blue);
+            color: var(--darkblue);
+
+            &:before {
+                content: "";
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 0%;
+                height: 100%;
+                background: var(--blue);
+                z-index: -1;
+                transition: 0.2s ease;
+            }
+
+            &:hover {
+                color: #FFF;
+                background: var(--blue);
+                transition: 0.2s ease;
+                &:before {
+                    width: 100%;
+                }
+            }
+        }
+    }
+
+    @media screen and (max-width:768px) {
+        .main {
+            display:block;
+        }
+
+        .container {
+            margin-top:70px;
+            margin-bottom:70px;
+        }
     }
 }
 

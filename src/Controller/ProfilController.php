@@ -23,10 +23,15 @@ class ProfilController extends AbstractController
     #[Route('/{pseudo}', name: 'voir')]
     public function index(ParticipantRepository $participantRepository, string $pseudo): Response {
         $user = $participantRepository->findByPseudo($pseudo);
+        //$sharedSorties = $participantRepository->findLinkBetween($user, $pseudo);
 
         if ($user == null) {
             return $this->render('error/404.html.twig');
         }
+
+        /*if ($sharedSorties == null) {
+            return $this->render('error/404.html.twig');
+        }*/
 
         return $this->render('profil/index.html.twig',[
             'user' => $user

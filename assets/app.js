@@ -8,3 +8,8 @@
 // any CSS you import will output into a single css file (app.scss in this case)
 import './styles/app.scss';
 const bootstrap = require('bootstrap');
+
+window.addEventListener("scroll", function(){
+    const navbar = document.querySelector('nav');
+    navbar.classList.toggle("sticky", window.scrollY > 0)
+})
