@@ -24,47 +24,29 @@ class SortieFormType extends AbstractType
         $builder
             ->add('nom', TextType::class,[
                 'label' => 'Nom de la sortie :',
-                'required' => true,
-                'row_attr' => [
-                    'class' => 'col-lg-5 mx-lg-3 my-lg-4'
-                ]
+                'required' => true
             ])
             ->add('dateHeureDebut', DateTimeType::class,[
                 'label' => 'Date et heure de la sortie :',
                 'required' => true,
-                'widget' => 'single_text',
-                'row_attr' => [
-                    'class' => 'col-lg-5 mx-lg-3 my-lg-4'
-                ]
+                'widget' => 'single_text'
             ])
             ->add('dateLimiteInscription', DateTimeType::class, [
                 'label' => 'Date limite d\'inscription :',
                 'required'=> true,
-                'widget' => 'single_text',
-                'row_attr' => [
-                    'class' => 'col-lg-5 mx-lg-3 my-lg-4'
-                ]
+                'widget' => 'single_text'
             ])
             ->add('nbInscriptionsMax', NumberType::class, [
                 'label' => 'Nombre de places :',
-                'required' => true,
-                'row_attr' => [
-                    'class' => 'col-lg-5 mx-lg-3 my-lg-4'
-                ]
+                'required' => true
             ])
             ->add('duree', NumberType::class, [
                 'label' => 'Durée :',
-                'required' => false,
-                'row_attr' => [
-                    'class' => 'col-lg-5 mx-lg-3 my-lg-4'
-                ]
+                'required' => false
             ])
             ->add('infosSortie', TextareaType::class, [
                 'label' => 'Description et infos :',
-                'required' => true,
-                'row_attr' => [
-                    'class' => 'col-lg-5 mx-lg-3 my-lg-4'
-                ]
+                'required' => true
             ])
 
             ->add('Ville', EntityType::class, [
@@ -98,9 +80,15 @@ class SortieFormType extends AbstractType
                 'mapped' => false
             ])
 
+            ->add('motifAnnulation', TextareaType::class, [
+                'label'=> 'Modif d\'annulation :',
+                'validation_groups'=> 'cancel'
+            ])
+
+            /*
             ->add('submit', SubmitType::class, [
                 'label'=>"Enregistrer"
-            ])
+            ])*/
         ;
     }
 

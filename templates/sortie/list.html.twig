@@ -73,6 +73,9 @@
                 </div>
             </form>
             <hr />
+            <div class="my-3 text-center">
+                <a href="{{ path('sortie_add') }}" class="btn btn-light">Créer une sortie</a>
+            </div>
             <table class="table col-lg-12 mt-3">
                 <thead>
                 <tr>
@@ -115,7 +118,7 @@
 
                             {# Gestion du bouton ANNULER #}
                             {% if (sortie.organisateur == app.user) and (sortie.etat.name in ["OUVERTE", "CLOTUREE", "TERMINEE"]) %}
-                                <a class="btn btn-outline-danger">Annuler</a>
+                                <a href="{{ path('sortie_cancel', {'id': sortie.id}) }}" class="btn btn-outline-danger">Annuler</a>
                             {% endif %}
 
                             {# Gestion du bouton MODIFIER #}
@@ -148,8 +151,5 @@
                 </tbody>
             </table>
         </form>
-        <div class="my-3">
-            <a href="{{ path('sortie_add') }}" class="btn btn-light">Créer une sortie</a>
-        </div>
     </div>
 {% endblock %}

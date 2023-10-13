@@ -19,8 +19,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class SortieController extends AbstractController
 {
     #[Route('', name: '_list')]
-    public function list(Request $request, SortieRepository $sortieRepository, SiteRepository $siteRepository): Response
+    public function list(Request $request, SortieRepository $sortieRepository, SiteRepository $siteRepository, UserInterface $user): Response
     {
+        //filter
         $name = $request->get('keywords');
         $etat = $request->get('etat');
 
@@ -44,7 +45,6 @@ class SortieController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            //conditions de formulaire !!!
             $entityManager->persist($sortie);
             $entityManager->flush();
             $this->addFlash('success', $msg);
@@ -65,12 +65,13 @@ class SortieController extends AbstractController
         $form->handleRequest($request);
 
         return $this->render('sortie/show.html.twig', [
-            'sortie' => $form
+            'sortie' => $form,
+            'action' => 'notCancel'
         ]);
     }
 
     #[Route('/inscrire/{id}', name: '_inscrire', requirements: ['id' => '\d+'])]
-    public function SignUp(EntityManagerInterface $entityManager, SortieRepository $sortieRepository, ParticipantRepository $participantRepository, int $id = null, UserInterface $user): Response {
+    public function register(EntityManagerInterface $entityManager, SortieRepository $sortieRepository, ParticipantRepository $participantRepository, int $id = null, UserInterface $user): Response {
         if ($id == null){
             $this->addFlash('danger', 'l\'indice de la sortie est null');
         } else {
@@ -103,7 +104,7 @@ class SortieController extends AbstractController
     }
 
     #[Route('/desister/{id}', name: '_desister', requirements: ['id' => '\d+'])]
-    public function desister(EntityManagerInterface $entityManager, SortieRepository $sortieRepository, ParticipantRepository $participantRepository, UserInterface $user, int $id = null): Response{
+    public function withdraw(EntityManagerInterface $entityManager, SortieRepository $sortieRepository, ParticipantRepository $participantRepository, UserInterface $user, int $id = null): Response{
         if ($id == null){
             $this->addFlash('danger', 'l\'indice de la sortie est null');
         } else {
@@ -151,11 +152,13 @@ class SortieController extends AbstractController
 
 
     #[Route('/annuler/{id}', name: '_cancel', requirements: ['id' => '\d+'])]
-    public function cancel(EntityManagerInterface $entityManager, SortieRepository $sortieRepository, UserInterface $user, int $id = null): Response {
-        if ($id == null){
-            $this->addFlash('danger', 'l\'indice de la sortie est null');
-        } else {
-            $sortie = $sortieRepository->find($id);
+    public function cancel(Request $request, EntityManagerInterface $entityManager, SortieRepository $sortieRepository, UserInterface $user, int $id = null): Response {
+
+        $sortie = $sortieRepository->find($id);
+        $form = $this->createForm(SortieFormType::class, $sortie);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
             if ($sortie->getOrganisateur() !== $user ) {
                 $this->addFlash('danger', 'Vous n\'êtes pas l\'organisateur de la sortie !');
             } elseif (($sortie->getEtat() != Etat::OUVERTE) and ($sortie->getEtat() != Etat::ENCOURS)) {
@@ -166,8 +169,11 @@ class SortieController extends AbstractController
                 $entityManager->flush();
                 $this->addFlash('success', 'La sortie a été annulée avec succès !');
             }
+            return $this->redirectToRoute('sortie_list');
         }
-        return $this->redirectToRoute('sortie_list');
+        return $this->render('sortie/cancel.html.twig', [
+            'form' => $form,
+        ]);
     }
 
 }

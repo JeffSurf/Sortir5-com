@@ -1,15 +1,14 @@
 {% extends '/base.html.twig' %}
 
 {% block body %}
-    <div class="container">
-        <h1 class="text-center">{{ action }} une sortie</h1>
+    <div class="container-fluid">
+        <h1 class="text-center">Annuler une sortie</h1>
         {{  form_start(form) }}
-
         {{ form_errors(form) }}
 
         <div class="row">
             <div class="col-6 justify-content-center">
-                <div class="form-row px-lg-5" readonly=tru>
+                <div class="form-row mx-lg-5 readonly">
                     {{  form_row(form.nom) }}
                 </div>
 
@@ -34,34 +33,34 @@
                 </div>
             </div>
 
-            <div class="col-6 justify-content-center my-lg-4">
-                <div class="form-row px-lg-5">
+            <div class="col-6">
+                <div class="form-row">
                     {{  form_row(form.Ville) }}
                 </div>
 
-                <div class="form-row px-lg-5">
+                <div class="form-row">
                     {{  form_row(form.lieu) }}
                 </div>
 
-                <div class="form-row px-lg-5">
+                <div class="form-row">
                     {{  form_row(form.latitude) }}
                 </div>
 
-                <div class="form-row px-lg-5">
+                <div class="form-row">
                     {{  form_row(form.longitude) }}
                 </div>
 
-                <div class="form-row" style="display:none">
+                <div class="form-row">
                     {{  form_row(form.motifAnnulation) }}
                 </div>
             </div>
         </div>
 
         <div class="text-center">
-            <button class="btn btn-outline-primary my-lg-3" type="submit">Enregistrer</button>
-            <a href="{{ path('sortie_list') }}" class="btn btn-outline-dark my-lg-3">Annuler</a>
+            <a href="{{ path('sortie_cancel') }}" class="btn btn-outline-primary my-lg-3" type="text" >Valider</a>
+            <a href="{{ path('sortie_list') }}" class="btn btn-outline-dark my-lg-3" type="text" >Retour</a>
         </div>
 
         {{  form_end(form) }}
-    </div>
+    <div>
 {% endblock %}
