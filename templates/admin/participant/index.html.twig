@@ -62,7 +62,7 @@
                     <td>{{ participant.email }}</td>
                     <td>{{ participant.telephone | default("Non renseigné")}}</td>
                     <td>{{ 'ROLE_ADMIN' in participant.roles ? 'Administrateur' : 'Utilisateur'}}</td>
-                    <td>{{ participant.actif ? 'Actif' : 'Inactif' }}</td>
+                    <td>{{ 'ROLE_BAN' in participant.roles ? 'Inactif' : 'Actif' }}</td>
                     <td>
                         <a href="{{ path('app_admin_participant_update', {'id': participant.id}) }}">
                             <button class="btn btn-primary btn-sm">Modifier</button>
