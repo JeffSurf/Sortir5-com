@@ -62,7 +62,8 @@ class ProfilFormType extends AbstractType
                 ]
             ])
             ->add('rgpd', CheckboxType::class, [
-                "label" => "Accepter que les utilisateurs puissent voir votre photo"
+                "label" => "Accepter que les utilisateurs puissent voir votre photo",
+                "required" => false
             ])
         ;
     }

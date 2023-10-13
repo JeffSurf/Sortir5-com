@@ -47,7 +47,7 @@ class ParticipantType extends AbstractType
             ])
             ->add('rgpd', CheckboxType::class, [
                 'label' => "Accepter que les utilisateurs puissent voir votre photo",
-                'required' => true
+                'required' => false
             ])
             ->add('prenom', null, [
                 "required" => true
