@@ -82,7 +82,7 @@ class SortieFormType extends AbstractType
 
             ->add('motifAnnulation', TextareaType::class, [
                 'label'=> 'Modif d\'annulation :',
-                'validation_groups'=> 'cancel'
+                'required' => false
             ])
 
             /*
