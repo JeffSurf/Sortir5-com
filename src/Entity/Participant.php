@@ -46,7 +46,12 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $prenom = null;
 
     #[ORM\Column(length: 15, nullable: true)]
-    #[Assert\Length(max: 15, maxMessage: "Le numéro de téléphone est supérieur à {{ limit }} caractères")]
+    #[Assert\Length(exactly: 10, exactMessage: "Le numéro de téléphone doit faire {{ limit }} caractères")]
+    #[Assert\Regex(
+        pattern: "/^0[1-7][0-9]+/",
+        message: "Le numéro de téléphone doit commencer par 01 jusqu'à 07",
+        match: true
+    )]
     private ?string $telephone = null;
 
     #[ORM\Column]
@@ -54,6 +59,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 50, unique: true)]
     #[Assert\NotBlank(message: "Le pseudo ne peut pas être vide")]
+    #[Assert\Length(min: 2, minMessage: "Le pseudo doit contenir au minimum {{ limit }} caractères")]
     #[Assert\Regex(
         pattern: '/^([a-zA-Z]|[0-9]|_)+$/',
         message: 'Le pseudo peut contenir des lettres (a à z), des chiffres et _',
