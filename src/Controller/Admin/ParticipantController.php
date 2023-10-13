@@ -73,6 +73,17 @@ class ParticipantController extends AbstractController {
                 );
             }
 
+            $isActif = $form->get('actif')->getData();
+
+            if(!$isActif && !in_array("ROLE_ADMIN", $participant->getRoles()))
+            {
+                $participant->setRoles(["ROLE_BAN"]);
+            }
+            else
+            {
+                $participant->setRoles(["ROLE_USER"]);
+            }
+
             $entityManager->persist($participant);
             $entityManager->flush();
             $this->addFlash('success', $msg);
@@ -126,7 +137,6 @@ class ParticipantController extends AbstractController {
                 ->setSite($site)
                 ->setTelephone($attributes["telephone"])
                 ->setPassword($attributes["password"])
-                ->setActif($attributes["actif"] == 1)
                 ->setImageProfil($attributes["imageProfil"])
                 ->setRgpd($attributes["rgpd"])
             ;

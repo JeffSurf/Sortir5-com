@@ -67,8 +67,10 @@ class ParticipantType extends AbstractType
                 "choice_label" => "nom"
             ])
             ->add('actif', CheckboxType::class, [
+                'mapped' => false,
                 'label' => "L'utilisateur est actif",
-                'required' => true
+                'data' => true,
+                'required' => false,
             ])
             ->add('mdp', PasswordType::class, [
                 'mapped' => false,

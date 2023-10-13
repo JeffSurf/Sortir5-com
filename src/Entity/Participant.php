@@ -54,9 +54,6 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     )]
     private ?string $telephone = null;
 
-    #[ORM\Column]
-    private ?bool $actif = true;
-
     #[ORM\Column(length: 50, unique: true)]
     #[Assert\NotBlank(message: "Le pseudo ne peut pas être vide")]
     #[Assert\Length(min: 2, minMessage: "Le pseudo doit contenir au minimum {{ limit }} caractères")]
@@ -123,7 +120,9 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
+
+        if(!in_array('ROLE_BAN', $roles))
+            $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
     }
