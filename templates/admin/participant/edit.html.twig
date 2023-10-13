@@ -2,6 +2,11 @@
 
 {% block title %}{{ action }} un participant{% endblock %}
 
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('preview') }}
+{% endblock %}
+
 {% block body %}
     <div class="container container-page admin-page">
         <h1>{{ action }} un participant</h1>
@@ -13,7 +18,7 @@
 
         <div class="form-row participant-img">
             {{  form_label(form.imageProfil) }}
-            <img class="profile-pic" src="{{ asset('uploads/participants/' ~ participant.imageProfil) }}" alt="Photo de profil">
+            <img id="preview" class="profile-pic " src="{{ asset('uploads/participants/' ~ participant.imageProfil) }}" alt="Photo de profil">
             {{  form_widget(form.imageProfil) }}
             {{  form_row(form.rgpd) }}
         </div>
