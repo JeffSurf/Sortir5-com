@@ -1,0 +1,66 @@
+{% extends '/base.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1 class="text-center">Affichage d'une sortie</h1>
+        {{  form_start(sortie) }}
+        {{ form_errors(sortie) }}
+
+        <div class="row">
+            <div class="col-6 justify-content-center">
+                <div class="form-row mx-lg-5" style="">
+                    {{  form_row(sortie.nom) }}
+                </div>
+
+                <div class="form-row px-lg-5">
+                    {{  form_row(sortie.dateHeureDebut) }}
+                </div>
+
+                <div class="form-row px-lg-5">
+                    {{  form_row(sortie.dateLimiteInscription) }}
+                </div>
+
+                <div class="form-row px-lg-5">
+                    {{  form_row(sortie.nbInscriptionsMax) }}
+                </div>
+
+                <div class="form-row px-lg-5">
+                    {{  form_row(sortie.duree) }}
+                </div>
+
+                <div class="form-row px-lg-5">
+                    {{  form_row(sortie.infosSortie) }}
+                </div>
+            </div>
+
+            <div class="col-6">
+                <div class="form-row">
+                    {{  form_row(sortie.Ville) }}
+                </div>
+
+                <div class="form-row">
+                    {{  form_row(sortie.lieu) }}
+                </div>
+
+                <div class="form-row">
+                    {{  form_row(sortie.latitude) }}
+                </div>
+
+                <div class="form-row">
+                    {{  form_row(sortie.longitude) }}
+                </div>
+
+                <div class="form-row" style="display:none">
+                    {{  form_row(sortie.motifAnnulation) }}
+                </div>
+
+            </div>
+        </div>
+
+        <div class="text-center">
+            <a href="{{ path('sortie_list') }}" class="btn btn-outline-primary my-lg-3" type="text" >Retour</a>
+        </div>
+
+        {{  form_end(sortie) }}
+    <div>
+{% endblock %}

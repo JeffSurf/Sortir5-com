@@ -4,8 +4,6 @@ namespace App\Repository;
 
 use App\Entity\Sortie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\NonUniqueResultException;
-use Doctrine\ORM\NoResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -21,6 +19,20 @@ class SortieRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Sortie::class);
+    }
+
+    public function findByFilters($nom, $etat): ?array {
+        $qb = $this->createQueryBuilder('s');
+        if ($nom !== null){
+            $qb->andWhere('s.nom LIKE :nom')
+                ->setParameter('nom', '%'.$nom.'%');
+        } elseif ($etat !== null) {
+            $qb->andWhere('s.etat = :etat')
+                ->setParameter('etat', $etat);
+        }
+        $result = $qb->getQuery()->getResult();
+
+        return $result;
     }
 
     public function getSortieAfterOneMonth() : \Doctrine\ORM\QueryBuilder
