@@ -3,8 +3,6 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Participant;
-use App\Entity\Site;
-use App\Form\ButtonType;
 use App\Form\ParticipantType;
 use App\Form\SearchFormType;
 use App\Repository\ParticipantRepository;
@@ -16,8 +14,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\Encoder\CsvEncoder;
-use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[Route('/admin/participant', name: 'app_admin_participant')]
@@ -118,7 +114,7 @@ class ParticipantController extends AbstractController {
             if(!$site)
                 return new Response("Ligne $key: Le site avec l'id $attributes[5] n'existe pas", 400);
 
-            // prenom,nom,email,pseudo,roles,site,telephone,password,actif,imageProfil
+            // prenom,nom,email,pseudo,roles,site,telephone,password,actif,imageProfil,rgpd
             $participant
                 ->setPrenom($attributes[0])
                 ->setNom($attributes[1])
@@ -130,6 +126,7 @@ class ParticipantController extends AbstractController {
                 ->setPassword($attributes[7])
                 ->setActif($attributes[8] == 1)
                 ->setImageProfil($attributes[9])
+                ->setRgpd($attributes[10])
             ;
 
             $errors = $validator->validate($participant);
