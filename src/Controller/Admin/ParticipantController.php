@@ -9,6 +9,7 @@ use App\Repository\ParticipantRepository;
 use App\Repository\SiteRepository;
 use App\Service\UploadService;
 use Doctrine\ORM\EntityManagerInterface;
+use League\Csv\Reader;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -99,34 +100,35 @@ class ParticipantController extends AbstractController {
     public function addByCsv(Request $request, EntityManagerInterface $entityManager, SiteRepository $siteRepository, ValidatorInterface $validator): Response
     {
         $data = $request->getContent();
-        $lines = explode(PHP_EOL, $data);
+
+        $reader = Reader::createFromString($data);
+        $reader->setHeaderOffset(0);
+        $lines = $reader->getRecords();
 
         $error = "";
 
-        foreach ($lines as $key => $line)
+        foreach ($lines as $key => $attributes)
         {
             $participant = new Participant();
 
-            $attributes = str_getcsv($line);
-
-            $site = $siteRepository->find($attributes[5]);
+            $site = $siteRepository->find($attributes["site"]);
 
             if(!$site)
-                return new Response("Ligne $key: Le site avec l'id $attributes[5] n'existe pas", 400);
+                return new Response("Ligne $key: Le site n'existe pas " . "id: " . $attributes["site"], 400);
 
             // prenom,nom,email,pseudo,roles,site,telephone,password,actif,imageProfil,rgpd
             $participant
-                ->setPrenom($attributes[0])
-                ->setNom($attributes[1])
-                ->setEmail($attributes[2])
-                ->setPseudo($attributes[3])
-                ->setRoles(json_decode($attributes[4]))
+                ->setPrenom($attributes["prenom"])
+                ->setNom($attributes["nom"])
+                ->setEmail($attributes["email"])
+                ->setPseudo($attributes["pseudo"])
+                ->setRoles(json_decode($attributes["roles"]))
                 ->setSite($site)
-                ->setTelephone($attributes[6])
-                ->setPassword($attributes[7])
-                ->setActif($attributes[8] == 1)
-                ->setImageProfil($attributes[9])
-                ->setRgpd($attributes[10])
+                ->setTelephone($attributes["telephone"])
+                ->setPassword($attributes["password"])
+                ->setActif($attributes["actif"] == 1)
+                ->setImageProfil($attributes["imageProfil"])
+                ->setRgpd($attributes["rgpd"])
             ;
 
             $errors = $validator->validate($participant);
