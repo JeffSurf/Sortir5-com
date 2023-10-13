@@ -49,7 +49,7 @@ class SortieFormType extends AbstractType
                 'required' => true
             ])
 
-            ->add('Ville', EntityType::class, [
+            ->add('ville', EntityType::class, [
                 'label' => 'Ville :',
                 'class' => Ville::class,
                 'choice_label' => 'nom',
@@ -65,19 +65,6 @@ class SortieFormType extends AbstractType
                 'label' => 'Lieu :',
                 'class' => Lieu::class,
                 'choice_label' => 'nom',
-            ])
-
-
-            ->add('latitude', TextType::class, [
-                'label' => 'Latitude :',
-                'required' => false,
-                'mapped' => false
-            ])
-
-            ->add('longitude', TextType::class, [
-                'label' => 'Longitude :',
-                'required' => false,
-                'mapped' => false
             ])
 
             ->add('motifAnnulation', TextareaType::class, [

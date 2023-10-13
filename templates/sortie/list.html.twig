@@ -3,13 +3,13 @@
 {% block title %}Sorties{% endblock %}
 
 {% block body %}
-    <div class="container container-page container-fluid">
+    <div class="container-fluid">
         <div class="my-3 text-end px-lg-5">
             <p>Date du jour : {{ "now"|date("d/m/Y") }}</p>
             <p>Participant : {{ app.user.nom|upper }} {{ app.user.prenom }}</p>
         </div>
         <form class="row">
-            <p class="h3 mb-3 px-lg-5">Filtrer les sorties</p>
+            <p class="h3 mb-3 px-lg-5">Filter les sorties</p>
             <form class="row">
                 <div class="col-lg-6 px-lg-5">
                     <div class="form-floating mb-3">

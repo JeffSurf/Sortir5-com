@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Etat;
 use App\Entity\Sortie;
+use App\Form\AnnulerSortieType;
 use App\Form\SortieFormType;
 use App\Repository\ParticipantRepository;
 use App\Repository\SiteRepository;
@@ -155,7 +156,9 @@ class SortieController extends AbstractController
     public function cancel(Request $request, EntityManagerInterface $entityManager, SortieRepository $sortieRepository, UserInterface $user, int $id = null): Response {
 
         $sortie = $sortieRepository->find($id);
-        $form = $this->createForm(SortieFormType::class, $sortie);
+        $site = $sortie->getOrganisateur()->getSite();
+        $lieu = $sortie->getLieu();
+        $form = $this->createForm(AnnulerSortieType::class, $sortie);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -173,6 +176,9 @@ class SortieController extends AbstractController
         }
         return $this->render('sortie/cancel.html.twig', [
             'form' => $form,
+            'sortie' => $sortie,
+            'site' => $site,
+            'lieu' => $lieu
         ]);
     }
 
