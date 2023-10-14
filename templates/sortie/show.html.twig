@@ -2,57 +2,71 @@
 
 {% block body %}
     <div class="container-fluid">
-        <h1 class="text-center">Affichage d'une sortie</h1>
-        {{  form_start(sortie) }}
-        {{ form_errors(sortie) }}
+        <h1 class="text-center text-primary my-lg-3">Affichage d'une sortie</h1>
 
         <div class="row">
-            <div class="col-6 justify-content-center">
-                <div class="form-row mx-lg-5" style="">
-                    {{  form_row(sortie.nom) }}
-                </div>
-
-                <div class="form-row px-lg-5">
-                    {{  form_row(sortie.dateHeureDebut) }}
-                </div>
-
-                <div class="form-row px-lg-5">
-                    {{  form_row(sortie.dateLimiteInscription) }}
-                </div>
-
-                <div class="form-row px-lg-5">
-                    {{  form_row(sortie.nbInscriptionsMax) }}
-                </div>
-
-                <div class="form-row px-lg-5">
-                    {{  form_row(sortie.duree) }}
-                </div>
-
-                <div class="form-row px-lg-5">
-                    {{  form_row(sortie.infosSortie) }}
-                </div>
+            <div class="col-3 text-primary">
+                <p>Nom de la sortie</p>
+                <p>Date et heure de la sortie</p>
+                <p>Date limite d'inscription</p>
+                <p>Nombre de places</p>
+                <p>Durée (minutes)</p>
+                <p>Description et infos</p>
             </div>
 
-            <div class="col-6">
-                <div class="form-row">
-                    {{  form_row(sortie.Ville) }}
-                </div>
-
-                <div class="form-row">
-                    {{  form_row(sortie.lieu) }}
-                </div>
-
-                <div class="form-row" style="display:none">
-                    {{  form_row(sortie.motifAnnulation) }}
-                </div>
-
+            <div class="col-3">
+                <p>{{ sortie.nom }}</p>
+                <p>{{ sortie.dateHeureDebut|date("m-d-Y") }}</p>
+                <p>{{ sortie.dateLimiteInscription|date("m-d-Y") }}</p>
+                <p>{{ sortie.nbInscriptionsMax }}</p>
+                <p>{{ sortie.duree }}</p>
+                <p>{{ sortie.infosSortie }}</p>
             </div>
+
+            <div class="col-3 text-primary">
+                <p>Ville</p>
+                <p>Lieu</p>
+                <p>Rue</p>
+                <p>Code Postal</p>
+                <p>Latitude</p>
+                <p>Longitude</p>
+            </div>
+
+            <div class="col-3">
+                <p>{{ ville.nom }}</p>
+                <p>{{ lieu.nom }}</p>
+                <p>{{ lieu.adresse }}</p>
+                <p>{{ ville.codepostal }}</p>
+                <p>{{ lieu.latitude }}</p>
+                <p>{{ lieu.longitude }}</p>
+            </div>
+        </div>
+
+        <h3 class="text-center text-primary my-lg-3">Liste des participants inscrits</h3>
+        <hr class="my-lg-3"/>
+
+        <div class="text-center">
+            <table class="table table-striped">
+                <thead>
+                    <tr class="fw-bold">
+                        <th scope="col">Pseudo</th>
+                        <th scope="col">Nom</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for participant in participants %}
+                        <tr>
+                            <td>{{ participant.pseudo }}</td>
+                            <td>{{ participant.nom|upper }} {{ participant.prenom }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
 
         <div class="text-center">
             <a href="{{ path('sortie_list') }}" class="btn btn-outline-primary my-lg-3" type="text" >Retour</a>
         </div>
-
-        {{  form_end(sortie) }}
     <div>
 {% endblock %}

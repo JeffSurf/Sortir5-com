@@ -59,15 +59,18 @@ class SortieController extends AbstractController
     }
 
     #[Route('/afficher/{id}', name: '_detail', requirements: ['id' => '\d+'])]
-    public function show(Request $request, EntityManagerInterface $entityManager, SortieRepository $sortieRepository, int $id = null): Response {
+    public function show(SortieRepository $sortieRepository, int $id = null): Response {
 
         $sortie = $sortieRepository->find($id);
-        $form = $this->createForm(SortieFormType::class, $sortie);
-        $form->handleRequest($request);
+        $lieu = $sortie->getLieu();
+        $ville = $lieu->getVille();
+        $participants = $sortie->getParticipants();
 
         return $this->render('sortie/show.html.twig', [
-            'sortie' => $form,
-            'action' => 'notCancel'
+            'sortie' => $sortie,
+            'lieu' => $lieu,
+            'ville' => $ville,
+            'participants' => $participants
         ]);
     }
 
