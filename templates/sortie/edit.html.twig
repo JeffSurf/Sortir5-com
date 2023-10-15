@@ -2,7 +2,7 @@
 
 {% block body %}
     <div class="container">
-        <h1 class="text-center">{{ action }} une sortie</h1>
+        <h1 class="text-center text-primary">{{ action }} une sortie</h1>
         {{  form_start(form) }}
 
         {{ form_errors(form) }}
@@ -38,6 +38,24 @@
                 <div class="form-row px-lg-5">
                     {{  form_row(form.ville) }}
                 </div>
+
+                <script>
+                    $(document).ready(function(){
+                        $("#form_ville").on('change', function(){
+                            var villeId = $(this).val();
+                            $.ajax({
+                                url: '127.0.0.1:8000/lieu/getLieuxPourVille/'+villeId,
+                                type: 'GET',
+                                success: function(data) {
+                                    $('#form_lieu').find('option').remove().end();
+                                    $.each(data, function(key, value){
+                                        $('#form_lieu').append(`<option value="${key}">${value}</option>`);
+                                    });
+                                }
+                            });
+                        });
+                    })
+                </script>
 
                 <div class="form-row px-lg-5">
                     {{  form_row(form.lieu) }}

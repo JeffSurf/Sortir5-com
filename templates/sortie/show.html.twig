@@ -43,27 +43,32 @@
         </div>
 
         <h3 class="text-center text-primary my-lg-3">Liste des participants inscrits</h3>
-        <hr class="my-lg-3"/>
+        <hr class="my-lg-3 fw-bold"/>
 
-        <div class="text-center">
-            <table class="table table-striped">
-                <thead>
+        {% if participants is empty %}
+            <p class="text-center">Aucun participant n'est inscrit !</p>
+        {% else %}
+            <div class="text-center">
+                <table class="table table-striped">
+                    <thead>
                     <tr class="fw-bold">
                         <th scope="col">Pseudo</th>
                         <th scope="col">Nom</th>
                     </tr>
-                </thead>
+                    </thead>
 
-                <tbody>
+                    <tbody>
                     {% for participant in participants %}
                         <tr>
                             <td>{{ participant.pseudo }}</td>
                             <td>{{ participant.nom|upper }} {{ participant.prenom }}</td>
                         </tr>
                     {% endfor %}
-                </tbody>
-            </table>
-        </div>
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+
 
         <div class="text-center">
             <a href="{{ path('sortie_list') }}" class="btn btn-outline-primary my-lg-3" type="text" >Retour</a>
