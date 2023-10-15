@@ -21,14 +21,25 @@ class SortieRepository extends ServiceEntityRepository
         parent::__construct($registry, Sortie::class);
     }
 
-    public function findByFilters($nom, $etat): ?array {
+    public function findByFilters($nom, $etat, $dateDebut, $dateFin, $sortieOrganisateur, $sortieInscrit, $sortieNonInscrit, $sortiePassee): ?array {
         $qb = $this->createQueryBuilder('s');
+        $maintenant = new \DateTime();
         if ($nom !== null){
             $qb->andWhere('s.nom LIKE :nom')
                 ->setParameter('nom', '%'.$nom.'%');
         } elseif ($etat !== null) {
             $qb->andWhere('s.etat = :etat')
                 ->setParameter('etat', $etat);
+        } elseif (($dateDebut !== null) and ($dateFin !== null)){
+            $qb->andWhere('s.dateHeureDebut BETWEEN :dateDebut AND :dateFin')
+                ->setParameter('dateDebut', $dateDebut)
+                ->setParameter('dateFin', $dateFin);
+        } elseif ($sortieOrganisateur) {
+            $qb->andWhere('s.organisateur = :organisateur')
+                ->setParameter('organisateur', $sortieOrganisateur);
+        } elseif ($sortiePassee) {
+            $qb->andWhere('s.dateHeureDebut < :dateNow')
+                ->setParameter('dateNow', $maintenant->format('Y-m-d H:i:s'));
         }
         $result = $qb->getQuery()->getResult();
 
