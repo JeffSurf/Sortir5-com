@@ -36,29 +36,18 @@
 
             <div class="col-6 justify-content-center my-lg-4">
                 <div class="form-row px-lg-5">
-                    {{  form_row(form.ville) }}
+                    <label for="ville" class="form-label">Ville :</label>
+                    <select class="form-select" id="ville" onchange="getLieuParVille()">
+                        <option value="">Choisir une ville</option>
+                        {% for ville in villes %}
+                            <option value="{{ ville.id }}">{{ ville.nom }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
 
-                <script>
-                    $(document).ready(function(){
-                        $("#form_ville").on('change', function(){
-                            var villeId = $(this).val();
-                            $.ajax({
-                                url: '127.0.0.1:8000/lieu/getLieuxPourVille/'+villeId,
-                                type: 'GET',
-                                success: function(data) {
-                                    $('#form_lieu').find('option').remove().end();
-                                    $.each(data, function(key, value){
-                                        $('#form_lieu').append(`<option value="${key}">${value}</option>`);
-                                    });
-                                }
-                            });
-                        });
-                    })
-                </script>
-
                 <div class="form-row px-lg-5">
-                    {{  form_row(form.lieu) }}
+                    <label for="lieu" class="form-label">Lieu :</label>
+                    <select class="form-select" name="lieu" id="lieu"></select>
                 </div>
 
                 <div class="form-row" style="display:none">
@@ -75,3 +64,24 @@
         {{  form_end(form) }}
     </div>
 {% endblock %}
+
+{% block javascripts %}
+    <script>
+        function getLieuParVille() {
+            const id = document.getElementById('ville').value;
+            fetch(`/sortie/getLieuxPourVille/${id}`)
+                .then(r=>r.json())
+                .then(response => {
+                    const lieuSelect = document.getElementById('lieu');
+                    let html = `<option selected disabled>Choisir un lieu</option>`;
+                    response.forEach(lieu => {
+                        html += `
+                        <option value="${lieu['id']}">${lieu['nom']}</option>
+                    `;
+                    });
+                    lieuSelect.innerHTML = html;
+            });
+        }
+    </script>
+{% endblock %}
+

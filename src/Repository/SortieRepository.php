@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Sortie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @extends ServiceEntityRepository<Sortie>
@@ -21,9 +22,10 @@ class SortieRepository extends ServiceEntityRepository
         parent::__construct($registry, Sortie::class);
     }
 
-    public function findByFilters($nom, $etat, $dateDebut, $dateFin, $sortieOrganisateur, $sortieInscrit, $sortieNonInscrit, $sortiePassee): ?array {
+    public function findByFilters($nom, $etat, $dateDebut, $dateFin, $sortieOrganisateur, $participant, $sortiePassee): ?array {
         $qb = $this->createQueryBuilder('s');
         $maintenant = new \DateTime();
+
         if ($nom !== null){
             $qb->andWhere('s.nom LIKE :nom')
                 ->setParameter('nom', '%'.$nom.'%');
@@ -34,15 +36,14 @@ class SortieRepository extends ServiceEntityRepository
             $qb->andWhere('s.dateHeureDebut BETWEEN :dateDebut AND :dateFin')
                 ->setParameter('dateDebut', $dateDebut)
                 ->setParameter('dateFin', $dateFin);
-        } elseif ($sortieOrganisateur) {
+        } elseif ($sortieOrganisateur and ($participant !== null)) {
             $qb->andWhere('s.organisateur = :organisateur')
-                ->setParameter('organisateur', $sortieOrganisateur);
+                ->setParameter('organisateur', $participant);
         } elseif ($sortiePassee) {
             $qb->andWhere('s.dateHeureDebut < :dateNow')
                 ->setParameter('dateNow', $maintenant->format('Y-m-d H:i:s'));
         }
         $result = $qb->getQuery()->getResult();
-
         return $result;
     }
 

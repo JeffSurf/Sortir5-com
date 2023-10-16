@@ -3,12 +3,16 @@
 namespace App\Controller;
 
 use App\Entity\Etat;
+use App\Entity\Lieu;
 use App\Entity\Sortie;
 use App\Form\AnnulerSortieType;
+use App\Form\FilterFormType;
 use App\Form\SortieFormType;
+use App\Repository\LieuRepository;
 use App\Repository\ParticipantRepository;
 use App\Repository\SiteRepository;
 use App\Repository\SortieRepository;
+use App\Repository\VilleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,41 +24,84 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class SortieController extends AbstractController
 {
     #[Route('', name: '_list')]
-    public function list(Request $request, SortieRepository $sortieRepository, SiteRepository $siteRepository, UserInterface $user): Response
+    public function list(Request $request, SortieRepository $sortieRepository, UserInterface $user, ParticipantRepository $participantRepository): Response
     {
         //filter
-        $name = $request->get('keywords');
-        $etat = $request->get('etat');
+        $filterform = $this->createForm(FilterFormType::class);
+        $filterform->handleRequest($request);
 
-        $etats = Etat::cases();
+        $nom = $filterform->get('nom')->getData();
+        $site = $filterform->get('site')->getData();
+        $etat = $filterform->get('etat')->getData();
+        $dateDebut = $filterform->get('dateDebut')->getData();
+        $dateFin = $filterform->get('dateFin')->getData();
+        $participant = $participantRepository->find($user->getId());
+        $sortieOrganisateur = $filterform->get('estOrganise')->getData();
+        $sortiePassee = $filterform->get('estPassee')->getData();
+
+        if($filterform->isSubmitted() && $filterform->isValid()){
+            return $this->render('sortie/list.html.twig', [
+                'sorties' => $sortieRepository->findByFilters($nom, $etat, $dateDebut, $dateFin, $sortieOrganisateur, $participant, $sortiePassee),
+                'filterform' => $filterform
+            ]);
+        }
+
         return $this->render('sortie/list.html.twig', [
-            'sorties' => $sortieRepository->findByFilters($name, $etat),
-            'sites' => $siteRepository->findAll(),
-            'etats' => $etats
+            'sorties' => $sortieRepository->findAll(),
+            'filterform' => $filterform
         ]);
     }
 
     #[Route('/ajouter', name: '_add')]
-    #[Route('/modifier/{id}', name: '_update', requirements: ['id' => '\d+'])]
-    public function edit(Request $request, EntityManagerInterface $entityManager, SortieRepository $sortieRepository, int $id = null): Response {
-        $sortie = $id == null ? new Sortie() : $sortieRepository->find($id);
+    public function add(Request $request, EntityManagerInterface $entityManager, SortieRepository $sortieRepository, VilleRepository $villeRepository, LieuRepository $lieuRepository, int $id = null): Response {
+        $sortie =  new Sortie();
         $sortie->setOrganisateur($this->getUser());
         $sortie->setEtat(Etat::CREEE);
-        $msg = $sortie->getId() == null ? 'La sortie a été ajoutée avec succès !' : 'La sortie a été modifiée avec succès !';
+
+        $villes = $villeRepository->findAll();
 
         $form = $this->createForm(SortieFormType::class, $sortie);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $lieu = $lieuRepository->find($request->request->get('lieu'));
+            $sortie->setLieu($lieu);
             $entityManager->persist($sortie);
             $entityManager->flush();
-            $this->addFlash('success', $msg);
+            $this->addFlash('success', 'La sortie a été ajoutée avec succès !');
             return $this->redirectToRoute('sortie_list');
         }
 
         return $this->render('sortie/edit.html.twig', [
             'form' => $form,
-            'action' => $sortie->getId() == null ? 'Ajouter' : 'Modifier'
+            'action' => $sortie->getId() == null ? 'Ajouter' : 'Modifier',
+            'villes' => $villes
+        ]);
+    }
+
+    #[Route('/modifier/{id}', name: '_update', requirements: ['id' => '\d+'])]
+    public function update(Request $request, EntityManagerInterface $entityManager, SortieRepository $sortieRepository, VilleRepository $villeRepository, LieuRepository $lieuRepository, int $id = null): Response {
+        $sortie = $sortieRepository->find($id);
+        $villes = $villeRepository->findAll();
+
+        $form = $this->createForm(SortieFormType::class, $sortie);
+        $lieu = $lieuRepository->find($sortie->getLieu()->getId());
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $lieu = $lieuRepository->find($request->request->get('lieu'));
+            $sortie->setLieu($lieu);
+            $entityManager->persist($sortie);
+            $entityManager->flush();
+            $this->addFlash('success', 'La sortie a été modifiée avec succès !');
+            return $this->redirectToRoute('sortie_list');
+        }
+
+        return $this->render('sortie/edit.html.twig', [
+            'form' => $form,
+            'action' => 'Modifier',
+            'villes' => $villes,
+            'lieu' => $lieu
         ]);
     }
 
@@ -75,7 +122,7 @@ class SortieController extends AbstractController
     }
 
     #[Route('/inscrire/{id}', name: '_inscrire', requirements: ['id' => '\d+'])]
-    public function register(EntityManagerInterface $entityManager, SortieRepository $sortieRepository, ParticipantRepository $participantRepository, int $id = null, UserInterface $user): Response {
+    public function register(EntityManagerInterface $entityManager, SortieRepository $sortieRepository, ParticipantRepository $participantRepository, UserInterface $user, int $id = null): Response {
         if ($id == null){
             $this->addFlash('danger', 'l\'indice de la sortie est null');
         } else {
@@ -183,6 +230,18 @@ class SortieController extends AbstractController
             'site' => $site,
             'lieu' => $lieu
         ]);
+    }
+
+    #[Route('/getLieuxPourVille/{id}', name: '_getLPV')]
+    public function getLieuxPourVille(LieuRepository $lieuRepository, $id): Response
+    {
+        $lieux = $lieuRepository->findBy(['ville' => $id]);
+        $lieuxArray = [];
+
+        foreach($lieux as $lieu){
+            $lieuxArray[] = ['id'=> $lieu->getId(), 'nom' => $lieu->getNom()];
+        }
+        return $this->json($lieuxArray);
     }
 
 }
