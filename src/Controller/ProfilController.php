@@ -6,8 +6,11 @@ use App\Entity\Participant;
 use App\Form\PasswordFormType;
 use App\Form\ProfilFormType;
 use App\Repository\ParticipantRepository;
+use App\Repository\SortieRepository;
+use App\Service\FirstLoginService;
 use App\Service\UploadService;
 use Doctrine\ORM\EntityManagerInterface;
+use phpDocumentor\Reflection\Types\Array_;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,20 +24,50 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class ProfilController extends AbstractController
 {
     #[Route('/{pseudo}', name: 'voir')]
-    public function index(ParticipantRepository $participantRepository, string $pseudo): Response {
-        $user = $participantRepository->findByPseudo($pseudo);
-        //$sharedSorties = $participantRepository->findLinkBetween($user, $pseudo);
+    public function index(ParticipantRepository $participantRepository, SortieRepository $sortieRepository, string $pseudo): Response {
+        $requestedUser = $participantRepository->findByPseudo($pseudo);
+        /** @var Participant $me */
+        $loggedUser = $this->getUser();
+        $sorties = $sortieRepository->findAll();
 
-        if ($user == null) {
-            return $this->render('error/404.html.twig');
+        if ($requestedUser == $loggedUser) {
+            echo "C'est mon profil";
+        } else {
+            $usersMatch = false;
+            $users = 0;
+
+            foreach ($sorties as $sortie) {
+                $participants = $sortie->getParticipants();
+                $organistateur = $sortie->getOrganisateur();
+                foreach ($participants as $participant) {
+                    if ($requestedUser == $participant && $loggedUser == $organistateur) {
+                        echo $requestedUser->getPseudo() . " est inscrit dans une sortie que j'organise.";
+                        $usersMatch = true;
+                        break;
+                    } elseif ($requestedUser == $organistateur && $loggedUser == $participant) {
+                        echo $requestedUser->getPseudo() . " organise une sortie à laquelle je participe.";
+                        $usersMatch = true;
+                        break;
+                    } elseif ($requestedUser == $participant || $loggedUser === $participant) {
+                        $users++;
+                        if ($users == 2) {
+                            echo $requestedUser->getPseudo() . " participe avec moi à une sortie";
+                            $usersMatch = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (!$usersMatch) {
+                return $this->render('error/404.html.twig');
+            }
         }
 
-        /*if ($sharedSorties == null) {
-            return $this->render('error/404.html.twig');
-        }*/
+
+
 
         return $this->render('profil/index.html.twig',[
-            'user' => $user
+            'user' => $requestedUser
         ]);
     }
 
@@ -42,6 +75,10 @@ class ProfilController extends AbstractController
     public function edit(Request $request, ParticipantRepository $participantRepository, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $em, UploadService $fileUploader,  string $pseudo): \Symfony\Component\HttpFoundation\RedirectResponse|Response
     {
         $dataUser = $participantRepository->findByPseudo($pseudo);
+
+        if($dataUser != $this->getUser()) {
+            return $this->render('error/404.html.twig');
+        }
 
         $form = $this->createForm(ProfilFormType::class, $dataUser);
         $form->handleRequest($request);
@@ -98,12 +135,23 @@ class ProfilController extends AbstractController
     }
 
     #[Route('/edit/password/{pseudo}', name: 'edit_password')]
-    public function editPassword(Request $request, ParticipantRepository $participantRepository, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $em, string $pseudo): Response {
+    public function editPassword(Request $request, FirstLoginService $firstLoginService, ParticipantRepository $participantRepository, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $em, string $pseudo): Response {
 
         $dataUser = $participantRepository->findByPseudo($pseudo);
         $form = $this->createForm(PasswordFormType::class);
 
         $form->handleRequest($request);
+
+        if($dataUser != $this->getUser()) {
+            return $this->render('error/404.html.twig');
+        }
+
+        $msg = null;
+        if($firstLoginService->checkDefaultPassword($dataUser)) {
+            $msg[0] = "Bienvenue !";
+            $msg[1] = "C'est votre première connexion sur notre site, vous devriez modifier votre mot de passe.";
+        }
+
 
         if($form->isSubmitted() && $form->isValid())
         {
@@ -132,7 +180,8 @@ class ProfilController extends AbstractController
 
         return $this->render('profil/password.html.twig', [
             "form" => $form,
-            'user' => $dataUser
+            'user' => $dataUser,
+            'msg' => $msg
         ]);
     }
 }
