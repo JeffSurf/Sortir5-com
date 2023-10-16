@@ -10,6 +10,11 @@
     {{ encore_entry_link_tags('map') }}
 {% endblock %}
 
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('map') }}
+{% endblock %}
+
 
 {% block body %}
 
@@ -60,9 +65,4 @@
             </tbody>
         </table>
     </div>
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    {{ encore_entry_script_tags('map') }}
 {% endblock %}
