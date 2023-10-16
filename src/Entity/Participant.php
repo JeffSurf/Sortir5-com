@@ -299,9 +299,11 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\PreRemove]
     public function removeAllSorties() : void
     {
-        foreach ($this->sorties as &$sortie)
+        /** @var Sortie $sortie */
+        foreach ($this->sorties as $sortie)
+        {
             $sortie->removeParticipant($this);
-        unset($sortie);
+        }
     }
 
     public function isRgpd(): ?bool

@@ -2,11 +2,13 @@
 
 namespace App\Command;
 
+use App\Entity\Participant;
+use App\Entity\Sortie;
 use App\Repository\SortieRepository;
-use Shapecode\Bundle\CronBundle\Attribute\AsCronJob;
+use App\Service\ParticipantService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -19,11 +21,13 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class SortieCleanupCommand extends Command
 {
     private SortieRepository $sortieRepository;
+    private ParticipantService $participantService;
 
-    public function __construct(SortieRepository $sortieRepository)
+    public function __construct(SortieRepository $sortieRepository, ParticipantService $participantService)
     {
         parent::__construct();
         $this->sortieRepository = $sortieRepository;
+        $this->participantService = $participantService;
     }
 
     protected function configure(): void
@@ -37,13 +41,24 @@ class SortieCleanupCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        $count = 0;
-
         if ($input->getOption("dry-run")) {
             $io->note("Dry mode activé");
             $count = $this->sortieRepository->countSortieAfterOneMonth();
         }
         else {
+
+            $sorties = $this->sortieRepository->getSortieAfterOneMonth()->getQuery()->execute();
+
+            /** @var Sortie $sortie */
+            foreach ($sorties as $sortie)
+            {
+                /** @var Participant $participant */
+                foreach ($sortie->getParticipants() as &$participant)
+                {
+                    $this->participantService->archive($participant, $sortie);
+                }
+            }
+
             $count = $this->sortieRepository->deleteSortieAfterOneMonth();
         }
 

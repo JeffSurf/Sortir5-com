@@ -7,6 +7,7 @@ use App\Form\ParticipantType;
 use App\Form\SearchFormType;
 use App\Repository\ParticipantRepository;
 use App\Repository\SiteRepository;
+use App\Service\ParticipantService;
 use App\Service\UploadService;
 use Doctrine\ORM\EntityManagerInterface;
 use League\Csv\Reader;
@@ -98,9 +99,20 @@ class ParticipantController extends AbstractController {
     }
 
     #[Route('/supprimer/{id}', name: '_delete', requirements: ['id' => '\d+'])]
-    public function delete(EntityManagerInterface $entityManager, ParticipantRepository $participantRepository, int $id): Response {
+    public function delete(EntityManagerInterface $entityManager, ParticipantRepository $participantRepository, ParticipantService $participantService, int $id): Response {
 
         $participant = $participantRepository->find($id);
+
+        foreach ($participant->getSorties() as $sortie) {
+            $participantService->archive($participant, $sortie);
+        }
+
+        foreach ($participant->getSortiesOrganisateur() as $sortie) {
+            foreach ($sortie->getParticipants() as $p) {
+                $participantService->archive($p, $sortie);
+            }
+        }
+
         $entityManager->remove($participant);
         $entityManager->flush();
         $this->addFlash('success', 'Le participant a été supprimé avec succès !');
