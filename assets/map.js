@@ -1,5 +1,4 @@
 import './styles/map.scss';
-import {zoom} from "leaflet/src/control/Control.Zoom";
 
 const BASE_URL_GEOCODE = "https://geocode.maps.co/search";
 
@@ -47,7 +46,6 @@ function handleChangeGeocode() {
                 map.setView([point.lat, point.lon], 16)
             }
 
-            const body = $("body");
             const msg = $("#msg-map");
             msg.empty();
             msg.append(resulats ? `${resulats} résultat(s)` : "Aucun résultat");
