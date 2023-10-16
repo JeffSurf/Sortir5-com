@@ -24,19 +24,43 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class SortieController extends AbstractController
 {
     #[Route('', name: '_list')]
-    public function list(Request $request, SortieRepository $sortieRepository, UserInterface $user, ParticipantRepository $participantRepository): Response
+    public function list(
+        Request $request,
+        SortieRepository $sortieRepository,
+        UserInterface $user,
+        ParticipantRepository $participantRepository,
+        SiteRepository $siteRepository): Response
     {
         //filter
         $filterform = $this->createForm(FilterFormType::class);
         $filterform->handleRequest($request);
 
+        //Mot-clef
         $nom = $filterform->get('nom')->getData();
-        $site = $filterform->get('site')->getData();
+
+        //Site organisateur
+        $siteSelect = $filterform->get('site')->getData();
+        $participantsSite = $participantRepository->findBy(['site' => $siteSelect]);
+
+        //Etat
         $etat = $filterform->get('etat')->getData();
+
+        //Between date de début et fin
         $dateDebut = $filterform->get('dateDebut')->getData();
         $dateFin = $filterform->get('dateFin')->getData();
+
+        //Sorties dont je suis inscrit
+        $inscrit = $filterform->get('estInscrit')->getData();
+
+
+        //Sorties dont je ne suis pas inscrit
+        $pasInscrit = $filterform->get('estPasInscrit')->getData();
+
+        //Sortie dont je suis organisateur
         $participant = $participantRepository->find($user->getId());
         $sortieOrganisateur = $filterform->get('estOrganise')->getData();
+
+        //Sorties passées
         $sortiePassee = $filterform->get('estPassee')->getData();
 
         if($filterform->isSubmitted() && $filterform->isValid()){
