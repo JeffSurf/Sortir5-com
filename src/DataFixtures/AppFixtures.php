@@ -72,7 +72,7 @@ class AppFixtures extends Fixture
             $participant->setNom('Nom' . $i);
             $participant->setPrenom('Prenom' . $i);
             $participant->setRoles(['ROLE_USER']);
-            $participant->setTelephone('06 06 06 06 0' . $i);
+            $participant->setTelephone('060606060' . $i);
             $participant->setActif(true);
             $password = $this->passwordHasher->hashPassword($participant, 'sortir' . $i);
             $participant->setPassword($password);
