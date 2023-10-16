@@ -66,6 +66,13 @@ class SortieRepository extends ServiceEntityRepository
         return $this->getSortieAfterOneMonth()->delete()->getQuery()->execute();
     }
 
+    public function getSortieToClose() : \Doctrine\ORM\QueryBuilder
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere("s.dateLimiteInscription < :current_date")
+            ->setParameter('current_date', new \DateTime('now'));
+    }
+
 //    /**
 //     * @return Sortie[] Returns an array of Sortie objects
 //     */
