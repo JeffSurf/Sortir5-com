@@ -226,6 +226,19 @@ class SortieController extends AbstractController
     }
 
 
+    #[Route('/supprimer/{id}', name: '_delete', requirements: ['id' => '\d+'])]
+    public function delete(EntityManagerInterface $entityManager, Sortie $id = null): Response {
+        $lieu = $id->getLieu();
+        $lieu->removeSortie($id);
+
+        $entityManager->remove($id);
+        $entityManager->flush();
+        $this->addFlash('success', 'La sortie a bien été supprimée !');
+
+        return $this->redirectToRoute('sortie_list');
+    }
+
+
     #[Route('/annuler/{id}', name: '_cancel', requirements: ['id' => '\d+'])]
     public function cancel(Request $request, EntityManagerInterface $entityManager, SortieRepository $sortieRepository, UserInterface $user, int $id = null): Response {
 

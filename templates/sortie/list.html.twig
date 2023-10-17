@@ -111,6 +111,11 @@
                             <a href="{{ path('sortie_publish', {'id': sortie.id}) }}" class="btn btn-outline-warning">Publier</a>
                         {% endif %}
 
+                        {# Gestion du bouton Supprimer #}
+                        {% if (sortie.organisateur == app.user) and sortie.etat.name == "CREEE" %}
+                            <a href="{{ path('sortie_delete', {'id': sortie.id}) }}" class="btn btn-outline-danger">Supprimer</a>
+                        {% endif %}
+
                         {# Gestion des boutons S'INSCRIRE et SE DESISTER #}
                         {% if (sortie.participants is empty) and (sortie.etat.name in ['OUVERTE']) %}
                             <a href="{{ path('sortie_inscrire', {'id': sortie.id}) }}" class="btn btn-outline-success">S'inscrire</a>
