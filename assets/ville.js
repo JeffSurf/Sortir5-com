@@ -1,6 +1,6 @@
 const $ = require("jquery");
 const selectorVille = "#ville";
-const selectorLieu = '#lieu';
+const selectorLieu = '#liste_lieu';
 
 function getLieuParVille() {
     const id = $(selectorVille).val();
