@@ -64,7 +64,6 @@ class SortieController extends AbstractController
         //Sorties dont je suis inscrit
         $inscrit = $filterform->get('estInscrit')->getData();
 
-
         //Sorties dont je ne suis pas inscrit
         $pasInscrit = $filterform->get('estPasInscrit')->getData();
 
