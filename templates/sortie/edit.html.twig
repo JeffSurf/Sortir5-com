@@ -60,7 +60,7 @@
                 </div>
 
                 <div class="form-row px-lg-5">
-                    {{ form_row(form.lieu, {id: "lieu"}) }}
+                    {{ form_row(form.lieu, {id: "liste_lieu"}) }}
                 </div>
 
                 <div class="form-row px-lg-5">
@@ -84,26 +84,31 @@
                                             <option value="{{ ville.id }}">{{ ville.nom }}</option>
                                         {% endfor %}
                                     </select>
+                                    <div class="invalid-feedback"></div>
                                 </div>
 
                                 <div class="form-row">
                                     <label for="lieu_nom" class="form-label">Nom*</label>
                                     <input class="form-control" id="lieu_nom" type="text" name="lieu_nom" required/>
+                                    <div class="invalid-feedback"></div>
                                 </div>
 
                                 <div class="form-row">
                                     <label for="lieu_adresse" class="form-label">Adresse</label>
                                     <input class="form-control" id="lieu_adresse" type="text" name="lieu_adresse"/>
+                                    <div class="invalid-feedback"></div>
                                 </div>
 
                                 <div class="form-row">
-                                    <label for="lieu_lon" class="form-label">Longitude</label>
-                                    <input class="form-control" id="lieu_lon" type="text" name="lieu_lon"/>
+                                    <label for="lieu_longitude" class="form-label">Longitude</label>
+                                    <input class="form-control" id="lieu_longitude" type="text" name="lieu_longitude"/>
+                                    <div class="invalid-feedback"></div>
                                 </div>
 
                                 <div class="form-row">
-                                    <label for="lieu_lat" class="form-label">Latitude</label>
-                                    <input class="form-control" id="lieu_lat" type="text" name="lieu_lat"/>
+                                    <label for="lieu_latitude" class="form-label">Latitude</label>
+                                    <input class="form-control" id="lieu_latitude" type="text" name="lieu_latitude"/>
+                                    <div class="invalid-feedback"></div>
                                 </div>
 
                                 <div class="form-row mt-3">
