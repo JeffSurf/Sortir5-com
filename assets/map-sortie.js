@@ -15,8 +15,8 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 const nom_input = $("#lieu_nom");
 const adresse_input = $("#lieu_adresse");
 const ville_input = $("#lieu_ville");
-const lieu_lat = $("#lieu_lat");
-const lieu_lng = $("#lieu_lon");
+const lieu_lat = $("#lieu_latitude");
+const lieu_lng = $("#lieu_longitude");
 
 const handleChangeGeocode = () => {
     const nom = nom_input.val();
@@ -53,7 +53,7 @@ adresse_input.on('change', handleChangeGeocode);
 ville_input.on('change', handleChangeGeocode);
 
 //Permet d'afficher la map correctement
-$("#show-lieu").on('click', () => setTimeout(() => map.invalidateSize(), 10));
+$("#show-lieu").on('click', () => setTimeout(() => map.invalidateSize(), 200));
 
 const handleClickLieu = () => {
     const bodyReq = {
@@ -64,11 +64,20 @@ const handleClickLieu = () => {
         [lieu_lng.attr("name")]: lieu_lng.val(),
     }
     $.post("/lieu", bodyReq, (data) => {
+        const addedLieu = JSON.parse(data);
+
+        $("#liste_lieu").append($(`<option value="${addedLieu.id}">${addedLieu.nom}</option>`));
+
+        $(`.modal-body [name]`).removeClass("is-invalid");
+
         $("#btn-close-modal").trigger("click");
     })
         .fail((err) => {
             const errors = err.responseJSON;
             for(const key in errors) {
+                const selectorInput = "#lieu_" + key;
+                $(selectorInput).addClass("is-invalid");
+                $(selectorInput).next().text(errors[key]);
             }
         })
 }
