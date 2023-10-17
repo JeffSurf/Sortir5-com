@@ -3,25 +3,31 @@
 namespace App\Controller;
 
 use App\Entity\Lieu;
-use App\Repository\LieuRepository;
 use App\Repository\VilleRepository;
-use Psr\Log\LoggerInterface;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[Route('/lieu', name: 'lieu')]
 class LieuController extends AbstractController
 {
     #[Route(name: '_create', methods: "POST")]
-    public function create(Request $request, VilleRepository $villeRepository, ValidatorInterface $validator, LoggerInterface $logger): Response {
+    public function create(
+        Request $request,
+        VilleRepository $villeRepository,
+        ValidatorInterface $validator,
+        EntityManagerInterface $em,
+        SerializerInterface $serializer
+    ): Response {
         $nom = $request->request->get('lieu_nom');
         $adresse = $request->request->get('lieu_adresse');
-        $lat = $request->request->get('lieu_lat');
-        $lon = $request->request->get('lieu_lon');
+        $lat = $request->request->get('lieu_latitude');
+        $lon = $request->request->get('lieu_longitude');
         $villeId = $request->request->get('lieu_ville');
 
         $ville = $villeRepository->find($villeId);
@@ -31,15 +37,14 @@ class LieuController extends AbstractController
             ->setAdresse($adresse)
             ->setVille($ville);
 
-        if($lat && $lon && is_float($lat) && is_float($lon)) {
+        if($lat && $lon) {
             $lieu->setLongitude($lon)
                 ->setLatitude($lat);
         }
 
         $errors = $validator->validate($lieu);
 
-        if($errors->count() > 0)
-        {
+        if($errors->count() > 0) {
             $error_json = array();
             foreach ($errors as $error) {
                 $error_json[$error->getPropertyPath()] = $error->getMessage();
@@ -47,7 +52,10 @@ class LieuController extends AbstractController
             return new JsonResponse($error_json, 400);
         }
 
-        return new Response('Réussite');
+        $em->persist($lieu);
+        $em->flush();
+
+        return new JsonResponse($serializer->serialize($lieu, "json"));
 
     }
 }
