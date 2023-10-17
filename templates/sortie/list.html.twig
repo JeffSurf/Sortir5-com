@@ -58,8 +58,9 @@
                 <th scope="col">Sortie</th>
                 <th scope="col">Organisateur</th>
                 <th scope="col">Date</th>
-                <th scope="col">Clôture</th>
-                <th scope="col">Inscriptions</th>
+                <th scope="col">Date limite d'inscription</th>
+                <th scope="col">Inscrits</th>
+                <th></th>
                 <th scope="col">Etat</th>
                 <th scope="col">Actions</th>
             </tr>
@@ -82,15 +83,36 @@
 
                     <td>{{ sortie.dateHeureDebut | date('d/m/Y H:i') }}</td>
                     <td>
-                        {% set difference = date(sortie.dateLimiteInscription).diff(date(sortie.dateHeureDebut)) %}
-                        {% set leftDays = difference.days %}
-                        Il reste {{ leftDays }} jour{{ leftDays > 1 ? 's' : '' }}
+                        {% set difference = date(sortie.dateLimiteInscription).diff(date(now)) %}
+                        {% set days = difference.days %}
+                        {% set hours = difference.h %}
+                        {% set minutes = difference.i %}
+
+                        {% if days+hours+minutes < 1 %}
+                            Atteinte
+                        {% else %}
+                            Il reste
+                            {% if days > 0 %}
+                                {{ days }}J,
+                            {% endif %}
+                            {% if days+hours > 0 %}
+                                {{ hours }}h et
+                            {% endif %}
+                            {{ minutes }}min.
+                        {% endif %}
                     </td>
 
 
                     <td>
-                        {{ sortie.participants|length }}/{{ sortie.nbInscriptionsMax }}
-
+                        {{sortie.participants|length ~ '/' ~ sortie.nbInscriptionsMax ~ ' ' ~
+                        (sortie.participants|length == sortie.nbInscriptionsMax ? 'Complet' : '') }}
+                    </td>
+                    <td>
+                        {% if sortie.participants is not empty %}
+                            {% if app.user in sortie.participants %}
+                                <i class="fa-solid fa-check text-success"></i>
+                            {% endif%}
+                        {% endif %}
                     </td>
                     <td>{{ sortie.etat.value }}</td>
 
