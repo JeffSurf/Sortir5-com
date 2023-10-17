@@ -47,9 +47,6 @@
             "./migrations/.gitignore"
         ]
     },
-    "knplabs/knp-time-bundle": {
-        "version": "v2.1.0"
-    },
     "phpunit/phpunit": {
         "version": "9.6",
         "recipe": {
