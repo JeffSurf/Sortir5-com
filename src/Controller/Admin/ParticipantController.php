@@ -76,13 +76,12 @@ class ParticipantController extends AbstractController {
 
             $isActif = $form->get('actif')->getData();
 
-            if(!$isActif && !in_array("ROLE_ADMIN", $participant->getRoles()))
-            {
-                $participant->setRoles(["ROLE_BAN"]);
-            }
-            else
-            {
+            if (in_array("ROLE_ADMIN", $participant->getRoles())) {
+                $participant->setRoles(["ROLE_ADMIN"]);
+            } elseif ($isActif) {
                 $participant->setRoles(["ROLE_USER"]);
+            } else {
+                $participant->setRoles(["ROLE_BAN"]);
             }
 
             $entityManager->persist($participant);
@@ -97,6 +96,27 @@ class ParticipantController extends AbstractController {
             'action' => $participant->getId() == null ? 'Ajouter' : 'Modifier'
         ]);
     }
+
+    #[Route('/active/{id}', name: '_enable', requirements: ['id' => '\d+'])]
+    #[Route('/desactiver/{id}', name: '_disable', requirements: ['id' => '\d+'])]
+    public function able(Request $request, EntityManagerInterface $entityManager,  ParticipantRepository $participantRepository,
+                         UploadService $uploadService, UserPasswordHasherInterface $userPasswordHasher, int $id = null): Response {
+
+        $participant = $participantRepository->find($id);
+        $msg = ' ' ;
+        if(in_array("ROLE_BAN", $participant->getRoles())) {
+            $participant->setRoles(["ROLE_USER"]);
+        } else {
+            $participant->setRoles(["ROLE_BAN"]);
+            $msg =' dés';
+        }
+
+        $entityManager->persist($participant);
+        $entityManager->flush();
+        $this->addFlash('success', 'Le participant a été' . $msg . 'activé avec succès !');
+        return $this->redirectToRoute('app_admin_participant_list');
+    }
+
 
     #[Route('/supprimer/{id}', name: '_delete', requirements: ['id' => '\d+'])]
     public function delete(EntityManagerInterface $entityManager, ParticipantRepository $participantRepository, ParticipantService $participantService, int $id): Response {

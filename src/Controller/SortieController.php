@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Etat;
 use App\Entity\Lieu;
+use App\Entity\Participant;
 use App\Entity\Sortie;
 use App\Form\AnnulerSortieType;
 use App\Form\FilterFormType;
@@ -13,6 +14,7 @@ use App\Repository\ParticipantRepository;
 use App\Repository\SiteRepository;
 use App\Repository\SortieRepository;
 use App\Repository\VilleRepository;
+use App\Service\FirstLoginService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,11 +28,20 @@ class SortieController extends AbstractController
     #[Route('', name: '_list')]
     public function list(
         Request $request,
+        FirstLoginService $firstLoginService,
         SortieRepository $sortieRepository,
         UserInterface $user,
         ParticipantRepository $participantRepository,
         SiteRepository $siteRepository): Response
     {
+
+        //Verifier première connexion
+        /** @var Participant $user */
+        $user = $this->getUser();
+        if ($firstLoginService->checkDefaultPassword($user)) {
+            return $this->redirectToRoute("app_profil_edit_password", ['pseudo' => $user->getPseudo()]);
+        }
+
         //filter
         $filterform = $this->createForm(FilterFormType::class);
         $filterform->handleRequest($request);

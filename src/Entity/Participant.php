@@ -24,8 +24,8 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 100, unique: true)]
-    #[Assert\NotBlank(message: "L'email ne peut pas être vide")]
-    #[Assert\Email(message: "Le format n'est pas valide")]
+    #[Assert\NotBlank(message: "L'email ne peut pas être vide"),]
+    #[Assert\Email(message: "Le format n'est pas valide (exemple@sortir.com"),]
     private ?string $email = null;
 
     #[ORM\Column]
@@ -190,18 +190,6 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     public function setTelephone(?string $telephone): static
     {
         $this->telephone = $telephone;
-
-        return $this;
-    }
-
-    public function isActif(): ?bool
-    {
-        return $this->actif;
-    }
-
-    public function setActif(bool $actif): static
-    {
-        $this->actif = $actif;
 
         return $this;
     }

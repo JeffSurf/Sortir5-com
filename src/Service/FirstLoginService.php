@@ -16,7 +16,7 @@ class FirstLoginService {
     }
 
     public function checkDefaultPassword(Participant $user) : bool {
-        $passwordDefault = $user->getNom() . $user->getPrenom() . "@ENI2023";
+        $passwordDefault = strtolower($user->getNom() . $user->getPrenom()) . "@S2023";
         return $this->uph->isPasswordValid($user, $passwordDefault);
     }
 }

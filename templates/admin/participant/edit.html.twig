@@ -43,7 +43,7 @@
             {{  form_row(form.site) }}
         </div>
 
-        <div class="form-row">
+        <div class="form-row" style="{{ 'ROLE_ADMIN' in participant.roles ? 'pointer-events: none; opacity: 0.5;' : ''}}">
             {{  form_row(form.actif) }}
         </div>
 

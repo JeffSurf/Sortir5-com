@@ -27,14 +27,24 @@
             <div class="col-5">
                 <div class="row">
                     <div class="col-9">
-                        {{ form_row(profilForm.pseudo) }}
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between">
+                                {{ form_label(profilForm.pseudo) }}
+                                <span class="required-field">champs requis</span>
+                            </div>
+                            {{ form_widget(profilForm.pseudo) }}
+                            {{ form_errors(profilForm.pseudo) }}
+                        </div>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-9">
-                        <div class="mb-3">
-                            <label class="form-label" for="prenom-profil">Prenom*</label>
+                        <div class="mb-3 readonly">
+                            <div class="d-flex justify-content-between">
+                                {{ form_label(profilForm.prenom) }}
+                                <span class="required-field">champs requis</span>
+                            </div>
                             <input
                                     id="prenom-profil"
                                     name="{{ field_name(profilForm.prenom) }}"
@@ -49,8 +59,12 @@
 
                 <div class="row">
                     <div class="col-9">
-                        <div class="mb-3">
-                            <label class="form-label" for="nom-profil">Nom*</label>
+                        <div class="mb-3 readonly">
+                            <div class="d-flex justify-content-between">
+                                {{ form_label(profilForm.nom) }}
+                                <span class="required-field">champs requis</span>
+                            </div>
+
                             <input
                                     id="nom-profil"
                                     name="{{ field_name(profilForm.nom) }}"
@@ -73,25 +87,38 @@
             <div class="col-5">
                 <div class="row">
                     <div class="col-9">
-                        {{ form_row(profilForm.email) }}
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between">
+                                {{ form_label(profilForm.email) }}
+                                <span class="required-field">champs requis</span>
+                            </div>
+                            {{ form_widget(profilForm.email) }}
+                            {{ form_errors(profilForm.email) }}
+                        </div>
                     </div>
                 </div>
 
                 <div class="row">
-                    <div class="col-4">
+                    <div class="col-9">
                         {{ form_row(profilForm.telephone) }}
                     </div>
                 </div>
 
                 <div class="row align-items-center">
                     <div class="col-9">
-                        {{ form_row(profilForm.plainPassword) }}
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between">
+                                {{ form_label(profilForm.plainPassword) }}
+                                <span class="required-field">champs requis</span>
+                            </div>
+                            {{ form_widget(profilForm.plainPassword) }}
+                        </div>
                     </div>
                 </div>
 
                 <div class="row align-items-center">
                     <div class="col-6 h-fit-content">
-                        <a class="btn btn-link" href="{{ path('app_profil_edit_password',{'pseudo' : app.user.pseudo}) }}">Modifier votre mot de passe ?</a>
+                        <a class="btn btn-outline-secondary btn-sm" href="{{ path('app_profil_edit_password',{'pseudo' : app.user.pseudo}) }}">Modifier votre mot de passe</a>
                     </div>
                 </div>
 

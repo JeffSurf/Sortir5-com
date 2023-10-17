@@ -23,18 +23,23 @@ class ProfilFormType extends AbstractType
     {
         $builder
             ->add('email', EmailType::class, [
-                'label' => "Email*"
+                'label' => "Email"
             ])
             ->add('nom')
             ->add('prenom')
-            ->add('telephone', TelType::class, ["required" => false])
+            ->add('telephone', TelType::class, [
+                'label' => 'Téléphone',
+                'required' => false,
+                'attr' => ['maxlength' => 10, 'placeholder' => '0xxxxxxxxx']
+
+            ])
             ->add('pseudo', TextType::class, [
-                'label' => "Pseudo*"
+                'label' => "Pseudo"
             ])
             ->add('plainPassword', PasswordType::class, [
                 'mapped' => false,
                 'required' => true,
-                'label' => "Mot de passe*",
+                'label' => "Mot de passe",
                 'attr' => ['autocomplete' => 'new-password'],
                 'constraints' => [
                     new NotBlank([
@@ -46,7 +51,8 @@ class ProfilFormType extends AbstractType
                 "label" => "Image de profil",
                 "mapped" => false,
                 "required" => false,
-                "help" => "Taille maxi (2MB)",
+                "help" => "Format (.png, .jpg, .jpeg)<br>Taille maxi (2MB)",
+                'help_html' => true,
                 "attr" => ["class" => "image-file"],
                 "constraints" => [
                     new File([
@@ -54,8 +60,8 @@ class ProfilFormType extends AbstractType
                         "maxSizeMessage" => "Le fichier est trop volumineux ({{ size }} {{ suffix }}). Taille maximale {{ limit }} {{ suffix }}",
                         "mimeTypes" => [
                             "image/png",
-                            "image/jpeg",
-                            "image/svg+xml"
+                            "image/jpg",
+                            "image/jpeg"
                         ],
                         "mimeTypesMessage" => "Le type {{ type }} est invalide. Les formats valides sont {{ types }}"
                     ])

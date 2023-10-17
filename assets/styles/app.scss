@@ -188,9 +188,48 @@ nav {
 }
 
 .info {
-    color: #68C7DE;
+    color: var(--blue);
     font-size: 20px;
     font-weight: normal;
+}
+
+.btn-admin {
+    background-color: var(--darkblue) !important;
+    color: white !important;
+    border: #292929;
+
+    &:hover {
+        background-color: #292929 !important;
+    }
+}
+
+.form-control:focus {
+    color: var(--bs-body-color);
+    background-color: var(--bs-body-bg);
+    border-color: var(--blue);
+    outline: 0;
+    box-shadow: none;
+}
+
+.readonly {
+    .required-field {
+        color: #a1a1a1 !important;
+    }
+    input {
+        cursor: default;
+        background: #ededed;
+        &:focus {
+            border-color: #dee2e6;
+            background: #ededed;
+            outline: 0;
+            box-shadow: none !important;
+        }
+    }
+}
+
+.required-field {
+    font-size: 14px;
+    color: var(--blue)
 }
 
 

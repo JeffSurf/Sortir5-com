@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/profil', name: 'app_profil_')]
@@ -24,50 +25,48 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class ProfilController extends AbstractController
 {
     #[Route('/{pseudo}', name: 'voir')]
-    public function index(ParticipantRepository $participantRepository, SortieRepository $sortieRepository, string $pseudo): Response {
+    public function index(ParticipantRepository $participantRepository, SortieRepository $sortieRepository, string $pseudo): Response
+    {
         $requestedUser = $participantRepository->findByPseudo($pseudo);
         /** @var Participant $me */
         $loggedUser = $this->getUser();
         $sorties = $sortieRepository->findAll();
+        $pageView = null;
 
-        if ($requestedUser == $loggedUser) {
-            echo "C'est mon profil";
-        } else {
-            $usersMatch = false;
-            $users = 0;
+        if ($requestedUser != null) { //si la personne request existe
+            if ($requestedUser == $loggedUser) { //si la personne connectée request son pseudo
+                $pageView = "myProfile";
+            } elseif ($this->isGranted('ROLE_ADMIN')) { //si la personne connectée est admin
+                $pageView = "adminView";
+            } else {
+                $usersMatch = false;
 
-            foreach ($sorties as $sortie) {
-                $participants = $sortie->getParticipants();
-                $organistateur = $sortie->getOrganisateur();
-                foreach ($participants as $participant) {
-                    if ($requestedUser == $participant && $loggedUser == $organistateur) {
-                        echo $requestedUser->getPseudo() . " est inscrit dans une sortie que j'organise.";
-                        $usersMatch = true;
-                        break;
-                    } elseif ($requestedUser == $organistateur && $loggedUser == $participant) {
-                        echo $requestedUser->getPseudo() . " organise une sortie à laquelle je participe.";
-                        $usersMatch = true;
-                        break;
-                    } elseif ($requestedUser == $participant || $loggedUser === $participant) {
-                        $users++;
-                        if ($users == 2) {
-                            echo $requestedUser->getPseudo() . " participe avec moi à une sortie";
+                foreach ($sorties as $sortie) {
+                    $participants = $sortie->getParticipants();
+                    $organistateur = $sortie->getOrganisateur();
+                    foreach ($participants as $participant) {
+                        if ($requestedUser == $participant && $loggedUser == $organistateur) { //si la personne request est inscrit dans une sortie que j'organise
+                            $pageView = "organisateurView";
+                            $usersMatch = true;
+                            break;
+                        } elseif ($requestedUser == $organistateur && $loggedUser == $participant) { //si la personne request organise une sortie à laquelle je participe
+                            $pageView = "participantView";
                             $usersMatch = true;
                             break;
                         }
                     }
                 }
+                if (!$usersMatch) {
+                    return $this->redirectToRoute('app_error_404');
+                }
             }
-            if (!$usersMatch) {
-                return $this->render('error/404.html.twig');
-            }
+        } else {
+            return $this->redirectToRoute('app_error_404');
         }
 
-
-
-
         return $this->render('profil/index.html.twig',[
-            'user' => $requestedUser
+            'user' => $requestedUser,
+            'pageStatus' => $pageView
         ]);
     }
 
@@ -77,7 +76,7 @@ class ProfilController extends AbstractController
         $dataUser = $participantRepository->findByPseudo($pseudo);
 
         if($dataUser != $this->getUser()) {
-            return $this->render('error/404.html.twig');
+            return $this->redirectToRoute('app_error_404');
         }
 
         $form = $this->createForm(ProfilFormType::class, $dataUser);
@@ -143,7 +142,7 @@ class ProfilController extends AbstractController
         $form->handleRequest($request);
 
         if($dataUser != $this->getUser()) {
-            return $this->render('error/404.html.twig');
+            return $this->redirectToRoute('app_error_404');
         }
 
         $msg = null;

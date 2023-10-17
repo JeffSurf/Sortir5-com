@@ -30,23 +30,27 @@ class ParticipantType extends AbstractType
                 "required" => true
             ])
             ->add('imageProfil', FileType::class, [
-                'label' => 'Photo de profil',
-                'attr' => ['class' => 'image-file'],
-                'mapped' => false,
-                'required' => false,
-                'constraints' => [
+                "label" => "Image de profil",
+                "mapped" => false,
+                "required" => false,
+                "help" => "Format (.png, .jpg, .jpeg)<br>Taille maxi (2MB)",
+                'help_html' => true,
+                "attr" => ["class" => "image-file"],
+                "constraints" => [
                     new File([
-                        'maxSize' => '1024k',
-                        'mimeTypes' => [
-                            'image/png',
-                            'image/jpeg',
+                        "maxSize" => "2048k",
+                        "maxSizeMessage" => "Le fichier est trop volumineux ({{ size }} {{ suffix }}). Taille maximale {{ limit }} {{ suffix }}",
+                        "mimeTypes" => [
+                            "image/png",
+                            "image/jpg",
+                            "image/jpeg"
                         ],
-                        'mimeTypesMessage' => 'Veuillez uploader un PNG ou un JPG',
+                        "mimeTypesMessage" => "Le type {{ type }} est invalide. Les formats valides sont {{ types }}"
                     ])
-                ],
+                ]
             ])
             ->add('rgpd', CheckboxType::class, [
-                'label' => "Accepter que les utilisateurs puissent voir votre photo",
+                'label' => "Accepter que les utilisateurs autorisés à afficher le profil puissent voir la photo",
                 'required' => false
             ])
             ->add('prenom', null, [
@@ -77,6 +81,7 @@ class ParticipantType extends AbstractType
                 'required' => false,
                 'label' => "Mot de passe",
                 'attr' => ['autocomplete' => 'new-password'],
+                'help' => 'Par défaut : nomprenom@S2023',
                 'constraints' => [
                     new Length([
                         'min' => 3, 'minMessage' => 'Le mot de passe doit faire au moins {{ limit }} caractères',

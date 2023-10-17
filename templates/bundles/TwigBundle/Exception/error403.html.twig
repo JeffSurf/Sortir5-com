@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accès refusé{% endblock %}
+
+{% block body %}
+    <div class="main error-page">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 align-self-center">
+                    <img src="{{ asset('images/illustration.png') }}" alt="">
+                </div>
+                <div class="glass col-md-6 align-self-center">
+                    {% if 'ROLE_USER' in app.user.roles %}
+                        <h1>STOP</h1>
+                        <h2>Vous êtes banni.</h2>
+                        <p>
+                            Votre compte a été désactivé.<br>
+                            Si vous pensez qu'il sagit d'une erreur, veuillez contacter un administrateur.</p>
+                        <a><button class="btn blue">CONTACTER</button></a>
+                    {% else %}
+                        <h1>404</h1>
+                        <h2>Vous vous êtes perdu..</h2>
+                        <p>
+                            La page à laquelle vous essayez d'accéder n'existe pas ou n'est pas disponible.<br>
+                            Vous ne devriez pas rester la, cliquez sur le boutton ci-dessous afin de retourner à l'accueil.</p>
+                        <a href="{{ path('sortie_list') }}"><button class="btn blue">ACCUEeIL</button></a>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

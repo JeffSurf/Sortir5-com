@@ -38,6 +38,7 @@ security:
         - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/login, roles: PUBLIC_ACCESS }
         - { path: ^/register, roles: PUBLIC_ACCESS }
+        - { path: ^/logout, roles: [ROLE_USER, ROLE_BAN] }
         - { path: ^/, roles: ROLE_USER }
     role_hierarchy:
         ROLE_ADMIN: ROLE_USER
