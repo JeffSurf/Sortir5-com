@@ -1,7 +1,9 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}{{ action }} une sortie{% endblock %}
+
 {% block body %}
-    <div class="container">
+    <div class="container container-page">
         <h1 class="text-center text-primary">{{ action }} une sortie</h1>
         {{  form_start(form) }}
 
@@ -9,7 +11,7 @@
 
         <div class="row">
             <div class="col-6 justify-content-center">
-                <div class="form-row px-lg-5" readonly=tru>
+                <div class="form-row px-lg-5" readonly>
                     {{  form_row(form.nom) }}
                 </div>
 
@@ -66,6 +68,7 @@
 {% endblock %}
 
 {% block javascripts %}
+    {{ parent() }}
     <script>
         function getLieuParVille() {
             const id = document.getElementById('ville').value;

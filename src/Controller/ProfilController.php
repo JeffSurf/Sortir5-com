@@ -19,11 +19,16 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use function PHPUnit\Framework\throwException;
 
 #[Route('/profil', name: 'app_profil_')]
 #[IsGranted('ROLE_USER')]
 class ProfilController extends AbstractController
 {
+
+    /**
+     * @throws \Exception
+     */
     #[Route('/{pseudo}', name: 'voir')]
     public function index(ParticipantRepository $participantRepository, SortieRepository $sortieRepository, string $pseudo): Response
     {
@@ -57,11 +62,11 @@ class ProfilController extends AbstractController
                     }
                 }
                 if (!$usersMatch) {
-                    return $this->redirectToRoute('app_error_404');
+                    throw new \Exception("HTTP 403 : Vous n'êtes pas autorisé");
                 }
             }
         } else {
-            return $this->redirectToRoute('app_error_404');
+            throw new \Exception("HTTP 403 : Vous n'êtes pas autorisé");
         }
 
         return $this->render('profil/index.html.twig',[
@@ -70,13 +75,16 @@ class ProfilController extends AbstractController
         ]);
     }
 
+    /**
+     * @throws \Exception
+     */
     #[Route('/edit/{pseudo}', name: 'editer')]
     public function edit(Request $request, ParticipantRepository $participantRepository, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $em, UploadService $fileUploader,  string $pseudo): \Symfony\Component\HttpFoundation\RedirectResponse|Response
     {
         $dataUser = $participantRepository->findByPseudo($pseudo);
 
         if($dataUser != $this->getUser()) {
-            return $this->redirectToRoute('app_error_404');
+            throw new \Exception("HTTP 403 : Vous n'êtes pas autorisé");
         }
 
         $form = $this->createForm(ProfilFormType::class, $dataUser);
@@ -133,6 +141,9 @@ class ProfilController extends AbstractController
         ]);
     }
 
+    /**
+     * @throws \Exception
+     */
     #[Route('/edit/password/{pseudo}', name: 'edit_password')]
     public function editPassword(Request $request, FirstLoginService $firstLoginService, ParticipantRepository $participantRepository, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $em, string $pseudo): Response {
 
@@ -142,7 +153,7 @@ class ProfilController extends AbstractController
         $form->handleRequest($request);
 
         if($dataUser != $this->getUser()) {
-            return $this->redirectToRoute('app_error_404');
+            throw new \Exception("HTTP 403 : Vous n'êtes pas autorisé");
         }
 
         $msg = null;

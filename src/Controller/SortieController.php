@@ -42,6 +42,8 @@ class SortieController extends AbstractController
             return $this->redirectToRoute("app_profil_edit_password", ['pseudo' => $user->getPseudo()]);
         }
 
+        $now = new \DateTime();
+
         //filter
         $filterform = $this->createForm(FilterFormType::class);
         $filterform->handleRequest($request);
@@ -83,6 +85,7 @@ class SortieController extends AbstractController
 
         return $this->render('sortie/list.html.twig', [
             'sorties' => $sortieRepository->findAll(),
+            'now' => $now,
             'filterform' => $filterform
         ]);
     }
@@ -103,21 +106,27 @@ class SortieController extends AbstractController
             $sortie->setLieu($lieu);
             $entityManager->persist($sortie);
             $entityManager->flush();
-            $this->addFlash('success', 'La sortie a été ajoutée avec succès !');
+            $this->addFlash('success', 'La sortie a été créée avec succès !');
             return $this->redirectToRoute('sortie_list');
         }
 
         return $this->render('sortie/edit.html.twig', [
             'form' => $form,
-            'action' => $sortie->getId() == null ? 'Ajouter' : 'Modifier',
+            'action' => 'Créer',
             'villes' => $villes
         ]);
     }
 
     #[Route('/modifier/{id}', name: '_update', requirements: ['id' => '\d+'])]
-    public function update(Request $request, EntityManagerInterface $entityManager, SortieRepository $sortieRepository, VilleRepository $villeRepository, LieuRepository $lieuRepository, int $id = null): Response {
+    public function update(Request $request, EntityManagerInterface $entityManager, SortieRepository $sortieRepository, VilleRepository $villeRepository, LieuRepository $lieuRepository, int $id = null): Response
+    {
         $sortie = $sortieRepository->find($id);
         $villes = $villeRepository->findAll();
+        $user = $this->getUser();
+
+        if(!$sortie || $sortie->getEtat()->name != 'CREEE' || (!in_array("ROLE_ADMIN", $user->getRoles()) && $user !== $sortie->getOrganisateur())) {
+            throw new \Exception("HTTP 403 : Vous n'êtes pas autorisé");
+        }
 
         $form = $this->createForm(SortieFormType::class, $sortie);
         $lieu = $lieuRepository->find($sortie->getLieu()->getId());
@@ -144,9 +153,17 @@ class SortieController extends AbstractController
     public function show(SortieRepository $sortieRepository, int $id = null): Response {
 
         $sortie = $sortieRepository->find($id);
+        $user = $this->getUser();
+
+        if(!$sortie || $sortie->getEtat()->name == 'CREEE') {
+            throw new \Exception("HTTP 403 : Vous n'êtes pas autorisé");
+        }
+
         $lieu = $sortie->getLieu();
         $ville = $lieu->getVille();
         $participants = $sortie->getParticipants();
+
+
 
         return $this->render('sortie/show.html.twig', [
             'sortie' => $sortie,
@@ -196,20 +213,18 @@ class SortieController extends AbstractController
         } else {
             $sortie = $sortieRepository->find($id);
             $participant = $participantRepository->find($user->getId());
+            $participants = $sortie->getParticipants()->toArray();
 
-            foreach ($sortie->getParticipants() as $participantSortie){
-                if ($participantSortie === $participant) {
-                    $sortie->removeParticipant($participant);
-                    $participant->removeSortie($sortie);
+            if (in_array($participant, $participants)) {
+                $sortie->removeParticipant($participant);
+                $participant->removeSortie($sortie);
 
-                    $entityManager->persist($sortie);
-                    $entityManager->persist($participant);
-                    $entityManager->flush();
-                    $this->addFlash('success', 'Votre désistement a bien été prise en compte !');
-                    break;
-                } else {
-                    $this->addFlash('danger', 'Vous n\'êtes pas inscrits donc vous ne pouvez pas vous désister !');
-                }
+                $entityManager->persist($sortie);
+                $entityManager->persist($participant);
+                $entityManager->flush();
+                $this->addFlash('success', 'Votre désistement a bien été prise en compte !');
+            } else {
+                $this->addFlash('danger', 'Vous n\'êtes pas inscrits donc vous ne pouvez pas vous désister !');
             }
         }
         return $this->redirectToRoute('sortie_list');

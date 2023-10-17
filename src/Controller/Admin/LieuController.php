@@ -81,7 +81,7 @@ class LieuController extends AbstractController {
         $lieu = $lieuRepository->find($id);
 
         if($lieu->getSorties()->count() > 0) {
-            $this->addFlash('danger', 'Ce lieu ' . $lieu->getNom() .' est rattaché à ' . $lieu->getSorties()->count() . ' sortie' . $lieu->getSorties()->count()>1 ? 's' : '' . ', vous ne pouvez pas le supprimer');
+            $this->addFlash('danger', 'Ce lieu ' . $lieu->getNom() .' est rattaché à ' . $lieu->getSorties()->count() . ' sortie' . ($lieu->getSorties()->count()>1 ? 's' : '') . ', vous ne pouvez pas le supprimer');
         } else {
             $entityManager->remove($lieu);
             $entityManager->flush();

@@ -55,13 +55,12 @@
         <table class="table col-lg-12 mt-3">
             <thead>
             <tr>
-                <th scope="col">Nom</th>
-                <th scope="col">Date de la sortir</th>
-                <th scope="col">Clôture</th>
-                <th scope="col">Inscrits/Places</th>
-                <th scope="col">Etat</th>
-                <th scope="col">Inscrit</th>
+                <th scope="col">Sortie</th>
                 <th scope="col">Organisateur</th>
+                <th scope="col">Date</th>
+                <th scope="col">Clôture</th>
+                <th scope="col">Inscriptions</th>
+                <th scope="col">Etat</th>
                 <th scope="col">Actions</th>
             </tr>
             </thead>
@@ -69,23 +68,32 @@
                 {% for sortie in sorties %}
                 <tr>
                     <td>{{ sortie.nom }}</td>
-                    <td>{{ sortie.dateHeureDebut|date("Y-m-d H:i:s") }}</td>
-                    <td>{{ sortie.dateLimiteInscription|date("Y-m-d H:i:s") }}</td>
-                    <td>{{ sortie.participants|length }}/{{ sortie.nbInscriptionsMax }}</td>
-                    <td>{{ sortie.etat.value }}</td>
-                    {% if sortie.participants is empty %}
-                        <td> </td>
-                    {% else%}
-                        {% for participant in sortie.participants %}
-                            {% if participant == app.user %}
-                                <td> X </td>
+                    <td>
+                        {% if sortie.participants is not empty %}
+                            {% if app.user in sortie.participants %}
+                                <a href="{{ path('app_profil_voir', {'pseudo': sortie.organisateur.pseudo}) }}">{{ sortie.organisateur.pseudo }}</a>
                             {% else %}
-                                <td> </td>
+                                {{ sortie.organisateur.pseudo }}
                             {% endif%}
-                        {% endfor %}
-                    {% endif %}
+                        {% else %}
+                            {{ sortie.organisateur.pseudo }}
+                        {% endif %}
+                    </td>
 
-                    <td>{{ sortie.organisateur.nom|upper }} {{ sortie.organisateur.prenom }}</td>
+                    <td>{{ sortie.dateHeureDebut | date('d/m/Y H:i') }}</td>
+                    <td>
+                        {% set difference = date(sortie.dateLimiteInscription).diff(date(sortie.dateHeureDebut)) %}
+                        {% set leftDays = difference.days %}
+                        Il reste {{ leftDays }} jour{{ leftDays > 1 ? 's' : '' }}
+                    </td>
+
+
+                    <td>
+                        {{ sortie.participants|length }}/{{ sortie.nbInscriptionsMax }}
+
+                    </td>
+                    <td>{{ sortie.etat.value }}</td>
+
                     <td>
                         {# Gestion du bouton AFFICHER #}
                         {% if (sortie.etat.name == "OUVERTE" or sortie.etat.name == "CLOTUREE" or sortie.etat.name == "ENCOURS") %}
@@ -116,14 +124,11 @@
                         {% if (sortie.participants is empty) and (sortie.etat.name in ['OUVERTE']) %}
                             <a href="{{ path('sortie_inscrire', {'id': sortie.id}) }}" class="btn btn-outline-success">S'inscrire</a>
                         {% else %}
-                            {% for participant in sortie.participants %}
-                                {% if (participant == app.user) and (sortie.etat.name in ['OUVERTE']) %}
-                                    <a href="{{ path('sortie_desister', {'id': sortie.id}) }}" class="btn btn-outline-dark">Se désister</a>
-                                    {% set break = true %}
-                                {% elseif sortie.etat.name in ['OUVERTE'] %}
-                                    <a href="{{ path('sortie_inscrire', {'id': sortie.id}) }}" class="btn btn-outline-success">S'inscrire</a>
-                                {% endif %}
-                            {% endfor %}
+                            {% if app.user in sortie.participants and (sortie.etat.name in ['OUVERTE']) %}
+                                <a href="{{ path('sortie_desister', {'id': sortie.id}) }}" class="btn btn-outline-dark">Se désister</a>
+                            {% elseif sortie.etat.name in ['OUVERTE'] %}
+                                <a href="{{ path('sortie_inscrire', {'id': sortie.id}) }}" class="btn btn-outline-success">S'inscrire</a>
+                            {% endif %}
                         {% endif%}
 
                     </td>

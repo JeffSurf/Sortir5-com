@@ -104,7 +104,7 @@ class ParticipantController extends AbstractController {
 
         $participant = $participantRepository->find($id);
         $msg = ' ' ;
-        if(in_array("ROLE_BAN", $participant->getRoles())) {
+        if (in_array("ROLE_BAN", $participant->getRoles())) {
             $participant->setRoles(["ROLE_USER"]);
         } else {
             $participant->setRoles(["ROLE_BAN"]);
