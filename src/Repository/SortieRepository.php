@@ -22,28 +22,55 @@ class SortieRepository extends ServiceEntityRepository
         parent::__construct($registry, Sortie::class);
     }
 
-    public function findByFilters($nom, $etat, $dateDebut, $dateFin, $sortieOrganisateur, $participant, $sortiePassee): ?array {
+    public function findByFilters($nom, $siteSelect, $participantsSite, $etat, $dateDebut, $dateFin, $sortieOrganisateur, $inscrit, $pasInscrit, $sortiePassee, UserInterface $user): ?array {
+
+        if(!$sortieOrganisateur AND !$inscrit AND !$pasInscrit AND !$sortiePassee ) {
+            return [];
+        }
+
         $qb = $this->createQueryBuilder('s');
         $maintenant = new \DateTime();
 
+        //Première partie de filtres
         if ($nom !== null){
             $qb->andWhere('s.nom LIKE :nom')
                 ->setParameter('nom', '%'.$nom.'%');
+        } elseif ($siteSelect !== null) {
+            $qb->andWhere('s.organisateur IN :participantsSite')
+                ->setParameter('participantsSite', $participantsSite);
         } elseif ($etat !== null) {
             $qb->andWhere('s.etat = :etat')
                 ->setParameter('etat', $etat);
-        } elseif (($dateDebut !== null) and ($dateFin !== null)){
+        } elseif (($dateDebut !== null) and ($dateFin !== null)) {
             $qb->andWhere('s.dateHeureDebut BETWEEN :dateDebut AND :dateFin')
                 ->setParameter('dateDebut', $dateDebut)
                 ->setParameter('dateFin', $dateFin);
-        } elseif ($sortieOrganisateur and ($participant !== null)) {
-            $qb->andWhere('s.organisateur = :organisateur')
-                ->setParameter('organisateur', $participant);
-        } elseif ($sortiePassee) {
-            $qb->andWhere('s.dateHeureDebut < :dateNow')
-                ->setParameter('dateNow', $maintenant->format('Y-m-d H:i:s'));
         }
+
+        //Partie cases à cocher !
+        $Ou_X = $qb->expr()->orX();
+
+        if($sortieOrganisateur) {
+            $Ou_X->add($qb->expr()->eq('s.organisateur', ':user'));
+        } elseif ($inscrit) {
+            $Ou_X->add($qb->expr()->isMemberOf(':user', 's.participants'));
+        } elseif ($pasInscrit) {
+            $Ou_X->add($qb->expr()->not($qb->expr()->isMemberOf(':user', 's.participants')));
+        } elseif ($sortiePassee) {
+            $condition = $qb->expr()->lt('s.dateHeureDebut', ':dateNow');
+            $Ou_X->add($condition);
+        }
+
+        $qb->andWhere($Ou_X);
+
+        if($sortieOrganisateur OR $inscrit OR $pasInscrit) {
+            $qb->setParameter('user', $user);
+        } elseif ($sortiePassee) {
+            $qb->setParameter('dateNow', $maintenant->format('Y-m-d H:i:s'));
+        }
+
         $result = $qb->getQuery()->getResult();
+
         return $result;
     }
 
@@ -64,13 +91,6 @@ class SortieRepository extends ServiceEntityRepository
 
     public function deleteSortieAfterOneMonth() : int {
         return $this->getSortieAfterOneMonth()->delete()->getQuery()->execute();
-    }
-
-    public function getSortieToClose() : \Doctrine\ORM\QueryBuilder
-    {
-        return $this->createQueryBuilder('s')
-            ->andWhere("s.dateLimiteInscription < :current_date")
-            ->setParameter('current_date', new \DateTime('now'));
     }
 
 //    /**

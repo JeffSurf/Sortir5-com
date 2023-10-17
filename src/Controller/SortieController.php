@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Etat;
-use App\Entity\Lieu;
 use App\Entity\Participant;
 use App\Entity\Sortie;
 use App\Form\AnnulerSortieType;
@@ -70,7 +69,6 @@ class SortieController extends AbstractController
         $pasInscrit = $filterform->get('estPasInscrit')->getData();
 
         //Sortie dont je suis organisateur
-        $participant = $participantRepository->find($user->getId());
         $sortieOrganisateur = $filterform->get('estOrganise')->getData();
 
         //Sorties passées
@@ -78,13 +76,14 @@ class SortieController extends AbstractController
 
         if($filterform->isSubmitted() && $filterform->isValid()){
             return $this->render('sortie/list.html.twig', [
-                'sorties' => $sortieRepository->findByFilters($nom, $etat, $dateDebut, $dateFin, $sortieOrganisateur, $participant, $sortiePassee),
+                'sorties' => $sortieRepository->findByFilters($nom, $siteSelect, $participantsSite, $etat, $dateDebut, $dateFin, $sortieOrganisateur, $inscrit, $pasInscrit, $sortiePassee, $user),
+                'now' => $now,
                 'filterform' => $filterform
             ]);
         }
 
         return $this->render('sortie/list.html.twig', [
-            'sorties' => $sortieRepository->findAll(),
+            'sorties' => $sortieRepository->findByFilters($nom, $siteSelect, $participantsSite, $etat, $dateDebut, $dateFin, $sortieOrganisateur, $inscrit, $pasInscrit, $sortiePassee, $user),
             'now' => $now,
             'filterform' => $filterform
         ]);
