@@ -15,6 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
@@ -26,8 +27,9 @@ class ParticipantType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('pseudo', null, [
-                "required" => true
+            ->add('pseudo', TextType::class, [
+                "required" => true,
+                "empty_data" => ""
             ])
             ->add('imageProfil', FileType::class, [
                 'label' => 'Photo de profil',
@@ -49,14 +51,17 @@ class ParticipantType extends AbstractType
                 'label' => "Accepter que les utilisateurs puissent voir votre photo",
                 'required' => false
             ])
-            ->add('prenom', null, [
-                "required" => true
+            ->add('prenom', TextType::class, [
+                "required" => true,
+                "empty_data" => ""
             ])
-            ->add('nom', null, [
-                "required" => true
+            ->add('nom', TextType::class, [
+                "required" => true,
+                "empty_data" => ""
             ])
             ->add('email', EmailType::class, [
-                "required" => true
+                "required" => true,
+                "empty_data" => ""
             ])
             ->add('telephone', TelType::class, [
                 "required" => false

@@ -3,7 +3,8 @@ import './styles/map-show.scss';
 const $ = require("jquery");
 const L = require("leaflet");
 
-const {lat, lon} = $("#map").data();
+const selectorMap = "#map";
+const {lat, lon} = $(selectorMap).data();
 
 if(lat && lon)
 {
@@ -19,5 +20,5 @@ if(lat && lon)
 }
 else
 {
-    $("#map").text("Pas de coordonnées fournies");
+    $(selectorMap).text("Pas de coordonnées fournies");
 }

@@ -7,6 +7,7 @@ use App\Entity\Site;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -24,11 +25,19 @@ class RegistrationFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('nom', TextType::class)
-            ->add('prenom',TextType::class)
-            ->add('pseudo', TextType::class)
+            ->add('nom', TextType::class, [
+                "empty_data" => ""
+            ])
+            ->add('prenom', TextType::class, [
+                "empty_data" => ""
+            ])
+            ->add('pseudo', TextType::class, [
+                "empty_data" => ""
+            ])
             ->add('telephone', TelType::class, ["required" => false])
-            ->add('email')
+            ->add('email', EmailType::class, [
+                "empty_data" => ""
+            ])
             ->add('plainPassword', RepeatedType::class, [
                 'mapped' => false,
                 'options' => ['attr' => ['class' => 'password-field']],

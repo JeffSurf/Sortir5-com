@@ -15,6 +15,7 @@ use App\Repository\SortieRepository;
 use App\Repository\VilleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -63,13 +64,20 @@ class SortieController extends AbstractController
         $form = $this->createForm(SortieFormType::class, $sortie);
         $form->handleRequest($request);
 
+
         if ($form->isSubmitted() && $form->isValid()) {
-            $lieu = $lieuRepository->find($request->request->get('lieu'));
-            $sortie->setLieu($lieu);
-            $entityManager->persist($sortie);
-            $entityManager->flush();
-            $this->addFlash('success', 'La sortie a été ajoutée avec succès !');
-            return $this->redirectToRoute('sortie_list');
+            $lieu = $lieuRepository->find($form->get('lieu')->getData() ?? -1);
+
+            if($lieu){
+                $sortie->setLieu($lieu);
+                $entityManager->persist($sortie);
+                $entityManager->flush();
+                $this->addFlash('success', 'La sortie a été ajoutée avec succès !');
+                return $this->redirectToRoute('sortie_list');
+            }
+            else {
+                $form->get('lieu')->addError(new FormError("Vous devez sélectionner un lieu"));
+            }
         }
 
         return $this->render('sortie/edit.html.twig', [
@@ -230,18 +238,6 @@ class SortieController extends AbstractController
             'site' => $site,
             'lieu' => $lieu
         ]);
-    }
-
-    #[Route('/getLieuxPourVille/{id}', name: '_getLPV')]
-    public function getLieuxPourVille(LieuRepository $lieuRepository, $id): Response
-    {
-        $lieux = $lieuRepository->findBy(['ville' => $id]);
-        $lieuxArray = [];
-
-        foreach($lieux as $lieu){
-            $lieuxArray[] = ['id'=> $lieu->getId(), 'nom' => $lieu->getNom()];
-        }
-        return $this->json($lieuxArray);
     }
 
 }

@@ -24,7 +24,8 @@ class AnnulerSortieType extends AbstractType
         $builder
             ->add('motifAnnulation', TextareaType::class, [
                 'label'=> 'Modif d\'annulation :',
-                'required' => false
+                'required' => false,
+                "empty_data" => ""
             ])
         ;
     }

@@ -25,6 +25,9 @@ Encore
     .addEntry('preview', './assets/preview.js')
     .addEntry('map', './assets/map.js')
     .addEntry('map-show', './assets/map-show.js')
+    .addEntry('map-sortie', './assets/map-sortie.js')
+    .addEntry('ville', './assets/ville.js')
+
 
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()

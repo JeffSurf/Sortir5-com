@@ -22,7 +22,8 @@ class LieuType extends AbstractType
         $builder
             ->add('nom', TextType::class, [
                 'label' => 'Nom',
-                'required' => true
+                'required' => true,
+                "empty_data" => ""
             ])
             ->add('adresse', TextType::class, [
                 'label' => 'Adresse',

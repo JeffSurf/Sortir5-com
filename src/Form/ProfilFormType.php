@@ -23,13 +23,19 @@ class ProfilFormType extends AbstractType
     {
         $builder
             ->add('email', EmailType::class, [
-                'label' => "Email*"
+                'label' => "Email*",
+                "empty_data" => ""
             ])
-            ->add('nom')
-            ->add('prenom')
+            ->add('nom', TextType::class, [
+                "empty_data" => ""
+            ])
+            ->add('prenom', TextType::class, [
+                "empty_data" => ""
+            ])
             ->add('telephone', TelType::class, ["required" => false])
             ->add('pseudo', TextType::class, [
-                'label' => "Pseudo*"
+                'label' => "Pseudo*",
+                "empty_data" => ""
             ])
             ->add('plainPassword', PasswordType::class, [
                 'mapped' => false,
