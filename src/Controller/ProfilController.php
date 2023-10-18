@@ -12,23 +12,21 @@ use App\Service\UploadService;
 use Doctrine\ORM\EntityManagerInterface;
 use phpDocumentor\Reflection\Types\Array_;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Config\Definition\Exception\ForbiddenOverwriteException;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use function PHPUnit\Framework\throwException;
 
 #[Route('/profil', name: 'app_profil_')]
 #[IsGranted('ROLE_USER')]
 class ProfilController extends AbstractController
 {
 
-    /**
-     * @throws \Exception
-     */
     #[Route('/{pseudo}', name: 'voir')]
     public function index(ParticipantRepository $participantRepository, SortieRepository $sortieRepository, string $pseudo): Response
     {
@@ -36,13 +34,14 @@ class ProfilController extends AbstractController
         /** @var Participant $me */
         $loggedUser = $this->getUser();
         $sorties = $sortieRepository->findAll();
-        $pageView = null;
 
-        if ($requestedUser != null) { //si la personne request existe
+        if ($requestedUser == null) { //si la personne request n'existe past
+            throw $this->createNotFoundException();
+        } else {
             if ($requestedUser == $loggedUser) { //si la personne connectée request son pseudo
-                $pageView = "myProfile";
+                '';
             } elseif ($this->isGranted('ROLE_ADMIN')) { //si la personne connectée est admin
-                $pageView = "adminView";
+                '';
             } else {
                 $usersMatch = false;
 
@@ -51,40 +50,62 @@ class ProfilController extends AbstractController
                     $organistateur = $sortie->getOrganisateur();
                     foreach ($participants as $participant) {
                         if ($requestedUser == $participant && $loggedUser == $organistateur) { //si la personne request est inscrit dans une sortie que j'organise
-                            $pageView = "organisateurView";
                             $usersMatch = true;
                             break;
                         } elseif ($requestedUser == $organistateur && $loggedUser == $participant) { //si la personne request organise une sortie à laquelle je participe
-                            $pageView = "participantView";
                             $usersMatch = true;
                             break;
                         }
                     }
                 }
                 if (!$usersMatch) {
-                    throw new \Exception("HTTP 403 : Vous n'êtes pas autorisé");
+                    return new Response("Vous n'êtes pas autorisé", 403);
+                }
+            }
+        }
+
+        //A clarifier (vincent)
+        if ($requestedUser != null) { //si la personne request existe
+            if ($requestedUser == $loggedUser) { //si la personne connectée request son pseudo
+                '';
+            } elseif ($this->isGranted('ROLE_ADMIN')) { //si la personne connectée est admin
+                '';
+            } else {
+                $usersMatch = false;
+
+                foreach ($sorties as $sortie) {
+                    $participants = $sortie->getParticipants();
+                    $organistateur = $sortie->getOrganisateur();
+                    foreach ($participants as $participant) {
+                        if ($requestedUser == $participant && $loggedUser == $organistateur) { //si la personne request est inscrit dans une sortie que j'organise
+                            $usersMatch = true;
+                            break;
+                        } elseif ($requestedUser == $organistateur && $loggedUser == $participant) { //si la personne request organise une sortie à laquelle je participe
+                            $usersMatch = true;
+                            break;
+                        }
+                    }
+                }
+                if (!$usersMatch) {
+                    return new Response("Vous n'êtes pas autorisé", 403);
                 }
             }
         } else {
-            throw new \Exception("HTTP 403 : Vous n'êtes pas autorisé");
+            return new Response("Vous n'êtes pas autorisé", 403);
         }
 
         return $this->render('profil/index.html.twig',[
             'user' => $requestedUser,
-            'pageStatus' => $pageView
         ]);
     }
 
-    /**
-     * @throws \Exception
-     */
     #[Route('/edit/{pseudo}', name: 'editer')]
     public function edit(Request $request, ParticipantRepository $participantRepository, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $em, UploadService $fileUploader,  string $pseudo): \Symfony\Component\HttpFoundation\RedirectResponse|Response
     {
         $dataUser = $participantRepository->findByPseudo($pseudo);
 
         if($dataUser != $this->getUser()) {
-            throw new \Exception("HTTP 403 : Vous n'êtes pas autorisé");
+            return new Response("Vous n'êtes pas autorisé", 403);
         }
 
         $form = $this->createForm(ProfilFormType::class, $dataUser);
@@ -141,9 +162,6 @@ class ProfilController extends AbstractController
         ]);
     }
 
-    /**
-     * @throws \Exception
-     */
     #[Route('/edit/password/{pseudo}', name: 'edit_password')]
     public function editPassword(Request $request, FirstLoginService $firstLoginService, ParticipantRepository $participantRepository, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $em, string $pseudo): Response {
 
@@ -153,7 +171,7 @@ class ProfilController extends AbstractController
         $form->handleRequest($request);
 
         if($dataUser != $this->getUser()) {
-            throw new \Exception("HTTP 403 : Vous n'êtes pas autorisé");
+            return new Response("Vous n'êtes pas autorisé", 403);
         }
 
         $msg = null;

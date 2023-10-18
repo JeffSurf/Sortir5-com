@@ -61,19 +61,17 @@
 
             <div class="col-6 row">
                 <div class="col-5 text-primary">
-                    <p>Carte</p>
                     <p>Lieu</p>
-                    <p>Rue</p>
-                    <p>Ville</p>
-                    <p>Code Postal</p>
+                    <p>Adresse</p>
+                    <p>Carte</p>
                 </div>
 
                 <div class="col-5">
-                    <div id="map" data-lat="{{ lieu.latitude }}" data-lon="{{ lieu.longitude }}"></div>
                     <p>{{ lieu.nom }}</p>
-                    <p>{{ lieu.adresse ?? 'Non Renseigné'}}</p>
-                    <p>{{ ville.nom }}</p>
-                    <p>{{ ville.codepostal }}</p>
+                    <p>{{ lieu.adresse ?? 'Non Renseigné'}}
+                    {{ ville.nom }},{{ ville.codepostal }}</p>
+                    <p></p>
+                    <div id="map" data-lat="{{ lieu.latitude }}" data-lon="{{ lieu.longitude }}"></div>
                 </div>
             </div>
         </div>
