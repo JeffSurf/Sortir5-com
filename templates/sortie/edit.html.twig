@@ -69,65 +69,6 @@
                     <button id="show-lieu" type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#lieuModal">Ajouter un lieu</button>
                 </div>
 
-                <!-- Modal -->
-                <div class="modal fade" id="lieuModal" tabindex="-1" aria-labelledby="Lieu" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="exampleModalLabel">Ajouter un lieu</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="form-row">
-                                    <label for="lieu_ville" class="form-label">Ville*</label>
-                                    <select class="form-select" name="lieu_ville" id="lieu_ville">
-                                        <option value="">Choisir une ville</option>
-                                        {% for ville in villes %}
-                                            <option value="{{ ville.id }}">{{ ville.nom }}</option>
-                                        {% endfor %}
-                                    </select>
-                                    <div class="invalid-feedback"></div>
-                                </div>
-
-                                <div class="form-row">
-                                    <label for="lieu_nom" class="form-label">Nom*</label>
-                                    <input class="form-control" id="lieu_nom" type="text" name="lieu_nom" required/>
-                                    <div class="invalid-feedback"></div>
-                                </div>
-
-                                <div class="form-row">
-                                    <label for="lieu_adresse" class="form-label">Adresse</label>
-                                    <input class="form-control" id="lieu_adresse" type="text" name="lieu_adresse"/>
-                                    <div class="invalid-feedback"></div>
-                                </div>
-
-                                <div class="form-row">
-                                    <label for="lieu_longitude" class="form-label">Longitude</label>
-                                    <input class="form-control" id="lieu_longitude" type="text" name="lieu_longitude"/>
-                                    <div class="invalid-feedback"></div>
-                                </div>
-
-                                <div class="form-row">
-                                    <label for="lieu_latitude" class="form-label">Latitude</label>
-                                    <input class="form-control" id="lieu_latitude" type="text" name="lieu_latitude"/>
-                                    <div class="invalid-feedback"></div>
-                                </div>
-
-                                <div class="form-row mt-3">
-                                    <div class="d-flex justify-content-center align-items-center">
-                                        <div id="map"></div>
-                                    </div>
-                                    <div id="msg-map"></div>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button id="btn-close-modal" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                                <button id="btn-add-lieu" type="button" class="btn btn-primary">Ajouter</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="form-row" style="display:none">
                     {{  form_row(form.motifAnnulation) }}
                 </div>
@@ -140,6 +81,65 @@
         </div>
 
         {{  form_end(form) }}
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="lieuModal" tabindex="-1" aria-labelledby="Lieu" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Ajouter un lieu</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-row">
+                        <label for="lieu_ville" class="form-label">Ville*</label>
+                        <select class="form-select" name="lieu_ville" id="lieu_ville">
+                            <option value="">Choisir une ville</option>
+                            {% for ville in villes %}
+                                <option value="{{ ville.id }}">{{ ville.nom }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="invalid-feedback"></div>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="lieu_nom" class="form-label">Nom*</label>
+                        <input class="form-control" id="lieu_nom" type="text" name="lieu_nom"/>
+                        <div class="invalid-feedback"></div>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="lieu_adresse" class="form-label">Adresse</label>
+                        <input class="form-control" id="lieu_adresse" type="text" name="lieu_adresse"/>
+                        <div class="invalid-feedback"></div>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="lieu_longitude" class="form-label">Longitude</label>
+                        <input class="form-control" id="lieu_longitude" type="text" name="lieu_longitude"/>
+                        <div class="invalid-feedback"></div>
+                    </div>
+
+                    <div class="form-row">
+                        <label for="lieu_latitude" class="form-label">Latitude</label>
+                        <input class="form-control" id="lieu_latitude" type="text" name="lieu_latitude"/>
+                        <div class="invalid-feedback"></div>
+                    </div>
+
+                    <div class="form-row mt-3">
+                        <div class="d-flex justify-content-center align-items-center">
+                            <div id="map"></div>
+                        </div>
+                        <div id="msg-map"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="btn-close-modal" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                    <button id="btn-add-lieu" type="button" class="btn btn-primary">Ajouter</button>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}
 

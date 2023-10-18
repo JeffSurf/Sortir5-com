@@ -137,12 +137,17 @@ class SortieController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $lieu = $lieuRepository->find($request->request->get('lieu'));
-            $sortie->setLieu($lieu);
-            $entityManager->persist($sortie);
-            $entityManager->flush();
-            $this->addFlash('success', 'La sortie a été modifiée avec succès !');
-            return $this->redirectToRoute('sortie_list');
+            $lieuSubmitted = $lieuRepository->find($form->get('lieu')->getData() ?? -1);
+            if($lieuSubmitted) {
+                $sortie->setLieu($lieuSubmitted);
+                $entityManager->persist($sortie);
+                $entityManager->flush();
+                $this->addFlash('success', 'La sortie a été modifiée avec succès !');
+                return $this->redirectToRoute('sortie_list');
+            }
+            else {
+                $form->get('lieu')->addError(new FormError("Vous devez sélectionner un lieu"));
+            }
         }
 
         return $this->render('sortie/edit.html.twig', [
