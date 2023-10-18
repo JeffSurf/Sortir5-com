@@ -71,7 +71,7 @@ const handleClickLieu = () => {
         const selectorLieuListe = "#liste_lieu";
         $(selectorLieuListe).append($(`<option value="${addedLieu.id}">${addedLieu.nom}</option>`));
 
-        setTimeout(() => $(selectorLieuListe).val(addedLieu.id).change(), 1000);
+        setTimeout(() => $(selectorLieuListe).val(addedLieu.id).change(), 800);
 
         $(`.modal-body [name]`).removeClass("is-invalid");
 

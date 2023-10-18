@@ -28,4 +28,17 @@ function getLieuParVille() {
 
 $(selectorVille).on("change", getLieuParVille);
 
-$(document).ready(() => $(selectorVille).trigger("change"));
+$(document).ready(() => {
+    $(selectorVille).trigger("change");
+
+    const idVille = ~~$(selectorVille).attr("data-ville");
+    const idLieu = ~~$(selectorLieu).attr("data-lieu");
+
+    console.log(idVille, idLieu)
+
+    if(idVille !== 0 && idLieu !== 0){
+        $(selectorVille).val(idVille).trigger("change");
+        setTimeout(() => $(selectorLieu).val(idLieu).trigger("change"), 800);
+    }
+
+});

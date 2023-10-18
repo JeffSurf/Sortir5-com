@@ -53,7 +53,7 @@
             <div class="col-6 justify-content-center my-lg-4">
                 <div class="form-row px-lg-5">
                     <label for="ville" class="form-label">Ville :</label>
-                    <select class="form-select" id="ville">
+                    <select class="form-select" id="ville" data-ville="{{ lieu is defined ? lieu.ville.id : 0 }}">
                         <option value="">Choisir une ville</option>
                         {% for ville in villes %}
                             <option value="{{ ville.id }}">{{ ville.nom }}</option>
@@ -62,7 +62,7 @@
                 </div>
 
                 <div class="form-row px-lg-5">
-                    {{ form_row(form.lieu, {id: "liste_lieu"}) }}
+                    {{ form_row(form.lieu, {id: "liste_lieu", attr: {'data-lieu' : lieu is defined ? lieu.id : 0 }}) }}
                 </div>
 
                 <div class="form-row px-lg-5">
