@@ -77,19 +77,17 @@ class SortieController extends AbstractController
         if($filterform->isSubmitted() && $filterform->isValid()){
             return $this->render('sortie/list.html.twig', [
                 'sorties' => $sortieRepository->findByFilters($nom, $siteSelect, $participantsSite, $etat, $dateDebut, $dateFin, $sortieOrganisateur, $inscrit, $pasInscrit, $sortiePassee, $user),
-                'now' => $now,
                 'filterform' => $filterform
             ]);
         }
 
         return $this->render('sortie/list.html.twig', [
             'sorties' => $sortieRepository->findByFilters($nom, $siteSelect, $participantsSite, $etat, $dateDebut, $dateFin, $sortieOrganisateur, $inscrit, $pasInscrit, $sortiePassee, $user),
-            'now' => $now,
             'filterform' => $filterform
         ]);
     }
 
-    #[Route('/ajouter', name: '_add')]
+    #[Route('/creer', name: '_add')]
     public function add(Request $request, EntityManagerInterface $entityManager, SortieRepository $sortieRepository, VilleRepository $villeRepository, LieuRepository $lieuRepository, int $id = null): Response {
         $sortie =  new Sortie();
         $sortie->setOrganisateur($this->getUser());
@@ -155,7 +153,7 @@ class SortieController extends AbstractController
         ]);
     }
 
-    #[Route('/afficher/{id}', name: '_detail', requirements: ['id' => '\d+'])]
+    #[Route('/details/{id}', name: '_detail', requirements: ['id' => '\d+'])]
     public function show(SortieRepository $sortieRepository, int $id = null): Response {
 
         $sortie = $sortieRepository->find($id);

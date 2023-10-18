@@ -3,8 +3,9 @@
 {% block title %}Sorties{% endblock %}
 
 {% block body %}
+
     <div class="container container-page">
-        {{  form_start(filterform) }}
+        {{ form_start(filterform) }}
         {{ form_errors(filterform) }}
 
         <p class="h3 mb-3 px-lg-4">Filter les sorties</p>
@@ -83,7 +84,7 @@
 
                     <td>{{ sortie.dateHeureDebut | date('d/m/Y H:i') }}</td>
                     <td>
-                        {% set difference = date(sortie.dateLimiteInscription).diff(date(now)) %}
+                        {% set difference = date(sortie.dateLimiteInscription).diff(date("now")) %}
                         {% set days = difference.days %}
                         {% set hours = difference.h %}
                         {% set minutes = difference.i %}

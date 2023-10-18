@@ -39,6 +39,25 @@ class ParticipantController extends AbstractController {
         ]);
     }
 
+    #[Route('', name: '_test')]
+    public function test(Request $request, ParticipantRepository $participantRepository): Response {
+        $participants = $participantRepository->findAll();
+
+        //filter
+        $searchForm = $this->createForm(SearchFormType::class);
+        $searchForm->handleRequest($request);
+        $searchValue = $searchForm->get('search')->getData();
+
+        if ($searchForm->isSubmitted() && $searchForm->isValid() && $searchValue != '') {
+            $participants = $participantRepository->filterByText($searchValue);
+        }
+
+        return $this->render('admin/participant/test.html.twig', [
+            'participants' => $participants,
+            'searchForm' => $searchForm
+        ]);
+    }
+
     #[Route('/ajouter', name: '_add')]
     #[Route('/modifier/{id}', name: '_update', requirements: ['id' => '\d+'])]
     public function edit(Request $request, EntityManagerInterface $entityManager,  ParticipantRepository $participantRepository,

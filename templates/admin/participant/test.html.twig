@@ -1,0 +1,93 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Participants{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('participant') }}
+{% endblock %}
+
+{% block body %}
+
+    <div class="container container-page admin-page">
+
+        <h1>Liste des participants</h1>
+
+        <div class="row">
+            <div class="col-4">
+                {{  form_start(searchForm) }}
+                    {{  form_widget(searchForm.search) }}
+                {{  form_end(searchForm) }}
+            </div>
+            <div class="btn-grp col-8">
+                <a class="btn btn-outline-secondary" href="{{ path('app_admin_participant_add') }}">
+                    Ajouter manuellement un utilisateur
+                </a>
+
+                <button id="btn-csv" class="btn btn-outline-secondary">Ajouter des utilisateurs via un fichier CSV</button>
+                <input id="input-csv" name="file-csv" type="file" accept="text/csv" hidden/>
+            </div>
+        </div>
+
+
+
+        <table class="table" >
+            <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Pseudo</th>
+                <th scope="col">Prénom Nom</th>
+                <th scope="col">Email</th>
+                <th scope="col">Téléphone</th>
+                <th scope="col">Rôle</th>
+                <th scope="col">Statut</th>
+                <th scope="col">Actions</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for participant in participants %}
+                <tr>
+                    <th scope="row">{{ participant.id }}</th>
+                    <td>
+                        {% if participant.imageProfil %}
+                            <img class="profile-pic list" src="{{ asset('uploads/participants/' ~ participant.imageProfil) }}" alt="">
+                        {% endif %}
+                        <span>{{ participant.pseudo }}</span>
+                    </td>
+                    <td>{{ participant.prenom }} {{ participant.nom | upper}}</td>
+                    <td>{{ participant.email }}</td>
+                    <td>{{ participant.telephone | default("Non renseigné")}}</td>
+                    <td>
+                        {{ 'ROLE_ADMIN' in participant.roles ? '<i class="fa-solid fa-user-shield"></i> Administrateur' :
+                        'ROLE_USER' in participant.roles ? '<i class="fa-solid fa-user"></i> Utilisateur' : '<i class="fa-solid fa-user-injured"></i> Utilisateur'}}
+                    </td>
+                    <td>{{ 'ROLE_BAN' in participant.roles ? 'Inactif' : 'Actif' }}</td>
+                    <td>
+
+                        {% if ('ROLE_ADMIN' in participant.roles) %}
+                        {% elseif ('ROLE_USER' in participant.roles) %}
+                            <a href="{{ path('app_admin_participant_disable', {'id': participant.id}) }}">
+                                <button class="btn btn-outline-primary btn-sm">Désactiver</button>
+                            </a>
+                        {% elseif ('ROLE_BAN' in participant.roles) %}
+                            <a href="{{ path('app_admin_participant_enable', {'id': participant.id}) }}">
+                                <button class="btn btn-outline-primary btn-sm">Activer</button>
+                            </a>
+                        {% endif %}
+
+                        <a href="{{ path('app_admin_participant_update', {'id': participant.id}) }}">
+                            <button class="btn btn-primary btn-sm">Modifier</button>
+                        </a>
+
+                        <a onclick="return confirm('Êtes-vous sûr de vouloir supprimer {{ participant.prenom }} {{ participant.nom | upper }} ? Attention cette action est irréversible.')" href="{{ path('app_admin_participant_delete', {'id': participant.id}) }}">
+                            <button class="btn btn-danger btn-sm">Supprimer</button>
+                        ️</a>
+                    </td>
+                </tr>
+            {%  endfor %}
+            </tbody>
+        </table>
+
+    </div>
+{% endblock %}
