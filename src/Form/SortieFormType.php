@@ -80,38 +80,6 @@ class SortieFormType extends AbstractType
                 'required' => false
             ])
         ;
-        /*
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
-            $form = $event->getForm();
-
-            $sortie = $event->getData();
-            $ville = null !== $sortie->getLieu() ? $sortie->getLieu()->getVille() : null;
-
-            $form->add('lieu', EntityType::class, [
-                'class' => Lieu::class,
-                'query_builder' => function (LieuRepository $repository) use ($ville) {
-                    return $repository->createQueryBuilder('l')
-                        ->where('l.ville = :ville')
-                        ->setParameter('ville', $ville)
-                        ->orderBy('l.nom', 'ASC');
-                },
-            ]);
-        });
-
-        $builder->get('ville')->addEventListener(
-            FormEvents::POST_SUBMIT,
-                function(FormEvent $event, LieuRepository $lieuRepository){
-                    @var Ville $ville
-                    $ville = $event->getForm()->getNormData();
-
-                    $lieux = $lieuRepository->findBy(['ville' => $ville]);
-
-                    $lieuField = $event->getForm()->getParent()->get('lieu');
-
-                    $lieuField->getConfig()->getOptions()['choices'] = $lieux;
-                }
-        );
-        */
     }
 
     public function configureOptions(OptionsResolver $resolver): void
