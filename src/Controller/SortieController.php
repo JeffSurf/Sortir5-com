@@ -45,7 +45,7 @@ class SortieController extends AbstractController
         $now = new \DateTime();
 
         //filter
-        $filterform = $this->createForm(FilterFormType::class);
+        $filterform = $this->createForm(FilterFormType::class, null, ["user" => $user]);
         $filterform->handleRequest($request);
 
         //Mot-clef
