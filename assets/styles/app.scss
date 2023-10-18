@@ -232,6 +232,14 @@ nav {
     color: var(--blue)
 }
 
+.nodisplay {
+    display: none;
+}
+
+.selec {
+    background-color: gray !important;
+}
+
 
 #app-footer {
     margin-top: auto;

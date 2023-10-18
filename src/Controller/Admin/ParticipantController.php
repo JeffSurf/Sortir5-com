@@ -39,7 +39,7 @@ class ParticipantController extends AbstractController {
         ]);
     }
 
-    #[Route('', name: '_test')]
+    #[Route('/test', name: '_test')]
     public function test(Request $request, ParticipantRepository $participantRepository): Response {
         $participants = $participantRepository->findAll();
 

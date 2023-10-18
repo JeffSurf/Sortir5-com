@@ -2,16 +2,23 @@
 
 {% block title %}Participants{% endblock %}
 
-{% block javascripts %}
+{% block stylesheets %}
     {{ parent() }}
     {{ encore_entry_script_tags('participant') }}
+
+    {# CSS DATATABLE / BOOTSTRAP #}
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 {% endblock %}
 
 {% block body %}
-
+    <p><button id="button">Row count</button></p>
     <div class="container container-page admin-page">
 
         <h1>Liste des participants</h1>
+
+        <button id="disable-button" class="nodisplay btn btn-primary">Désactiver</button>
+        <button id="delete-button" class="nodisplay btn btn-danger">Supprimer</button>
 
         <div class="row">
             <div class="col-4">
@@ -31,7 +38,7 @@
 
 
 
-        <table class="table" >
+        <table id="participant" class="table" >
             <thead>
             <tr>
                 <th scope="col">ID</th>
@@ -90,4 +97,15 @@
         </table>
 
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    {# BASE JS #}
+    {{ parent() }}
+
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+    {{ encore_entry_script_tags('datatableConfig') }}
 {% endblock %}
