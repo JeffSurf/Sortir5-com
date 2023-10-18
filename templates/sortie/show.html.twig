@@ -1,5 +1,18 @@
 {% extends '/base.html.twig' %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin=""/>
+    {{ encore_entry_link_tags('map-show') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('map-show') }}
+{% endblock %}
+
 {% block body %}
     <div class="container-fluid">
         <h1 class="text-center text-primary my-lg-3">Affichage d'une sortie</h1>
@@ -28,17 +41,15 @@
                 <p>Lieu</p>
                 <p>Rue</p>
                 <p>Code Postal</p>
-                <p>Latitude</p>
-                <p>Longitude</p>
+                <p>Carte</p>
             </div>
 
             <div class="col-3">
                 <p>{{ ville.nom }}</p>
                 <p>{{ lieu.nom }}</p>
-                <p>{{ lieu.adresse }}</p>
+                <p>{{ lieu.adresse ?? "Pas d'adresse" }}</p>
                 <p>{{ ville.codepostal }}</p>
-                <p>{{ lieu.latitude }}</p>
-                <p>{{ lieu.longitude }}</p>
+                <div id="map" data-lat="{{ lieu.latitude }}" data-lon="{{ lieu.longitude }}"></div>
             </div>
         </div>
 

@@ -23,10 +23,18 @@ class ProfilFormType extends AbstractType
     {
         $builder
             ->add('email', EmailType::class, [
-                'label' => "Email"
+                'label' => "Email",
+                "empty_data" => ""
             ])
-            ->add('nom')
-            ->add('prenom')
+            ->add('nom', TextType::class, [
+                "empty_data" => ""
+            ])
+            ->add('nom', TextType::class, [
+                "empty_data" => ""
+            ])
+            ->add('prenom', TextType::class, [
+                "empty_data" => ""
+            ])
             ->add('telephone', TelType::class, [
                 'label' => 'Téléphone',
                 'required' => false,
@@ -34,7 +42,8 @@ class ProfilFormType extends AbstractType
 
             ])
             ->add('pseudo', TextType::class, [
-                'label' => "Pseudo"
+                'label' => "Pseudo",
+                "empty_data" => ""
             ])
             ->add('plainPassword', PasswordType::class, [
                 'mapped' => false,
@@ -60,8 +69,8 @@ class ProfilFormType extends AbstractType
                         "maxSizeMessage" => "Le fichier est trop volumineux ({{ size }} {{ suffix }}). Taille maximale {{ limit }} {{ suffix }}",
                         "mimeTypes" => [
                             "image/png",
-                            "image/jpg",
-                            "image/jpeg"
+                            "image/jpeg",
+                            "image/svg+xml"
                         ],
                         "mimeTypesMessage" => "Le type {{ type }} est invalide. Les formats valides sont {{ types }}"
                     ])

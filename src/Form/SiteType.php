@@ -15,7 +15,8 @@ class SiteType extends AbstractType
     {
         $builder
             ->add('nom', null, [
-                'required' => true
+                'required' => true,
+                "empty_data" => ""
             ])
         ;
     }

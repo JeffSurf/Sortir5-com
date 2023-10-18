@@ -29,7 +29,7 @@ $("#input-csv").on("change", (e) => {
         const reader = new FileReader();
         reader.onload = e => {
             const content = e.target.result;
-            $.post("http://localhost:8000/admin/participant/ajouter/csv", content, (data) => handleCsvMessage(data))
+            $.post("/admin/participant/ajouter/csv", content, (data) => handleCsvMessage(data))
                 .fail((err) => handleCsvMessage(err?.responseText, "danger"));
         };
         reader.readAsBinaryString(file);
