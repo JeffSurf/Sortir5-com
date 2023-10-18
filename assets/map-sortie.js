@@ -66,7 +66,12 @@ const handleClickLieu = () => {
     $.post("/lieu", bodyReq, (data) => {
         const addedLieu = JSON.parse(data);
 
-        $("#liste_lieu").append($(`<option value="${addedLieu.id}">${addedLieu.nom}</option>`));
+        $("#ville").val(ville_input.val()).change();
+
+        const selectorLieuListe = "#liste_lieu";
+        $(selectorLieuListe).append($(`<option value="${addedLieu.id}">${addedLieu.nom}</option>`));
+
+        setTimeout(() => $(selectorLieuListe).val(addedLieu.id).change(), 1000);
 
         $(`.modal-body [name]`).removeClass("is-invalid");
 
