@@ -64,6 +64,11 @@ class ParticipantController extends AbstractController {
                          UploadService $uploadService, UserPasswordHasherInterface $userPasswordHasher, int $id = null): Response {
 
         $participant = $id == null ? new Participant() : $participantRepository->find($id);
+
+        if ($participant == null) { //si la personne request n'existe past
+            throw $this->createNotFoundException();
+        }
+
         $msg = $participant->getId() == null ? 'Le participant a été ajouté avec succès !' : 'Le participant a été modifié avec succès !';
         $form = $this->createForm(ParticipantType::class, $participant);
         $form->handleRequest($request);
@@ -122,6 +127,11 @@ class ParticipantController extends AbstractController {
                          UploadService $uploadService, UserPasswordHasherInterface $userPasswordHasher, int $id = null): Response {
 
         $participant = $participantRepository->find($id);
+
+        if ($participant == null) { //si la personne request n'existe past
+            throw $this->createNotFoundException();
+        }
+
         $msg = ' ' ;
         if (in_array("ROLE_BAN", $participant->getRoles())) {
             $participant->setRoles(["ROLE_USER"]);
@@ -141,6 +151,10 @@ class ParticipantController extends AbstractController {
     public function delete(EntityManagerInterface $entityManager, ParticipantRepository $participantRepository, ParticipantService $participantService, int $id): Response {
 
         $participant = $participantRepository->find($id);
+
+        if ($participant == null) { //si la personne request n'existe past
+            throw $this->createNotFoundException();
+        }
 
         foreach ($participant->getSorties() as $sortie) {
             $participantService->archive($participant, $sortie);

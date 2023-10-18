@@ -28,7 +28,8 @@
         <div class="row">
             <div class="col-6 row">
                 <div class="col-5 text-primary">
-                    <p>Date et heure de la sortie</p>
+                    <p>Organisateur</p>
+                    <p>Date et heure</p>
                     <p>Date limite d'inscription</p>
                     <p>Nombre de places</p>
                     <p>Durée (minutes)</p>
@@ -36,6 +37,17 @@
                 </div>
 
                 <div class="col-5">
+                    <p>
+
+                        {% if ('ROLE_ADMIN' in app.user or app.user in sortie.participants) %}
+                            <a href="{{ path('app_profil_voir', {'pseudo': 'sortie.organisateur.pseudo'}) }}">{{ sortie.organisateur.pseudo }}</a>
+                        {% else %}
+                            {{ sortie.organisateur.pseudo }}
+                        {% endif %}
+
+
+
+                    </p>
                     <p>{{ sortie.dateHeureDebut | date('d/m/Y H:i') }}</p>
                     <p>
                         {% if days+hours+minutes < 1 %}
@@ -94,7 +106,13 @@
                     <tbody>
                     {% for participant in participants %}
                         <tr>
-                            <td>{{ participant.pseudo }}</td>
+                            <td>
+                                {% if ('ROLE_ADMIN' in app.user or app.user == sortie.organisateur) %}
+                                    <a href="{{ path('app_profil_voir', {'pseudo': 'participant.pseudo'}) }}">{{ participant.pseudo }}</a>
+                                {% else %}
+                                    {{ participant.pseudo }}
+                                {% endif %}
+                            </td>
                             <td>{{ participant.nom|upper }} {{ participant.prenom }}</td>
                         </tr>
                     {% endfor %}

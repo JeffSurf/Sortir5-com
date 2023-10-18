@@ -1,12 +1,24 @@
-{% extends 'bundles/TwigBundle/Exception/error.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block title %}Page indisponible{% endblock %}
-{% block code %}404e{% endblock %}
-{% block titre %}Vous vous êtes perdu..{% endblock %}
-{% block message %}
-    La page à laquelle vous essayez d'accéder n'existe pas ou n'est pas disponible.<br>
-    Vous ne devriez pas rester la, cliquez sur le boutton ci-dessous afin de retourner à l'accueil.
-{% endblock %}
-{% block button %}
-    <a href="{{ path('sortie_list') }}"><button class="btn blue">ACCUEIL</button></a>
+
+{% block body %}
+    <div class="main error-page">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-5 align-self-center">
+                    <img src="{{ asset('images/illustration.png') }}" alt="">
+                </div>
+                <div class="glass col-md-7 align-self-center">
+                    <h1>404</h1>
+                    <h2>Vous vous êtes perdu..</h2>
+                    <p>
+                        La page à laquelle vous essayez d'accéder n'existe pas ou n'est pas disponible.<br>
+                        Vous ne devriez pas rester la, cliquez sur le boutton ci-dessous afin de retourner à l'accueil.
+                    </p>
+                    <a href="{{ path('sortie_list') }}"><button class="btn blue">ACCUEIL</button></a>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

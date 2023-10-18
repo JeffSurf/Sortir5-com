@@ -35,63 +35,30 @@ class ProfilController extends AbstractController
         $loggedUser = $this->getUser();
         $sorties = $sortieRepository->findAll();
 
-        if ($requestedUser == null) { //si la personne request n'existe past
+        if ($requestedUser == null) { //si le pseudo request n'existe pas
             throw $this->createNotFoundException();
-        } else {
-            if ($requestedUser == $loggedUser) { //si la personne connectée request son pseudo
-                '';
-            } elseif ($this->isGranted('ROLE_ADMIN')) { //si la personne connectée est admin
-                '';
-            } else {
-                $usersMatch = false;
+        } elseif ($requestedUser != $loggedUser && !$this->isGranted('ROLE_ADMIN')) {
+            //si la personne connectée request un autre pseudo que le sien et qu'elle n'est pas admin
+            $usersMatch = false;
 
-                foreach ($sorties as $sortie) {
-                    $participants = $sortie->getParticipants();
-                    $organistateur = $sortie->getOrganisateur();
-                    foreach ($participants as $participant) {
-                        if ($requestedUser == $participant && $loggedUser == $organistateur) { //si la personne request est inscrit dans une sortie que j'organise
-                            $usersMatch = true;
-                            break;
-                        } elseif ($requestedUser == $organistateur && $loggedUser == $participant) { //si la personne request organise une sortie à laquelle je participe
-                            $usersMatch = true;
-                            break;
-                        }
+            foreach ($sorties as $sortie) {
+                $participants = $sortie->getParticipants();
+                $organistateur = $sortie->getOrganisateur();
+                foreach ($participants as $participant) {
+                    if ($requestedUser == $participant && $loggedUser == $organistateur) {
+                    //si la personne request est inscrit dans une sortie que j'organise
+                        $usersMatch = true;
+                        break;
+                    } elseif ($requestedUser == $organistateur && $loggedUser == $participant) {
+                    //si la personne request organise une sortie à laquelle je participe
+                        $usersMatch = true;
+                        break;
                     }
                 }
-                if (!$usersMatch) {
-                    return new Response("Vous n'êtes pas autorisé", 403);
-                }
             }
-        }
-
-        //A clarifier (vincent)
-        if ($requestedUser != null) { //si la personne request existe
-            if ($requestedUser == $loggedUser) { //si la personne connectée request son pseudo
-                '';
-            } elseif ($this->isGranted('ROLE_ADMIN')) { //si la personne connectée est admin
-                '';
-            } else {
-                $usersMatch = false;
-
-                foreach ($sorties as $sortie) {
-                    $participants = $sortie->getParticipants();
-                    $organistateur = $sortie->getOrganisateur();
-                    foreach ($participants as $participant) {
-                        if ($requestedUser == $participant && $loggedUser == $organistateur) { //si la personne request est inscrit dans une sortie que j'organise
-                            $usersMatch = true;
-                            break;
-                        } elseif ($requestedUser == $organistateur && $loggedUser == $participant) { //si la personne request organise une sortie à laquelle je participe
-                            $usersMatch = true;
-                            break;
-                        }
-                    }
-                }
-                if (!$usersMatch) {
-                    return new Response("Vous n'êtes pas autorisé", 403);
-                }
+            if (!$usersMatch) {
+                throw $this->createAccessDeniedException();
             }
-        } else {
-            return new Response("Vous n'êtes pas autorisé", 403);
         }
 
         return $this->render('profil/index.html.twig',[
@@ -105,7 +72,7 @@ class ProfilController extends AbstractController
         $dataUser = $participantRepository->findByPseudo($pseudo);
 
         if($dataUser != $this->getUser()) {
-            return new Response("Vous n'êtes pas autorisé", 403);
+            throw $this->createAccessDeniedException();
         }
 
         $form = $this->createForm(ProfilFormType::class, $dataUser);
@@ -171,7 +138,7 @@ class ProfilController extends AbstractController
         $form->handleRequest($request);
 
         if($dataUser != $this->getUser()) {
-            return new Response("Vous n'êtes pas autorisé", 403);
+            throw $this->createAccessDeniedException();
         }
 
         $msg = null;

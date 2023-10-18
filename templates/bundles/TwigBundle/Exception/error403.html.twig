@@ -1,25 +1,34 @@
-{% extends 'bundles/TwigBundle/Exception/error.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block title %}Accès refusé{% endblock %}
 
-{% if 'ROLE_BAN' in app.user.roles %}
-    {% block code %}STOP{% endblock %}
-    {% block titre %}Vous êtes banni.{% endblock %}
-    {% block message %}
-        Votre compte a été désactivé.<br>
-        Si vous pensez qu'il sagit d'une erreur, veuillez contacter un administrateur.
-    {% endblock %}
-    {% block button %}
-        <a><button class="btn blue">CONTACTER</button></a>
-    {% endblock %}
-{% else %}
-    {% block code %}403{% endblock %}
-    {% block titre %}Vous n'avez pas le droit dêtre ici.{% endblock %}
-    {% block message %}
-        La page à laquelle vous essayez d'accéder n'est pas accessible.<br>
-        Vous ne devriez pas rester la, cliquez sur le boutton ci-dessous afin de retourner à l'accueil.
-    {% endblock %}
-    {% block button %}
-        <a href="{{ path('sortie_list') }}"><button class="btn blue">ACCUEIL</button></a>
-    {% endblock %}
-{% endif %}
+{% block body %}
+    <div class="main error-page">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-5 align-self-center">
+                    <img src="{{ asset('images/illustration.png') }}" alt="">
+                </div>
+                <div class="glass col-md-7 align-self-center">
+                    {% if 'ROLE_BAN' in app.user.roles %}
+                        <h1>STOP</h1>
+                        <h2>Vous êtes banni.</h2>
+                        <p>
+                            Votre compte a été désactivé.<br>
+                            Si vous pensez qu'il sagit d'une erreur, veuillez contacter un administrateur.</p>
+                        <a><button class="btn blue">CONTACTER</button></a>
+                    {% else %}
+                        <h1>403</h1>
+                        <h2>Vous n'avez pas le droit d'être ici.</h2>
+                        <p>
+                            La page à laquelle vous essayez d'accéder n'est pas accessible.<br>
+                            Vous ne devriez pas rester la, cliquez sur le boutton ci-dessous afin de retourner à l'accueil.
+                        </p>
+                        <a href="{{ path('sortie_list') }}"><button class="btn blue">ACCUEIL</button></a>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
