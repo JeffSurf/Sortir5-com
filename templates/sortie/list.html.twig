@@ -144,10 +144,10 @@
                         {% endif %}
 
                         {# Gestion des boutons S'INSCRIRE et SE DESISTER #}
-                        {% if (sortie.participants is empty) and (sortie.etat.name in ['OUVERTE']) and (sortie.dateLimiteInscription|date("m/d/Y") < "now"|date("m/d/Y")) %}
+                        {% if (sortie.participants|length < sortie.nbInscriptionsMax) and (sortie.etat.name in ['OUVERTE']) and (sortie.dateLimiteInscription|date("m/d/Y") > "now"|date("m/d/Y")) %}
                             <a href="{{ path('sortie_inscrire', {'id': sortie.id}) }}" class="btn btn-outline-success">S'inscrire</a>
                         {% else %}
-                            {% if (app.user in sortie.participants) and (sortie.etat.name in ['OUVERTE', 'CLOTUREE'] and (sortie.dateLimiteInscription|date("m/d/Y") < "now"|date("m/d/Y"))) %}
+                            {% if (app.user in sortie.participants) and (sortie.etat.name in ['OUVERTE', 'CLOTUREE'] and (sortie.dateLimiteInscription|date("m/d/Y") > "now"|date("m/d/Y"))) %}
                                 <a href="{{ path('sortie_desister', {'id': sortie.id}) }}" class="btn btn-outline-dark">Se désister</a>
                             {# {% elseif sortie.etat.name in ['OUVERTE'] %}
                                 <a href="{{ path('sortie_inscrire', {'id': sortie.id}) }}" class="btn btn-outline-success">S'inscrire</a>#}
