@@ -23,6 +23,7 @@ class FilterFormType extends AbstractType
     {
         $builder
             ->add('nom', TextType::class,[
+                'label'=> 'Mot-clé',
                 'required' => false,
                 'attr' => ['placeholder' => 'Rechercher par mot-clé']
             ])
@@ -40,6 +41,7 @@ class FilterFormType extends AbstractType
             ])
 
             ->add('etat', ChoiceType::class, [
+                'label' => 'Statut',
                 'choices' => Etat::cases(),
                 'choice_label' => function(?Etat $etat) {
                     return null === $etat ? 'blank' : $etat->value;

@@ -31,8 +31,8 @@ class SortieController extends AbstractController
         FirstLoginService $firstLoginService,
         SortieRepository $sortieRepository,
         UserInterface $user,
-        ParticipantRepository $participantRepository,
-        SiteRepository $siteRepository): Response
+        ParticipantRepository $participantRepository
+            ): Response
     {
 
         //Verifier première connexion
@@ -43,9 +43,11 @@ class SortieController extends AbstractController
         }
 
         $now = new \DateTime();
+        $site = $participantRepository->find($user)->getSite();
 
         //filter
         $filterform = $this->createForm(FilterFormType::class);
+        $filterform->get('site')->setData($site);
         $filterform->handleRequest($request);
 
         //Mot-clef

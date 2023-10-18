@@ -38,7 +38,7 @@ class SortieRepository extends ServiceEntityRepository
         }
 
         if ($siteSelect !== null) {
-            $qb->andWhere('s.organisateur IN :participantsSite')
+            $qb->andWhere('s.organisateur IN (:participantsSite)')
                 ->setParameter('participantsSite', $participantsSite);
         }
 
@@ -47,9 +47,13 @@ class SortieRepository extends ServiceEntityRepository
                 ->setParameter('etat', $etat);
         }
 
-        if (($dateDebut !== null) and ($dateFin !== null)) {
-            $qb->andWhere('s.dateHeureDebut BETWEEN :dateDebut AND :dateFin')
-                ->setParameter('dateDebut', $dateDebut)
+        if($dateDebut !== null) {
+            $qb->andWhere('s.dateHeureDebut > :dateDebut')
+                ->setParameter('dateDebut', $dateDebut);
+        }
+
+        if($dateFin !== null){
+            $qb->andWhere('s.dateHeureDebut < :dateFin')
                 ->setParameter('dateFin', $dateFin);
         }
 

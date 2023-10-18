@@ -4,26 +4,31 @@
 
 {% block body %}
 
+    <p class="h3 mt-lg-3 px-lg-4 text-center">Filter les sorties</p>
     <div class="container container-page">
         {{ form_start(filterform) }}
         {{ form_errors(filterform) }}
 
-        <p class="h3 mb-3 px-lg-4">Filter les sorties</p>
         <div class="row">
             <div class="col-6">
                 <div class="mb-3">
+                    {{ form_label(filterform.nom) }}
                     {{ form_widget(filterform.nom) }}
                 </div>
                 <div class="mb-3">
+                    {{ form_label(filterform.site) }}
                     {{ form_widget(filterform.site) }}
                 </div>
                 <div class="mb-3">
+                    {{ form_label(filterform.etat) }}
                     {{ form_widget(filterform.etat) }}
                 </div>
                 <div class="mb-3">
+                    {{ form_label(filterform.dateDebut) }}
                     {{ form_widget(filterform.dateDebut) }}
                 </div>
                 <div class="mb-3">
+                    {{ form_label(filterform.dateFin) }}
                     {{ form_widget(filterform.dateFin) }}
                 </div>
             </div>
