@@ -164,7 +164,6 @@ class SortieController extends AbstractController
     public function show(SortieRepository $sortieRepository, int $id = null): Response {
 
         $sortie = $sortieRepository->find($id);
-        $user = $this->getUser();
 
         if(!$sortie || $sortie->getEtat()->name == 'CREEE') {
             return new Response("Vous n'êtes pas autorisé", 403);
@@ -173,8 +172,6 @@ class SortieController extends AbstractController
         $lieu = $sortie->getLieu();
         $ville = $lieu->getVille();
         $participants = $sortie->getParticipants();
-
-
 
         return $this->render('sortie/show.html.twig', [
             'sortie' => $sortie,

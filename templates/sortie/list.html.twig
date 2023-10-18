@@ -56,7 +56,9 @@
 
         <hr />
         <div class="my-3 text-center">
-            <a href="{{ path('sortie_add') }}" class="btn btn-light">Créer une sortie</a>
+            {% if ('ROLE_ADMIN' not in app.user.roles) %}
+                <a href="{{ path('sortie_add') }}" class="btn btn-light">Créer une sortie</a>
+            {% endif %}
         </div>
         <table class="table col-lg-12 mt-3">
             <thead>
@@ -124,27 +126,27 @@
 
                     <td>
                         {# Gestion du bouton AFFICHER #}
-                        {% if (sortie.etat.name == "OUVERTE" or sortie.etat.name == "CLOTUREE" or sortie.etat.name == "ENCOURS") %}
+                        {% if (sortie.etat.name in ["OUVERTE", "CLOTUREE", "ENCOURS", "ANNULEE"]) %}
                             <a href="{{ path('sortie_detail', {'id': sortie.id}) }}" class="btn btn-outline-info">Afficher</a>
                         {% endif %}
 
                         {# Gestion du bouton ANNULER #}
-                        {% if (sortie.organisateur == app.user) and (sortie.etat.name in ["OUVERTE", "CLOTUREE", "TERMINEE"]) %}
+                        {% if (('ROLE_ADMIN' in app.user.roles) or (sortie.organisateur == app.user)) and (sortie.etat.name in ["OUVERTE", "CLOTUREE", "TERMINEE"]) %}
                             <a href="{{ path('sortie_cancel', {'id': sortie.id}) }}" class="btn btn-outline-danger">Annuler</a>
                         {% endif %}
 
                         {# Gestion du bouton MODIFIER #}
-                        {% if (sortie.organisateur == app.user) and sortie.etat.name == "CREEE" %}
+                        {% if (('ROLE_ADMIN' in app.user.roles) or (sortie.organisateur == app.user)) and sortie.etat.name == "CREEE" %}
                             <a href="{{ path('sortie_update', {'id': sortie.id}) }}" class="btn btn-outline-primary">Modifier</a>
                         {% endif %}
 
                         {# Gestion du bouton PUBLIER #}
-                        {% if (sortie.organisateur == app.user) and sortie.etat.name == "CREEE" %}
+                        {% if (('ROLE_ADMIN' in app.user.roles) or (sortie.organisateur == app.user)) and sortie.etat.name == "CREEE" %}
                             <a href="{{ path('sortie_publish', {'id': sortie.id}) }}" class="btn btn-outline-warning">Publier</a>
                         {% endif %}
 
                         {# Gestion du bouton Supprimer #}
-                        {% if (sortie.organisateur == app.user) and sortie.etat.name == "CREEE" %}
+                        {% if (('ROLE_ADMIN' in app.user.roles) or (sortie.organisateur == app.user)) and sortie.etat.name == "CREEE" %}
                             <a href="{{ path('sortie_delete', {'id': sortie.id}) }}" class="btn btn-outline-danger">Supprimer</a>
                         {% endif %}
 
