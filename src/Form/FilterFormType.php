@@ -24,11 +24,11 @@ class FilterFormType extends AbstractType
         $builder
             ->add('nom', TextType::class,[
                 'required' => false,
-                'attr' => ['placeholder' => 'Rechercher par mot-clé']
+                'attr' => ['placeholder' => 'Rechercher par mot-clé'],
             ])
 
             ->add('site', EntityType::class, [
-                'attr' => ['placeholder' => 'Choisir un site'],
+                'placeholder' => "Choisir un site",
                 'required' => false,
                 'mapped' => false,
                 'class' => Site::class,
@@ -37,9 +37,11 @@ class FilterFormType extends AbstractType
                         ->orderBy('s.nom', 'ASC');
                 },
                 'choice_label' => 'nom',
+                "data" => $options["user"]->getSite(),
             ])
 
             ->add('etat', ChoiceType::class, [
+                'placeholder' => "Choisissez un état",
                 'choices' => Etat::cases(),
                 'choice_label' => function(?Etat $etat) {
                     return null === $etat ? 'blank' : $etat->value;
@@ -67,19 +69,22 @@ class FilterFormType extends AbstractType
             ->add('estOrganise', CheckboxType::class, [
                 'label'=> 'Sorties dont je suis l\'organisateur.trice',
                 'required' => false,
-                'mapped' => false
+                'mapped' => false,
+                "attr" => ["checked" => true]
             ])
 
             ->add('estInscrit', CheckboxType::class, [
                 'label'=> 'Sorties auxquelles je suis inscrit.e',
                 'required' => false,
-                'mapped' => false
+                'mapped' => false,
+                "attr" => ["checked" => true]
             ])
 
             ->add('estPasInscrit', CheckboxType::class, [
                 'label'=> 'Sorties auxquelles je ne suis pas inscrit.e',
                 'required' => false,
-                'mapped' => false
+                'mapped' => false,
+                "attr" => ["checked" => true]
             ])
 
             ->add('estPassee', CheckboxType::class, [
@@ -97,5 +102,7 @@ class FilterFormType extends AbstractType
             'method' => 'GET',
             'csrf_protection' => false
         ]);
+
+        $resolver->setRequired("user");
     }
 }
