@@ -1,6 +1,6 @@
 import './styles/map-sortie.scss';
 
-const BASE_URL_GEOCODE = "https://geocode.maps.co/search";
+const BASE_URL_GEOCODE = "https://geocode.maps.co";
 const L = require("leaflet");
 const $ = require("jquery");
 
@@ -26,7 +26,10 @@ const handleChangeGeocode = () => {
     if(nom && ville)
     {
         const q = `${nom} ${adresse} ${ville}`;
-        $.get(BASE_URL_GEOCODE, { q }, (data) => {
+        $.get(BASE_URL_GEOCODE + "/search", { q }, (data) => {
+
+            const msg = $("#msg-map");
+            msg.empty();
 
             const resulats = data.length;
 
@@ -39,11 +42,15 @@ const handleChangeGeocode = () => {
 
                 marker.setLatLng([point.lat, point.lon]).addTo(map);
                 map.setView([point.lat, point.lon], 16)
+
+                const selectResults = $("<select/>");
+
+            }
+            else
+            {
+                msg.append("Pas de résultat");
             }
 
-            const msg = $("#msg-map");
-            msg.empty();
-            msg.append(resulats ? `${resulats} résultat(s)` : "Aucun résultat");
         });
     }
 }
