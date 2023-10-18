@@ -80,8 +80,12 @@
 
                 <div class="col-5">
                     <p>{{ lieu.nom }}</p>
-                    <p>{{ lieu.adresse ?? 'Non Renseigné'}}
-                    {{ ville.nom }},{{ ville.codepostal }}</p>
+                    <p>
+                        {% if lieu.adresse is not null %}
+                             {{ lieu.adresse }}<br>
+                        {% endif %}
+                        {{ ville.nom | upper }} {{ ville.codepostal }}
+                    </p>
                     <p></p>
                     <div id="map" data-lat="{{ lieu.latitude }}" data-lon="{{ lieu.longitude }}"></div>
                 </div>
