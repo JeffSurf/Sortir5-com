@@ -38,7 +38,7 @@ class SortieRepository extends ServiceEntityRepository
         }
 
         if ($siteSelect !== null) {
-            $qb->andWhere('s.organisateur IN :participantsSite')
+            $qb->andWhere('s.organisateur IN (:participantsSite)')
                 ->setParameter('participantsSite', $participantsSite);
         }
 
@@ -95,10 +95,6 @@ class SortieRepository extends ServiceEntityRepository
             ->setParameter('current_date', new \DateTime(-1 . ' month'));
     }
 
-    /**
-     * @throws NonUniqueResultException
-     * @throws NoResultException
-     */
     public function countSortieAfterOneMonth() : int {
         return $this->getSortieAfterOneMonth()->select("COUNT(s.id)")->getQuery()->getSingleScalarResult();
     }
