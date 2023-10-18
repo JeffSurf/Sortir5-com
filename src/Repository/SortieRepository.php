@@ -52,11 +52,17 @@ class SortieRepository extends ServiceEntityRepository
 
         if($sortieOrganisateur) {
             $Ou_X->add($qb->expr()->eq('s.organisateur', ':user'));
-        } elseif ($inscrit) {
+        }
+
+        if ($inscrit) {
             $Ou_X->add($qb->expr()->isMemberOf(':user', 's.participants'));
-        } elseif ($pasInscrit) {
+        }
+
+        if ($pasInscrit) {
             $Ou_X->add($qb->expr()->not($qb->expr()->isMemberOf(':user', 's.participants')));
-        } elseif ($sortiePassee) {
+        }
+
+        if ($sortiePassee) {
             $condition = $qb->expr()->lt('s.dateHeureDebut', ':dateNow');
             $Ou_X->add($condition);
         }
