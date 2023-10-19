@@ -5,7 +5,9 @@ namespace App\Entity;
 use App\Repository\VilleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: VilleRepository::class)]
 class Ville
@@ -18,7 +20,11 @@ class Ville
     #[ORM\Column(length: 50)]
     private ?string $nom = null;
 
-    #[ORM\Column(length: 5)]
+    #[ORM\Column(length: 5, type: Types::INTEGER)]
+    #[Assert\Regex(
+        pattern: "/^[0-9]{5}$/",
+        message: "Le format du code postal n'est pas correct!"
+    )]
     private ?string $codepostal = null;
 
     #[ORM\OneToMany(mappedBy: 'ville', targetEntity: Lieu::class)]
