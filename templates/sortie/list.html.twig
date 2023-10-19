@@ -153,10 +153,10 @@
                         {% endif %}
 
                         {# Gestion des boutons S'INSCRIRE et SE DESISTER #}
-                        {% if ('ROLE_ADMIN' not in app.user.roles) or (app.user != sortie.organisateur) and (app.user not in sortie.participants) and (sortie.participants|length < sortie.nbInscriptionsMax) and (sortie.etat.name in ['OUVERTE']) and (sortie.dateLimiteInscription|date("d/m/Y H:i") > "now"|date("m/d/Y")) %}
+                        {% if ('ROLE_ADMIN' not in app.user.roles) and (app.user != sortie.organisateur) and (app.user not in sortie.participants) and (sortie.participants|length < sortie.nbInscriptionsMax) and (sortie.etat.name in ['OUVERTE']) and (sortie.dateLimiteInscription|date("d/m/Y H:i") > "now"|date("m/d/Y")) %}
                             <a href="{{ path('sortie_inscrire', {'id': sortie.id}) }}" class="btn btn-outline-success">S'inscrire</a>
                         {% else %}
-                            {% if ('ROLE_ADMIN' not in app.user.roles) or (app.user != sortie.organisateur) and (app.user in sortie.participants) and (sortie.etat.name in ['OUVERTE', 'CLOTUREE'] and (sortie.dateLimiteInscription|date("d/m/Y H:i") > "now"|date("d/m/Y H:i"))) %}
+                            {% if ('ROLE_ADMIN' not in app.user.roles) and (app.user != sortie.organisateur) and (app.user in sortie.participants) and (sortie.etat.name in ['OUVERTE', 'CLOTUREE'] and (sortie.dateLimiteInscription|date("d/m/Y H:i") > "now"|date("d/m/Y H:i"))) %}
                                 <a href="{{ path('sortie_desister', {'id': sortie.id}) }}" class="btn btn-outline-dark">Se désister</a>
                             {# {% elseif sortie.etat.name in ['OUVERTE'] %}
                                 <a href="{{ path('sortie_inscrire', {'id': sortie.id}) }}" class="btn btn-outline-success">S'inscrire</a>#}
