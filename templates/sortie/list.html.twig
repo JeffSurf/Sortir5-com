@@ -98,7 +98,7 @@
                         {% set hours = difference.h %}
                         {% set minutes = difference.i %}
 
-                        {% if days+hours+minutes < 1 %}
+                        {% if sortie.dateLimiteInscription | date("d/m/Y H:i") < "now" | date("d/m/Y H:i") %}
                             Atteinte
                         {% else %}
                             Il reste
@@ -133,7 +133,7 @@
                         {% endif %}
 
                         {# Gestion du bouton ANNULER #}
-                        {% if (('ROLE_ADMIN' in app.user.roles) or (sortie.organisateur == app.user)) and (sortie.etat.name in ["OUVERTE", "CLOTUREE", "TERMINEE"]) %}
+                        {% if (('ROLE_ADMIN' in app.user.roles) or (sortie.organisateur == app.user)) and (sortie.etat.name in ["OUVERTE", "CLOTUREE"]) %}
                             <a href="{{ path('sortie_cancel', {'id': sortie.id}) }}" class="btn btn-outline-danger">Annuler</a>
                         {% endif %}
 
@@ -153,10 +153,10 @@
                         {% endif %}
 
                         {# Gestion des boutons S'INSCRIRE et SE DESISTER #}
-                        {% if (app.user != sortie.organisateur) and (app.user not in sortie.participants) and (sortie.participants|length < sortie.nbInscriptionsMax) and (sortie.etat.name in ['OUVERTE']) and (sortie.dateLimiteInscription|date("m/d/Y") > "now"|date("m/d/Y")) %}
+                        {% if (app.user != sortie.organisateur) and (app.user not in sortie.participants) and (sortie.participants|length < sortie.nbInscriptionsMax) and (sortie.etat.name in ['OUVERTE']) and (sortie.dateLimiteInscription|date("d/m/Y H:i") > "now"|date("m/d/Y")) %}
                             <a href="{{ path('sortie_inscrire', {'id': sortie.id}) }}" class="btn btn-outline-success">S'inscrire</a>
                         {% else %}
-                            {% if (app.user != sortie.organisateur) and (app.user in sortie.participants) and (sortie.etat.name in ['OUVERTE', 'CLOTUREE'] and (sortie.dateLimiteInscription|date("m/d/Y") > "now"|date("m/d/Y"))) %}
+                            {% if (app.user != sortie.organisateur) and (app.user in sortie.participants) and (sortie.etat.name in ['OUVERTE', 'CLOTUREE'] and (sortie.dateLimiteInscription|date("d/m/Y H:i") > "now"|date("d/m/Y H:i"))) %}
                                 <a href="{{ path('sortie_desister', {'id': sortie.id}) }}" class="btn btn-outline-dark">Se désister</a>
                             {# {% elseif sortie.etat.name in ['OUVERTE'] %}
                                 <a href="{{ path('sortie_inscrire', {'id': sortie.id}) }}" class="btn btn-outline-success">S'inscrire</a>#}
