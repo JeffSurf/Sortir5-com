@@ -40,7 +40,7 @@
                     <p>
 
                         {% if ('ROLE_ADMIN' in app.user or app.user in sortie.participants) %}
-                            <a href="{{ path('app_profil_voir', {'pseudo': 'sortie.organisateur.pseudo'}) }}">{{ sortie.organisateur.pseudo }}</a>
+                            <a href="{{ path('app_profil_voir', {'pseudo': sortie.organisateur.pseudo}) }}">{{ sortie.organisateur.pseudo }}</a>
                         {% else %}
                             {{ sortie.organisateur.pseudo }}
                         {% endif %}
@@ -116,7 +116,7 @@
                         <tr>
                             <td>
                                 {% if ('ROLE_ADMIN' in app.user or app.user == sortie.organisateur) %}
-                                    <a href="{{ path('app_profil_voir', {'pseudo': 'participant.pseudo'}) }}">{{ participant.pseudo }}</a>
+                                    <a href="{{ path('app_profil_voir', {'pseudo': participant.pseudo}) }}">{{ participant.pseudo }}</a>
                                 {% else %}
                                     {{ participant.pseudo }}
                                 {% endif %}
