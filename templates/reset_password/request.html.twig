@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Reset your password{% endblock %}
+
+{% block body %}
+    {% for flash_error in app.flashes('reset_password_error') %}
+        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+    {% endfor %}
+    <h1 class="text-center">Réinitialiser votre mot de passe</h1>
+
+    {{ form_start(requestForm) }}
+        <div class="container">
+            {{ form_row(requestForm.email) }}
+            <div>
+                <p class="text-xs">
+                    Entrer votre adresse mail, et nous allons vous envoyer un
+                    lien de réinitialisation de mot de passe.
+                </p>
+            </div>
+
+            <button class="btn btn-primary">Envoyer le mail de réinitialisation</button>
+        </div>
+    {{ form_end(requestForm) }}
+{% endblock %}
