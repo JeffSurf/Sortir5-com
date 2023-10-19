@@ -53,6 +53,7 @@
                                     class="form-control"
                                     {{ not is_granted("ROLE_ADMIN") ? "readonly" : "" }}
                             />
+                            {{ form_errors(profilForm.prenom) }}
                         </div>
                     </div>
                 </div>
@@ -73,6 +74,8 @@
                                     class="form-control"
                                     {{ not is_granted("ROLE_ADMIN") ? "readonly" : "" }}
                             />
+                            {{ form_errors(profilForm.nom) }}
+
                         </div>
                     </div>
                 </div>
