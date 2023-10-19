@@ -29,11 +29,11 @@
         <div class="sortie-title">
             <h1>{{ sortie.nom | capitalize }}</h1>
             <h2>
-                Sortie
                 <i class="fa-solid fa-person-walking"></i>
+                Sortie
                 <span>
                     organisée par
-                    {% if ('ROLE_ADMIN' in app.user or app.user in sortie.participants) %}
+                    {% if ('ROLE_ADMIN' in app.user.roles or app.user in sortie.participants or app.user == sortie.organisateur) %}
                         <a href="{{ path('app_profil_voir', {'pseudo': sortie.organisateur.pseudo}) }}">{{ sortie.organisateur.pseudo }}</a>
                     {% else %}
                         {{ sortie.organisateur.pseudo }}
@@ -41,6 +41,11 @@
                 </span>
             </h2>
         </div>
+
+        {% if sortie.etat.name == 'ANNULEE' %}
+            <p class="motif-annulation"><i class="fa-solid fa-triangle-exclamation"></i> La sortie a été annulée : {{ sortie.motifAnnulation }}</p>
+        {% endif %}
+
         <div class="sortie-infos">
             <div class="sortie-text">
                 {% set desc = sortie.infosSortie | replace({'.': '.‡', '!': '!‡'}) %}
@@ -77,17 +82,14 @@
                         </span>
                     </div>
 
-                    {% if ('ROLE_ADMIN' not in app.user) %}
-                        {% if (app.user not in sortie.participants) %}
-                            <a href="{{ path('sortie_inscrire', {'id': sortie.id})}}">
-                                <button class="btn btn-primary">S'inscrire</button>
-                            </a>
-                        {% else  %}
-                            <a href="{{ path('sortie_desister', {'id': sortie.id}) }}">
-                                <button class="btn btn-primary">Se désister</button>
-                            </a>
+                    {# Gestion des boutons S'INSCRIRE et SE DESISTER #}
+                    {% if ('ROLE_ADMIN' not in app.user.roles) and (app.user != sortie.organisateur) and (app.user not in sortie.participants) and (sortie.participants|length < sortie.nbInscriptionsMax) and (sortie.etat.name in ['OUVERTE']) and (sortie.dateLimiteInscription|date("d/m/Y H:i") > "now"|date("m/d/Y")) %}
+                        <a href="{{ path('sortie_inscrire', {'id': sortie.id}) }}" class="btn btn-outline-success">S'inscrire</a>
+                    {% else %}
+                        {% if ('ROLE_ADMIN' not in app.user.roles) and (app.user != sortie.organisateur) and (app.user in sortie.participants) and (sortie.etat.name in ['OUVERTE', 'CLOTUREE'] and (sortie.dateLimiteInscription|date("d/m/Y H:i") > "now"|date("d/m/Y H:i"))) %}
+                            <a href="{{ path('sortie_desister', {'id': sortie.id}) }}" class="btn btn-outline-dark">Se désister</a>
                         {% endif %}
-                    {% endif %}
+                    {% endif%}
                 </div>
             </div>
 
@@ -106,58 +108,64 @@
             </div>
         </div>
 
-        <h2 class="text-center my-lg-3">{{ sortie.participants | length }}/{{ sortie.nbInscriptionsMax }} participants</h2>
-        <hr class="my-lg-3 fw-bold"/>
+        <div class="participants-in-sortie">
+            <h2 class="text-center my-lg-3">{{ sortie.participants | length }}/{{ sortie.nbInscriptionsMax }} participants</h2>
+            <hr class="my-lg-3 fw-bold"/>
 
-        {% if sortie.participants is empty %}
-            <p class="text-center">Il n'y a pas d'inscrit..</p>
-        {% else %}
-            <div class="text-center">
-                <table class="table participants-in-sortie">
-                    <thead>
-                        <tr class="fw-bold">
-                            <th scope="col"></th>
-                            {% if ('ROLE_ADMIN' in app.user or app.user == sortie.organisateur) %}
+            {% if sortie.participants is empty %}
+                <p class="text-center">Il n'y a pas d'inscrit..</p>
+            {% else %}
+                <div class="text-center">
+                    <table class="table">
+                        <thead>
+                            <tr class="fw-bold">
                                 <th scope="col"></th>
-                                <th scope="col"></th>
-                            {% endif %}
-                        </tr>
-                    </thead>
+                                {% if ('ROLE_ADMIN' in app.user.roles or app.user == sortie.organisateur) %}
+                                    <th scope="col"></th>
+                                    <th scope="col"></th>
+                                {% endif %}
+                            </tr>
+                        </thead>
 
-                    <tbody>
-                    {% for participant in participants %}
-                        <tr>
-                            {% if ('ROLE_ADMIN' in app.user or app.user == sortie.organisateur) %}
-                                <td>
-                                    {% if (participant.rgpd) %}
-                                        <img class="profile-pic list" src="{{ asset('uploads/participants/' ~ participant.imageProfil) }}" alt="">
-                                    {% else %}
-                                        <img class="profile-pic list" src="{{ asset('uploads/participants/default_profile_picture.png') }}" alt="">
-                                    {% endif %}
-                                    <a href="{{ path('app_profil_voir', {'pseudo': participant.pseudo}) }}">{{ participant.pseudo }}</a>
-                                </td>
-                                <td>{{ participant.nom|upper }} {{ participant.prenom }}</td>
-                                <td>{{ participant.email }}</td>
-                            {% else %}
-                                <td>
-                                    {% if (participant.rgpd) %}
-                                        <img class="profile-pic list" src="{{ asset('uploads/participants/' ~ participant.imageProfil) }}" alt="">
-                                    {% else %}
-                                        <img class="profile-pic list" src="{{ asset('uploads/participants/default_profile_picture.png') }}" alt="">
-                                    {% endif %}
-                                    {{ participant.pseudo }}
-                                </td>
-                            {% endif %}
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        {% endif %}
+                        <tbody>
+                        {% for participant in participants %}
+                            <tr>
+                                {% if ('ROLE_ADMIN' in app.user.roles or app.user == sortie.organisateur) %}
+                                    <td>
+                                        {% if ('ROLE_ADMIN' in app.user.roles or participant.rgpd) %}
+                                            <img class="profile-pic list" src="{{ asset('uploads/participants/' ~ participant.imageProfil) }}" alt="">
+                                        {% else %}
+                                            <img class="profile-pic list" src="{{ asset('uploads/participants/default_profile_picture.png') }}" alt="">
+                                        {% endif %}
+                                        <a href="{{ path('app_profil_voir', {'pseudo': participant.pseudo}) }}">{{ participant.pseudo }}</a>
+                                    </td>
+                                    <td>{{ participant.nom|upper }} {{ participant.prenom }}</td>
+                                    <td>{{ participant.email }}</td>
+                                {% else %}
+                                    <td>
+                                        {% if (participant.rgpd or app.user == participant) %}
+                                            <img class="profile-pic list" src="{{ asset('uploads/participants/' ~ participant.imageProfil) }}" alt="">
+                                        {% else %}
+                                            <img class="profile-pic list" src="{{ asset('uploads/participants/default_profile_picture.png') }}" alt="">
+                                        {% endif %}
+                                        {% if app.user == participant %}
+                                            <a href="{{ path('app_profil_voir', {'pseudo': participant.pseudo}) }}">{{ participant.pseudo }}</a>
+                                        {% else %}
+                                            {{ participant.pseudo }}
+                                        {% endif %}
+                                    </td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        </div>
 
 
         <div class="text-center">
-            <a href="{{ path('sortie_list') }}" class="btn btn-retour btn-outline-primary my-lg-3" type="text" >Retour</a>
+            <a href="{{ path('sortie_list') }}" class="btn btn-retour btn-outline-dark my-lg-3" type="text" >Retour</a>
         </div>
     </div>
 {% endblock %}

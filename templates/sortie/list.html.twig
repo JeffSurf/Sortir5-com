@@ -13,7 +13,7 @@
 {% block body %}
 
     <p class="h3 mt-lg-3 px-lg-4 text-center">Filter les sorties</p>
-    <div class="container container-page">
+    <div class="container container-page sortie-page">
         {{ form_start(filterform) }}
         {{ form_errors(filterform) }}
 
@@ -88,8 +88,18 @@
                 <tr>
                     <td>{{ sortie.nom }}</td>
                     <td>
-                        {% if sortie.participants is not empty %}
-                            {% if app.user in sortie.participants %}
+                        {% if ('ROLE_ADMIN' in app.user.roles or app.user == sortie.organisateur or (sortie.organisateur.rgpd and app.user in sortie.participants)) %}
+                            <img class="profile-pic list" src="{{ asset('uploads/participants/' ~ sortie.organisateur.imageProfil) }}" alt="">
+                        {% else %}
+                            <img class="profile-pic list" src="{{ asset('uploads/participants/default_profile_picture.png') }}" alt="">
+                        {% endif %}
+
+                        {% if (app.user == sortie.organisateur ) %}
+                            <a href="{{ path('app_profil_voir', {'pseudo': sortie.organisateur.pseudo}) }}">moi</a>
+                        {% elseif 'ROLE_ADMIN' in app.user.roles %}
+                            <a href="{{ path('app_profil_voir', {'pseudo': sortie.organisateur.pseudo}) }}">{{ sortie.organisateur.pseudo }}</a>
+                        {% elseif sortie.participants is not empty %}
+                            {% if (app.user in sortie.participants) %}
                                 <a href="{{ path('app_profil_voir', {'pseudo': sortie.organisateur.pseudo}) }}">{{ sortie.organisateur.pseudo }}</a>
                             {% else %}
                                 {{ sortie.organisateur.pseudo }}
@@ -156,7 +166,7 @@
                         {% endif %}
 
                         {# Gestion du bouton Supprimer #}
-                        {% if (('ROLE_ADMIN' in app.user.roles) or (sortie.organisateur == app.user)) and sortie.etat.name == "CREEE" %}
+                        {% if ('ROLE_ADMIN' in app.user.roles or (sortie.organisateur == app.user and sortie.etat.name == "CREEE"))  %}
                             <a href="{{ path('sortie_delete', {'id': sortie.id}) }}" class="btn btn-outline-danger">Supprimer</a>
                         {% endif %}
 

@@ -63,6 +63,149 @@ nav {
     }
 }
 
+.sortie-page {
+    .table {
+        a {
+            text-decoration: none;
+        }
+
+        td {
+            vertical-align: middle;
+            .profile-pic {
+                &.list {
+                    width: 40px !important;
+                    height: 40px !important;
+                }
+            }
+        }
+    }
+
+    &.show {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 4rem;
+
+        .sortie-title {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 0.5rem;
+
+            h1 {
+                font-size: 28px;
+                margin-bottom: 0 !important;
+            }
+
+            h2 {
+                font-size: 18px;
+                font-weight: normal !important;
+                margin-bottom: 0 !important;
+                color: #3E3E3E;
+
+                span {
+                    font-weight: lighter !important;
+
+                    a {
+                        text-decoration: none;
+                    }
+                }
+
+            }
+        }
+
+        .motif-annulation {
+            color: var(--bs-danger);
+        }
+
+        .sortie-infos {
+            width: 100%;
+            display: flex;
+            justify-content: space-evenly;
+
+            .sortie-text {
+                p {
+
+                }
+
+                .sortie-text-inscription {
+                    display: flex;
+                    .inscription-infos {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        p {
+                            margin-bottom: 0;
+                        }
+
+                        span {
+                            color: #3E3E3E;
+                        }
+                    }
+
+                    .btn {
+
+                    }
+                }
+
+            }
+
+            .sortie-map {
+                .map-text {
+                    display: flex;
+                    gap: 1rem;
+                    align-items: flex-start;
+                    justify-content: flex-start;
+                    i {
+                        margin-top: 5px;
+                        height: 20px;
+                    }
+
+                    p {
+                    }
+                }
+
+                #map {
+                    &.map-false {
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        align-items: center;
+                        background: #656565;
+                        i {
+
+                        }
+                        span {
+
+                        }
+                    }
+
+                }
+            }
+        }
+
+        .participants-in-sortie {
+            width: 100%;
+            td  {
+                vertical-align: middle;
+                text-align: left;
+
+                .profile-pic {
+                    &.list {
+                        width: 40px !important;
+                        height: 40px !important;
+                    }
+                }
+            }
+        }
+
+        .btn-retour {
+
+        }
+    }
+}
+
 .container-page {
     margin-top: 3rem;
     margin-bottom: 3rem;
