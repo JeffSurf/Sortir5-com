@@ -2,6 +2,14 @@
 
 {% block title %}Sorties{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+
+    {# CSS DATATABLE / BOOTSTRAP #}
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+{% endblock %}
+
 {% block body %}
 
     <p class="h3 mt-lg-3 px-lg-4 text-center">Filter les sorties</p>
@@ -62,7 +70,7 @@
                 <a href="{{ path('sortie_add') }}" class="btn btn-light">Créer une sortie</a>
             {% endif %}
         </div>
-        <table class="table col-lg-12 mt-3">
+        <table id="sortie" class="table col-lg-12 mt-3">
             <thead>
             <tr>
                 <th scope="col">Sortie</th>
@@ -153,7 +161,7 @@
                         {% endif %}
 
                         {# Gestion des boutons S'INSCRIRE et SE DESISTER #}
-                        {% if ('ROLE_ADMIN' not in app.user.roles) and (app.user != sortie.organisateur) and (app.user not in sortie.participants) and (sortie.participants|length < sortie.nbInscriptionsMax) and (sortie.etat.name in ['OUVERTE']) and (sortie.dateLimiteInscription|date("d/m/Y H:i") > "now"|date("m/d/Y")) %}
+                        {% if ('ROLE_ADMIN' not in app.user.roles) and (app.user != sortie.organisateur) and (app.user not in sortie.participants) and (sortie.participants|length < sortie.nbInscriptionsMax) and (sortie.etat.name in ['OUVERTE']) and (sortie.dateLimiteInscription|date("d/m/Y H:i") > "now"|date("d/m/Y H:i")) %}
                             <a href="{{ path('sortie_inscrire', {'id': sortie.id}) }}" class="btn btn-outline-success">S'inscrire</a>
                         {% else %}
                             {% if ('ROLE_ADMIN' not in app.user.roles) and (app.user != sortie.organisateur) and (app.user in sortie.participants) and (sortie.etat.name in ['OUVERTE', 'CLOTUREE'] and (sortie.dateLimiteInscription|date("d/m/Y H:i") > "now"|date("d/m/Y H:i"))) %}
@@ -169,4 +177,11 @@
             </tbody>
         </table>
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    {# BASE JS #}
+    {{ parent() }}
+
+    {{ encore_entry_script_tags('datatableConfigSortie') }}
 {% endblock %}
