@@ -67,7 +67,7 @@
                                style="z-index: 1;">
                                 Editer son profil
                             </a>
-                        {% else %}
+                        {% elseif user == app.user %}
                             <a href="{{ path('app_profil_editer', {'pseudo': user.pseudo}) }}" type="button" class="btn btn-outline-dark" data-mdb-ripple-color="dark"
                                style="z-index: 1;">
                                 Editer le profil
@@ -86,14 +86,13 @@
                                 {% if user.sorties.count == 0 %}
                                     <p class="lead fw-normal mb-0">Aucune sortie</p>
                                 {% else %}
-                                    <p class="lead fw-normal mb-0">{{ is_granted('ROLE_ADMIN') and user != app.user ? 'S' : 'M' }}es sorties</p>
-                                    <p class="mb-0"><a href="#" class="text-muted">Tout voir</a></p>
+                                    <p class="lead fw-normal mb-0">{{ is_granted('ROLE_ADMIN') and user != app.user ? 'S' : 'M' }}es dernières sorties</p>
                                 {% endif %}
                             </div>
                             <div class="row g-2">
-                                {% for sortie in user.sorties | slice(0,3) %}
-                                    <div class="col-6 mb-2">
-                                        <a href="#">
+                                {% for sortie in user.sorties | slice(0,5) %}
+                                    <div class="col-4 mb-2">
+                                        <a class="link" href="{{ path('sortie_detail', {'id': sortie.id}) }}">
                                             {{ sortie.nom }}
                                         </a>
                                     </div>
