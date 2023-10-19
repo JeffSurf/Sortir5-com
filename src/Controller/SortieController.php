@@ -46,7 +46,7 @@ class SortieController extends AbstractController
         $site = $participantRepository->find($user)->getSite();
 
         //filter
-        $filterform = $this->createForm(FilterFormType::class);
+        $filterform = $this->createForm(FilterFormType::class, null, ["user" => $user]);
         $filterform->get('site')->setData($site);
         $filterform->handleRequest($request);
 

@@ -99,10 +99,6 @@ class SortieRepository extends ServiceEntityRepository
             ->setParameter('current_date', new \DateTime(-1 . ' month'));
     }
 
-    /**
-     * @throws NonUniqueResultException
-     * @throws NoResultException
-     */
     public function countSortieAfterOneMonth() : int {
         return $this->getSortieAfterOneMonth()->select("COUNT(s.id)")->getQuery()->getSingleScalarResult();
     }
