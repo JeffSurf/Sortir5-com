@@ -230,7 +230,7 @@ class SortieController extends AbstractController
     #[Route('/desister/{id}', name: '_desister', requirements: ['id' => '\d+'])]
     public function withdraw(EntityManagerInterface $entityManager, SortieRepository $sortieRepository, ParticipantRepository $participantRepository, UserInterface $user, int $id = null): Response{
         if ($id == null){
-            $this->addFlash('danger', 'l\'indice de la sortie est null');
+            return $this->createNotFoundException();
         } else {
             $sortie = $sortieRepository->find($id);
             $participant = $participantRepository->find($user->getId());
@@ -263,7 +263,7 @@ class SortieController extends AbstractController
     #[Route('/publier/{id}', name: '_publish', requirements: ['id' => '\d+'])]
     public function publish(EntityManagerInterface $entityManager, SortieRepository $sortieRepository, int $id = null): Response{
         if ($id == null) {
-            $this->addFlash('danger', 'l\'indice de la sortie est null');
+            return $this->createNotFoundException();
         } else {
             $sortie = $sortieRepository->find($id);
             $maintenant = new \DateTime();
@@ -284,6 +284,11 @@ class SortieController extends AbstractController
 
     #[Route('/supprimer/{id}', name: '_delete', requirements: ['id' => '\d+'])]
     public function delete(EntityManagerInterface $entityManager, Sortie $id = null): Response {
+
+        if (!$id) {
+            return $this->createNotFoundException();
+        }
+
         $lieu = $id->getLieu();
         $lieu->removeSortie($id);
 
@@ -297,7 +302,9 @@ class SortieController extends AbstractController
 
     #[Route('/annuler/{id}', name: '_cancel', requirements: ['id' => '\d+'])]
     public function cancel(Request $request, EntityManagerInterface $entityManager, SortieRepository $sortieRepository, UserInterface $user, int $id = null): Response {
-
+        if (!$id) {
+            return $this->createNotFoundException();
+        }
         $sortie = $sortieRepository->find($id);
         $site = $sortie->getOrganisateur()->getSite();
         $lieu = $sortie->getLieu();
@@ -305,7 +312,7 @@ class SortieController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($sortie->getOrganisateur() !== $user ) {
+            if ($sortie->getOrganisateur() !== $user && !$this->isGranted('ROLE_ADMIN')) {
                 $this->addFlash('danger', 'Vous n\'êtes pas l\'organisateur de la sortie !');
             } elseif (($sortie->getEtat() != Etat::OUVERTE) and ($sortie->getEtat() != Etat::ENCOURS)) {
                 $this->addFlash('danger', 'Vous ne pouvez pas annuler la sortie !');

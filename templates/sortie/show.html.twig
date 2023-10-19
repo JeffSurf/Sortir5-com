@@ -65,11 +65,11 @@
                 <p>{% for sentence in newDesc %}{{ sentence }}<br>{% endfor %}</p>
                 <div class="sortie-text-inscription">
                     <div class="inscription-infos">
-                        <p>Vous avez jusqu'au {{ sortie.dateLimiteInscription | date("d/m/Y à H\\hi") }} pour vous décider</p>
-                        <span>
-                            {% if sortie.dateLimiteInscription | date("d/m/Y H:i") < "now" | date("d/m/Y H:i") %}
-                                (Il est trop tard désormais)
-                            {% else %}
+                        {% if sortie.dateLimiteInscription | date("d/m/Y H:i") < "now" | date("d/m/Y H:i") %}
+                            <p>La phase d'inscription est terminée, si vous êtes inscrit et que vous ne pouvez pas venir merci de contacter l'organisateur rapidement</p>
+                        {% else %}
+                            <p>Vous avez jusqu'au {{ sortie.dateLimiteInscription | date("d/m/Y à H\\hi") }} pour vous décider</p>
+                            <span>
                                 (Il reste
                                 {% if days > 0 %}
                                     {{ days }}J,
@@ -77,9 +77,9 @@
                                 {% if days+hours > 0 %}
                                     {{ hours }}h et
                                 {% endif %}
-                                {{ minutes }}min.)
-                            {% endif %}
-                        </span>
+                                {{ minutes }}min)
+                            </span>
+                        {% endif %}
                     </div>
 
                     {# Gestion des boutons S'INSCRIRE et SE DESISTER #}
@@ -98,7 +98,7 @@
                     <i class="fa-solid fa-map-pin"></i>
                     <p>
                         {{ lieu.nom | capitalize}}<br>
-                        {% if lieu.adresse is not null %}
+                        {% if lieu.adresse %}
                             {{ lieu.adresse }},
                         {% endif %}
                         {{ ville.nom | upper }} {{ ville.codepostal }}
@@ -149,7 +149,7 @@
                                             <img class="profile-pic list" src="{{ asset('uploads/participants/default_profile_picture.png') }}" alt="">
                                         {% endif %}
                                         {% if app.user == participant %}
-                                            <a href="{{ path('app_profil_voir', {'pseudo': participant.pseudo}) }}">{{ participant.pseudo }}</a>
+                                            <a href="{{ path('app_profil_voir', {'pseudo': participant.pseudo}) }}">{{ participant.pseudo }} (moi)</a>
                                         {% else %}
                                             {{ participant.pseudo }}
                                         {% endif %}
@@ -166,6 +166,16 @@
 
         <div class="text-center">
             <a href="{{ path('sortie_list') }}" class="btn btn-retour btn-outline-dark my-lg-3" type="text" >Retour</a>
+
+            {# Gestion du bouton ANNULER #}
+            {% if (('ROLE_ADMIN' in app.user.roles) or (sortie.organisateur == app.user)) and (sortie.etat.name in ["OUVERTE", "CLOTUREE"]) %}
+                <a href="{{ path('sortie_cancel', {'id': sortie.id}) }}" class="btn btn-outline-danger">Annuler</a>
+            {% endif %}
+
+            {# Gestion du bouton Supprimer #}
+            {% if ('ROLE_ADMIN' in app.user.roles or (sortie.organisateur == app.user and sortie.etat.name == "CREEE"))  %}
+                <a href="{{ path('sortie_delete', {'id': sortie.id}) }}" class="btn btn-outline-delete">Supprimer</a>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

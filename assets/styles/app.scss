@@ -34,8 +34,13 @@ nav {
     .img-profile {
         height: 30px;
         width: 30px;
+        object-fit: cover;
     }
 
+}
+
+.login-page {
+    margin-top: 9rem;
 }
 
 .admin-page {
@@ -45,6 +50,9 @@ nav {
         }
 
         td {
+            img {
+                vertical-align: middle;
+            }
             vertical-align: middle;
         }
     }
@@ -53,13 +61,6 @@ nav {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-    }
-
-    .profile-pic {
-        &.list {
-            width: 40px !important;
-            height: 40px !important;
-        }
     }
 }
 
@@ -70,13 +71,10 @@ nav {
         }
 
         td {
-            vertical-align: middle;
-            .profile-pic {
-                &.list {
-                    width: 40px !important;
-                    height: 40px !important;
-                }
+            img, a {
+                vertical-align: middle;
             }
+            vertical-align: middle;
         }
     }
 
@@ -91,6 +89,7 @@ nav {
             display: flex;
             flex-direction: column;
             justify-content: center;
+            align-items: center;
             gap: 0.5rem;
 
             h1 {
@@ -122,6 +121,7 @@ nav {
         .sortie-infos {
             width: 100%;
             display: flex;
+            align-items: center;
             justify-content: space-evenly;
 
             .sortie-text {
@@ -131,6 +131,9 @@ nav {
 
                 .sortie-text-inscription {
                     display: flex;
+                    justify-content: flex-start;
+                    align-items: center;
+                    gap: 3rem;
                     .inscription-infos {
                         display: flex;
                         flex-direction: column;
@@ -141,11 +144,12 @@ nav {
 
                         span {
                             color: #3E3E3E;
+                            font-size: 14px;
                         }
                     }
 
                     .btn {
-
+                        height: 38px !important;
                     }
                 }
 
@@ -172,12 +176,13 @@ nav {
                         flex-direction: column;
                         justify-content: center;
                         align-items: center;
-                        background: #656565;
-                        i {
-
+                        background: #d5d5d5;
+                        gap: 1rem;
+                        i, span {
+                            color: #fff;
                         }
-                        span {
-
+                        i {
+                            font-size: 30px;
                         }
                     }
 
@@ -186,17 +191,10 @@ nav {
         }
 
         .participants-in-sortie {
-            width: 100%;
+            width: 70%;
             td  {
                 vertical-align: middle;
                 text-align: left;
-
-                .profile-pic {
-                    &.list {
-                        width: 40px !important;
-                        height: 40px !important;
-                    }
-                }
             }
         }
 
@@ -321,6 +319,12 @@ nav {
     width: 150px;
     height: 150px;
     object-fit: cover;
+
+    &.list{
+        border-radius: 50% !important;
+        width: 30px !important;
+        height: 30px !important;
+    }
 }
 
 .w-fit-content {
@@ -378,6 +382,49 @@ nav {
 .nodisplay {
     display: none;
 }
+
+.btn-outline-info {
+    --bs-btn-color: var(--blue);
+    --bs-btn-border-color: var(--blue);
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: var(--blue);
+    --bs-btn-hover-border-color: var(--blue);
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: var(--blue);
+    --bs-btn-active-border-color: var(--blue);
+    --bs-btn-disabled-color: var(--blue);
+    --bs-btn-disabled-border-color: var(--blue);
+}
+
+
+.btn-outline-warning {
+    --bs-btn-color: var(--orange);
+    --bs-btn-border-color: var(--orange);
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: var(--orange);
+    --bs-btn-hover-border-color: var(--orange);
+    --bs-btn-focus-shadow-rgb: 255, 193, 7;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: var(--orange);
+    --bs-btn-active-border-color: var(--orange);
+    --bs-btn-disabled-color: var(--orange);
+    --bs-btn-disabled-border-color: var(--orange);
+}
+
+
+.btn-outline-delete {
+    --bs-btn-color: #763bea;
+    --bs-btn-border-color: #763bea;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #763bea;
+    --bs-btn-hover-border-color: #763bea;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #763bea;
+    --bs-btn-active-border-color: #763bea;
+    --bs-btn-disabled-color: #763bea;
+    --bs-btn-disabled-border-color: #763bea;
+}
+
 
 //selected rows
 table.dataTable tbody tr.selected>* {

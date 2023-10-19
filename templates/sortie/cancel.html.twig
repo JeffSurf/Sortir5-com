@@ -2,35 +2,36 @@
 
 {% block body %}
     <div class="container">
-        <h1 class="text-center my-lg-5 text-primary">Annuler une sortie</h1>
+        <h2 class="text-center my-lg-5 text-dark">Annuler une sortie</h2>
         {{  form_start(form) }}
         {{ form_errors(form) }}
 
-        <div class="row">
-            <div class="col-6">
-                <p>Nom de la sortie :</p>
-                <p>Date et heure de la sortie :</p>
-                <p>Ville organisatrice : {{ site.nom }}</p>
-                <p>Lieu :</p>
+        <div class="d-flex justify-content-center gap-5">
+            <div class="text-primary">
+                <p>Nom de la sortie</p>
+                <p>Site organisateur</p>
+                <p>Quand ?</p>
+                <p>Ou ?</p>
             </div>
-            <div class="col-6">
+            <div>
                 <p>{{ sortie.nom }}</p>
-                <p>{{ sortie.dateHeureDebut|date("m/d/Y") }}</p>
                 <p>{{ site.nom }}</p>
-                <p>{{ lieu.nom }}</p>
+                <p>{{ sortie.dateHeureDebut|date("d/m/Y à H\\hi") }}</p>
+                <p>{{ lieu.nom }}<br>{{ lieu.adresse ? lieu.adresse ~ ',' : ''}} {{ lieu.ville.nom | upper }} {{ lieu.ville.codePostal }}</p>
             </div>
         </div>
 
-        <div class="row">
-            <div class="form-row mt-lg-5">
-                {{  form_row(form.motifAnnulation, {'attr': {'rows': 7}}) }}
+        <div class="d-flex flex-column justify-content-center align-items-center">
+            <div class="form-row mt-lg-5 w-50">
+                {{  form_row(form.motifAnnulation, {'attr': {'rows': 5}}) }}
             </div>
-            <div class="text-start">
+
+            <div class="d-flex justify-content-center gap-3">
                 <button class="btn btn-outline-primary mb-lg-3" type="submit" >Valider</button>
                 <a href="{{ path('sortie_list') }}" class="btn btn-outline-dark mb-lg-3" type="text" >Retour</a>
             </div>
         </div>
 
         {{  form_end(form) }}
-    <div>
+    </div>
 {% endblock %}

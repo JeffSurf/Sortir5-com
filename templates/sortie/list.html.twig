@@ -95,7 +95,7 @@
                         {% endif %}
 
                         {% if (app.user == sortie.organisateur ) %}
-                            <a href="{{ path('app_profil_voir', {'pseudo': sortie.organisateur.pseudo}) }}">moi</a>
+                            <a href="{{ path('app_profil_voir', {'pseudo': sortie.organisateur.pseudo}) }}">{{ sortie.organisateur.pseudo }} (moi)</a>
                         {% elseif 'ROLE_ADMIN' in app.user.roles %}
                             <a href="{{ path('app_profil_voir', {'pseudo': sortie.organisateur.pseudo}) }}">{{ sortie.organisateur.pseudo }}</a>
                         {% elseif sortie.participants is not empty %}
@@ -147,7 +147,7 @@
                     <td>
                         {# Gestion du bouton AFFICHER #}
                         {% if (sortie.etat.name in ["OUVERTE", "CLOTUREE", "ENCOURS", "ANNULEE"]) %}
-                            <a href="{{ path('sortie_detail', {'id': sortie.id}) }}" class="btn btn-outline-info">Afficher</a>
+                            <a href="{{ path('sortie_detail', {'id': sortie.id}) }}" class="btn btn-outline-primary">Afficher</a>
                         {% endif %}
 
                         {# Gestion du bouton ANNULER #}
@@ -157,7 +157,7 @@
 
                         {# Gestion du bouton MODIFIER #}
                         {% if (('ROLE_ADMIN' in app.user.roles) or (sortie.organisateur == app.user)) and sortie.etat.name == "CREEE" %}
-                            <a href="{{ path('sortie_update', {'id': sortie.id}) }}" class="btn btn-outline-primary">Modifier</a>
+                            <a href="{{ path('sortie_update', {'id': sortie.id}) }}" class="btn btn-outline-info">Modifier</a>
                         {% endif %}
 
                         {# Gestion du bouton PUBLIER #}
@@ -167,7 +167,7 @@
 
                         {# Gestion du bouton Supprimer #}
                         {% if ('ROLE_ADMIN' in app.user.roles or (sortie.organisateur == app.user and sortie.etat.name == "CREEE"))  %}
-                            <a href="{{ path('sortie_delete', {'id': sortie.id}) }}" class="btn btn-outline-danger">Supprimer</a>
+                            <a href="{{ path('sortie_delete', {'id': sortie.id}) }}" class="btn btn-outline-delete">Supprimer</a>
                         {% endif %}
 
                         {# Gestion des boutons S'INSCRIRE et SE DESISTER #}

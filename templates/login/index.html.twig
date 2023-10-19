@@ -3,44 +3,45 @@
 {% block title %}Connexion{% endblock %}
 
 {% block body %}
-
-<section class="w-100 p-4 d-flex justify-content-center pb-4">
-    <form method="post" style="width: 22rem;">
-    {% if error %}
-        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-    {% endif %}
-    <!-- CSRF Token -->
-    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-        <!-- Email input -->
-        <div class="form-outline mb-4">
-            <label class="form-label" for="identifiant">Identifiant *</label>
-            <input type="text" value="{{ last_username }}" name="_username" id="identifiant" class="form-control" placeholder="email ou pseudo" required/>
-        </div>
-
-        <!-- Password input -->
-        <div class="form-outline mb-4">
-            <label class="form-label" for="pwd">Mot de passe *</label>
-            <input type="password" name="_password" id="pwd" class="form-control" required/>
-        </div>
-
-        <!-- 2 column grid layout for inline styling -->
-        <div class="row mb-4">
-            <div class="col d-flex justify-content-center">
-                <!-- Checkbox -->
-                <div class="form-check">
-                    <label class="form-check-label" for="form1Example3"> Se souvenir de moi </label>
-                    <input class="form-check-input" name="_remember_me" type="checkbox" id="form1Example3" checked />
+    <div class="container login-page">
+        <section class="w-100 p-4 d-flex justify-content-center pb-4">
+            <form method="post" style="width: 22rem;">
+            {% if error %}
+                <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+            {% endif %}
+            <!-- CSRF Token -->
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                <!-- Email input -->
+                <div class="form-outline mb-4">
+                    <label class="form-label" for="identifiant">Identifiant *</label>
+                    <input type="text" value="{{ last_username }}" name="_username" id="identifiant" class="form-control" placeholder="email ou pseudo" required/>
                 </div>
-            </div>
 
-            <div class="col">
-                <!-- Simple link -->
-                <a href="{{ path('app_forgot_password_request') }}">Mot de passe oublié</a>
-            </div>
-        </div>
+                <!-- Password input -->
+                <div class="form-outline mb-4">
+                    <label class="form-label" for="pwd">Mot de passe *</label>
+                    <input type="password" name="_password" id="pwd" class="form-control" required/>
+                </div>
 
-        <!-- Submit button -->
-        <button type="submit" class="btn btn-primary btn-block">Se connecter</button>
-    </form>
-</section>
+                <!-- 2 column grid layout for inline styling -->
+                <div class="row mb-4">
+                    <div class="col d-flex justify-content-center">
+                        <!-- Checkbox -->
+                        <div class="form-check">
+                            <label class="form-check-label" for="form1Example3"> Se souvenir de moi </label>
+                            <input class="form-check-input" name="_remember_me" type="checkbox" id="form1Example3" checked />
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <!-- Simple link -->
+                        <a href="{{ path('app_forgot_password_request') }}">Mot de passe oublié</a>
+                    </div>
+                </div>
+
+                <!-- Submit button -->
+                <button type="submit" class="btn btn-primary btn-block">Se connecter</button>
+            </form>
+        </section>
+    </div>
 {% endblock %}

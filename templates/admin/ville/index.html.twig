@@ -25,21 +25,26 @@
             </thead>
 
             <tbody>
-            {{ include('/admin/ville/add.html.twig') }}
-            {% for ville in villes %}
-                <tr>
-                    <td>{{ ville.nom }}</td>
-                    <td>({{ ville.codepostal }})</td>
-                    <td>
-                        <a href="{{ path('app_admin_ville_update', {'id': ville.id}) }}">
-                            <button class="btn btn-primary btn-sm">Modifier</button>
-                        </a>
-                        <a onclick="return confirm('Êtes-vous sûr de vouloir supprimer {{ ville.nom }} ? Attention cette action est irréversible.')" href="{{ path('app_admin_ville_delete', {'id': ville.id}) }}">
-                            <button class="btn btn-danger btn-sm">Supprimer</button>
-                        </a>
-                    </td>
-                </tr>
-            {%  endfor %}
+                {{ include('/admin/ville/add.html.twig') }}
+
+                {% if villes | length < 1 %}
+                    <p>Il n'y a aucun résultat</p>
+                {% else %}
+                    {% for ville in villes %}
+                        <tr>
+                            <td>{{ ville.nom }}</td>
+                            <td>({{ ville.codepostal }})</td>
+                            <td>
+                                <a href="{{ path('app_admin_ville_update', {'id': ville.id}) }}">
+                                    <button class="btn btn-primary btn-sm">Modifier</button>
+                                </a>
+                                <a onclick="return confirm('Êtes-vous sûr de vouloir supprimer {{ ville.nom }} ? Attention cette action est irréversible.')" href="{{ path('app_admin_ville_delete', {'id': ville.id}) }}">
+                                    <button class="btn btn-danger btn-sm">Supprimer</button>
+                                </a>
+                            </td>
+                        </tr>
+                    {%  endfor %}
+                {% endif %}
             </tbody>
         </table>
 

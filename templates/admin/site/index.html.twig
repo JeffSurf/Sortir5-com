@@ -24,20 +24,25 @@
             </thead>
 
             <tbody>
-            {{ include('/admin/site/add.html.twig') }}
-            {% for site in sites %}
-                <tr>
-                    <td>{{ site.nom }}</td>
-                    <td>
-                        <a href="{{ path('app_admin_site_update', {'id': site.id}) }}">
-                            <button class="btn btn-primary btn-sm">Modifier</button>
-                        </a>
-                        <a onclick="return confirm('Êtes-vous sûr de vouloir supprimer {{ site.nom }} ? Attention cette action est irréversible.')" href="{{ path('app_admin_site_delete', {'id': site.id}) }}">
-                            <button class="btn btn-danger btn-sm">Supprimer</button>
-                        </a>
-                    </td>
-                </tr>
-            {%  endfor %}
+                {{ include('/admin/site/add.html.twig') }}
+
+                {% if sites | length < 1 %}
+                    <p>Il n'y a aucun résultat</p>
+                {% else %}
+                    {% for site in sites %}
+                        <tr>
+                            <td>{{ site.nom }}</td>
+                            <td>
+                                <a href="{{ path('app_admin_site_update', {'id': site.id}) }}">
+                                    <button class="btn btn-primary btn-sm">Modifier</button>
+                                </a>
+                                <a onclick="return confirm('Êtes-vous sûr de vouloir supprimer {{ site.nom }} ? Attention cette action est irréversible.')" href="{{ path('app_admin_site_delete', {'id': site.id}) }}">
+                                    <button class="btn btn-danger btn-sm">Supprimer</button>
+                                </a>
+                            </td>
+                        </tr>
+                    {%  endfor %}
+                {%  endif %}
             </tbody>
         </table>
 
