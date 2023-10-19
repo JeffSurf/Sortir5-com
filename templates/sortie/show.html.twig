@@ -25,13 +25,14 @@
     {% set hours_for_duree = duree / 60 %}
     {% set minutes_for_duree = duree % 60 %}
 
-    <div class="container container-page admin-page">
+    <div class="container container-page sortie-page show">
         <div class="sortie-title">
             <h1>{{ sortie.nom | capitalize }}</h1>
             <h2>
+                Sortie
                 <i class="fa-solid fa-person-walking"></i>
                 <span>
-                    Sortie organisée par
+                    organisée par
                     {% if ('ROLE_ADMIN' in app.user or app.user in sortie.participants) %}
                         <a href="{{ path('app_profil_voir', {'pseudo': sortie.organisateur.pseudo}) }}">{{ sortie.organisateur.pseudo }}</a>
                     {% else %}
