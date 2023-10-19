@@ -19,9 +19,11 @@ class Sortie
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
+    #[Assert\NotBlank(message: "Le nom de la sortie est obligatoire!")]
     private ?string $nom = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Assert\NotBlank(message: "La date de la sortie est obligatoire!")]
     #[Assert\GreaterThan("now", message: "La date de la sortie doit être supérieure à la date du jour !")]
     private ?DateTimeInterface $dateHeureDebut = null;
 
@@ -29,10 +31,12 @@ class Sortie
     private ?int $duree = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Assert\NotBlank(message: "La date limite d'inscription est obligatoire!")]
     #[Assert\GreaterThan("now", message: "La date limite d'inscription doit être supérieure à la date du jour !")]
     private ?DateTimeInterface $dateLimiteInscription = null;
 
     #[ORM\Column(type: Types::INTEGER)]
+    #[Assert\NotBlank(message: "Le nom nombre maximum de participants est obligatoire!")]
     private ?int $nbInscriptionsMax = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
