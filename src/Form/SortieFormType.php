@@ -3,21 +3,14 @@
 namespace App\Form;
 
 use App\Entity\Lieu;
-use App\Entity\Site;
 use App\Entity\Sortie;
-use App\Entity\Ville;
-use App\Repository\LieuRepository;
-use App\Repository\VilleRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SortieFormType extends AbstractType
@@ -47,7 +40,7 @@ class SortieFormType extends AbstractType
                 'required' => true
             ])
             ->add('duree', NumberType::class, [
-                'label' => 'Durée :',
+                'label' => 'Durée (en minutes) :',
                 'required' => false
             ])
             ->add('infosSortie', TextareaType::class, [
@@ -55,25 +48,12 @@ class SortieFormType extends AbstractType
                 'required' => true,
                 "empty_data" => ""
             ])
-            /*
-            ->add('ville', EntityType::class, [
-                'label' => 'Ville :',
-                'class' => Ville::class,
-                'choice_label' => 'nom',
-                'mapped' => false,
-                'query_builder' => function (VilleRepository $villeRepository){
-                    return $villeRepository->createQueryBuilder('c')
-                        ->addOrderBy('c.nom')
-                        ->getParameter('id');
-                }
-            ])
-            */
+
             ->add('lieu', EntityType::class, [
                 'label' => 'Lieu :',
                 "class" => Lieu::class,
                 "choice_label" => "nom"
             ])
-
 
             ->add('motifAnnulation', TextareaType::class, [
                 'label'=> 'Modif d\'annulation :',
