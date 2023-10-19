@@ -211,7 +211,7 @@ class SortieController extends AbstractController
                 $this->addFlash('success', 'Votre inscription a bien été prise en compte !');
             }
         }
-        return $this->redirectToRoute('sortie_list');
+        return $this->redirectToRoute('sortie_detail', ['id' => $id]);
     }
 
     #[Route('/desister/{id}', name: '_desister', requirements: ['id' => '\d+'])]
@@ -235,7 +235,7 @@ class SortieController extends AbstractController
                 $this->addFlash('danger', 'Vous n\'êtes pas inscrits donc vous ne pouvez pas vous désister !');
             }
         }
-        return $this->redirectToRoute('sortie_list');
+        return $this->redirectToRoute('sortie_detail', ['id' => $id]);
     }
 
     #[Route('/publier/{id}', name: '_publish', requirements: ['id' => '\d+'])]

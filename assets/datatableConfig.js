@@ -8,10 +8,11 @@ $(document).ready( function () {
 } );
 
 table.on('click', 'tbody tr', function (e) {
-    e.currentTarget.classList.toggle('selec');
+    e.currentTarget.classList.toggle('selected');
 });
 
-if (table.rows('.selec').data().length > 1) {
+if ( table.rows( '.selected' ).any()) {
+    alert('attention');
     $('#delete-button').removeClass('nodisplay');
     $('#disable-button').removeClass('nodisplay');
 } else {
@@ -21,6 +22,6 @@ if (table.rows('.selec').data().length > 1) {
 }
 
 document.querySelector('#button').addEventListener('click', function () {
-
-    alert(table.rows('.selec').data().length + ' row(s) selected');
+    table.row('.selected').remove().draw(false);
+    alert(table.rows('.selected').data().length + ' row(s) selected');
 });

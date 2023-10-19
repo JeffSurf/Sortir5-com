@@ -21,40 +21,49 @@
     {% set hours = difference.h %}
     {% set minutes = difference.i %}
 
+    {% set duree = sortie.duree %}
+    {% set hours_for_duree = duree / 60 %}
+    {% set minutes_for_duree = duree % 60 %}
+
     <div class="container container-page admin-page">
-        <div class="h3 mb-0 text-center text-primary mt-3">Sortie <i class="fa-solid fa-person-walking"></i></div>
-        <div class="h1 text-center">{{ sortie.nom | capitalize }}</div>
+        <div class="sortie-title">
+            <h1>{{ sortie.nom | capitalize }}</h1>
+            <h2>
+                <i class="fa-solid fa-person-walking"></i>
+                <span>
+                    Sortie organisée par
+                    {% if ('ROLE_ADMIN' in app.user or app.user in sortie.participants) %}
+                        <a href="{{ path('app_profil_voir', {'pseudo': sortie.organisateur.pseudo}) }}">{{ sortie.organisateur.pseudo }}</a>
+                    {% else %}
+                        {{ sortie.organisateur.pseudo }}
+                    {% endif %}
+                </span>
+            </h2>
+        </div>
+        <div class="sortie-infos">
+            <div class="sortie-text">
+                {% set desc = sortie.infosSortie | replace({'.': '.‡', '!': '!‡'}) %}
+                {% set newDesc = desc | split('‡') %}
 
-        <div class="row">
-            <div class="col-6 row">
-                <div class="col-5 text-primary">
-                    <p>Organisateur</p>
-                    <p>Date et heure</p>
-                    <p>Date limite d'inscription</p>
-                    <p>Nombre de places</p>
-                    <p>Durée (minutes)</p>
-                    <p>Description et infos</p>
-                </div>
-
-                <div class="col-5">
-                    <p>
-
-                        {% if ('ROLE_ADMIN' in app.user or app.user in sortie.participants) %}
-                            <a href="{{ path('app_profil_voir', {'pseudo': sortie.organisateur.pseudo}) }}">{{ sortie.organisateur.pseudo }}</a>
-                        {% else %}
-                            {{ sortie.organisateur.pseudo }}
+                <p>
+                    La sortie est prévue le {{ sortie.dateHeureDebut | date("d/m/Y à H\\hi") }}, elle durera
+                    {% if duree > 59 %}
+                        {{ hours_for_duree|round(0, 'floor') }} heure{{ hours_for_duree|round(0, 'floor') > 1 ? 's' : '' }}
+                        {% if minutes_for_duree > 0 %}
+                            et {{ minutes_for_duree }} minute{{ minutes_for_duree > 1 ? 's' : '' }}
                         {% endif %}
-
-
-
-                    </p>
-                    <p>{{ sortie.dateHeureDebut | date('d/m/Y H:i') }}</p>
-                    <p>
-                        {% if days+hours+minutes < 1 %}
-                            {{ sortie.dateLimiteInscription | date('d/m/Y à H:i')}} (Atteinte)
-                        {% else %}
-                            Vous avez jusqu'au {{ sortie.dateLimiteInscription | date('d/m/Y à H:i')}}
-                            <br>
+                    {% else %}
+                        {{ duree }} minute{{ duree > 1 ? 's' : '' }}
+                    {% endif %}
+                </p>
+                <p>{% for sentence in newDesc %}{{ sentence }}<br>{% endfor %}</p>
+                <div class="sortie-text-inscription">
+                    <div class="inscription-infos">
+                        <p>Vous avez jusqu'au {{ sortie.dateLimiteInscription | date("d/m/Y à H\\hi") }} pour vous décider</p>
+                        <span>
+                            {% if sortie.dateLimiteInscription | date("d/m/Y H:i") < "now" | date("d/m/Y H:i") %}
+                                (Il est trop tard désormais)
+                            {% else %}
                                 (Il reste
                                 {% if days > 0 %}
                                     {{ days }}J,
@@ -63,65 +72,88 @@
                                     {{ hours }}h et
                                 {% endif %}
                                 {{ minutes }}min.)
+                            {% endif %}
+                        </span>
+                    </div>
+
+                    {% if ('ROLE_ADMIN' not in app.user) %}
+                        {% if (app.user not in sortie.participants) %}
+                            <a href="{{ path('sortie_inscrire', {'id': sortie.id})}}">
+                                <button class="btn btn-primary">S'inscrire</button>
+                            </a>
+                        {% else  %}
+                            <a href="{{ path('sortie_desister', {'id': sortie.id}) }}">
+                                <button class="btn btn-primary">Se désister</button>
+                            </a>
                         {% endif %}
-                    </p>
-                    <p>{{ sortie.nbInscriptionsMax }}</p>
-                    <p>{{ sortie.duree ?? 'Non Renseigné'}}</p>
-                    <p>{{ sortie.infosSortie }}</p>
+                    {% endif %}
                 </div>
             </div>
 
-            <div class="col-6 row">
-                <div class="col-5 text-primary">
-                    <p>Lieu</p>
-                    <p>Adresse</p>
-                    <p>Carte</p>
-                </div>
-
-                <div class="col-5">
-                    <p>{{ lieu.nom }}</p>
+            <div class="sortie-map">
+                <div class="map-text">
+                    <i class="fa-solid fa-map-pin"></i>
                     <p>
+                        {{ lieu.nom | capitalize}}<br>
                         {% if lieu.adresse is not null %}
-                             {{ lieu.adresse }}<br>
+                            {{ lieu.adresse }},
                         {% endif %}
                         {{ ville.nom | upper }} {{ ville.codepostal }}
                     </p>
-                    <p></p>
-                    <div id="map" data-lat="{{ lieu.latitude }}" data-lon="{{ lieu.longitude }}"></div>
                 </div>
+                {% if (lieu.latitude is not null and lieu.longitude is not null) %}
+                    <div id="map" data-lat="{{ lieu.latitude }}" data-lon="{{ lieu.longitude }}"></div>
+                {% else %}
+                    <div id="map-false">
+                        <i class="fa-solid fa-map-location-dot"></i>
+                        <span>Aucune information renseignée</span>
+                    </div>
+                {% endif %}
             </div>
         </div>
 
-        {% if sortie.etat.name == "ANNULEE" %}
-            <p class="text-danger">Motif annulation : {{ sortie.motifAnnulation }}</p>
-        {% endif %}
-
-        <h3 class="text-center text-primary my-lg-3">Participants inscrits</h3>
+        <h2 class="text-center my-lg-3">{{ sortie.participants | length }}/{{ sortie.nbInscriptionsMax }} participants</h2>
         <hr class="my-lg-3 fw-bold"/>
 
-        {% if participants is empty %}
-            <p class="text-center">Aucun participant n'est inscrit !</p>
+        {% if sortie.participants is empty %}
+            <p class="text-center">Il n'y a pas d'inscrit..</p>
         {% else %}
             <div class="text-center">
-                <table class="table table-striped">
+                <table class="table participants-in-sortie">
                     <thead>
                         <tr class="fw-bold">
-                            <th scope="col">Pseudo</th>
-                            <th scope="col">Nom</th>
+                            <th scope="col"></th>
+                            {% if ('ROLE_ADMIN' in app.user or app.user == sortie.organisateur) %}
+                                <th scope="col"></th>
+                                <th scope="col"></th>
+                            {% endif %}
                         </tr>
                     </thead>
 
                     <tbody>
                     {% for participant in participants %}
                         <tr>
-                            <td>
-                                {% if ('ROLE_ADMIN' in app.user or app.user == sortie.organisateur) %}
+                            {% if ('ROLE_ADMIN' in app.user or app.user == sortie.organisateur) %}
+                                <td>
+                                    {% if (participant.rgpd) %}
+                                        <img class="profile-pic list" src="{{ asset('uploads/participants/' ~ participant.imageProfil) }}" alt="">
+                                    {% else %}
+                                        <img class="profile-pic list" src="{{ asset('uploads/participants/default_profile_picture.png') }}" alt="">
+                                    {% endif %}
                                     <a href="{{ path('app_profil_voir', {'pseudo': participant.pseudo}) }}">{{ participant.pseudo }}</a>
-                                {% else %}
+                                </td>
+                                <td>{{ participant.nom|upper }} {{ participant.prenom }}</td>
+                                <td>{{ participant.email }}</td>
+                            {% else %}
+                                <td>
+                                    {% if (participant.rgpd) %}
+                                        <img class="profile-pic list" src="{{ asset('uploads/participants/' ~ participant.imageProfil) }}" alt="">
+                                    {% else %}
+                                        <img class="profile-pic list" src="{{ asset('uploads/participants/default_profile_picture.png') }}" alt="">
+                                    {% endif %}
                                     {{ participant.pseudo }}
-                                {% endif %}
-                            </td>
-                            <td>{{ participant.nom|upper }} {{ participant.prenom }}</td>
+                                </td>
+                            {% endif %}
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -131,7 +163,7 @@
 
 
         <div class="text-center">
-            <a href="{{ path('sortie_list') }}" class="btn btn-outline-primary my-lg-3" type="text" >Retour</a>
+            <a href="{{ path('sortie_list') }}" class="btn btn-retour btn-outline-primary my-lg-3" type="text" >Retour</a>
         </div>
     </div>
 {% endblock %}
