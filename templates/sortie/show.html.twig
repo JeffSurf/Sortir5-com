@@ -102,14 +102,7 @@
                         {{ ville.nom | upper }} {{ ville.codepostal }}
                     </p>
                 </div>
-                {% if (lieu.latitude is not null and lieu.longitude is not null) %}
-                    <div id="map" data-lat="{{ lieu.latitude }}" data-lon="{{ lieu.longitude }}"></div>
-                {% else %}
-                    <div id="map-false">
-                        <i class="fa-solid fa-map-location-dot"></i>
-                        <span>Aucune information renseignée</span>
-                    </div>
-                {% endif %}
+                <div id="map" data-lat="{{ lieu.latitude }}" data-lon="{{ lieu.longitude }}"></div>
             </div>
         </div>
 

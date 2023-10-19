@@ -20,5 +20,7 @@ if(lat && lon)
 }
 else
 {
-    $(selectorMap).text("Pas de coordonnées fournies");
+    $("<span>Aucune information renseignée</span>").prependTo(selectorMap);
+    $("<i class=\"fa-solid fa-map-location-dot\"></i>").prependTo(selectorMap);
+    $(selectorMap).addClass('map-false')
 }
