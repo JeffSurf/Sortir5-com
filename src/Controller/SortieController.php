@@ -102,17 +102,23 @@ class SortieController extends AbstractController
 
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $lieu = $lieuRepository->find($form->get('lieu')->getData() ?? -1);
 
-            if($lieu){
-                $sortie->setLieu($lieu);
-                $entityManager->persist($sortie);
-                $entityManager->flush();
-                $this->addFlash('success', 'La sortie a été ajoutée avec succès !');
-                return $this->redirectToRoute('sortie_list');
-            }
-            else {
-                $form->get('lieu')->addError(new FormError("Vous devez sélectionner un lieu"));
+            if($sortie->getDateLimiteInscription()->format('Y-m-d H:i:s') > $sortie->getDateHeureDebut()->format('Y-m-d H:i:s')){
+                $this->addFlash('danger', 'La date limite d\'inscription doit être antérieure à la date de la sortie !');
+                return $this->redirectToRoute('sortie_add');
+            } else {
+                $lieu = $lieuRepository->find($form->get('lieu')->getData() ?? -1);
+
+                if($lieu){
+                    $sortie->setLieu($lieu);
+                    $entityManager->persist($sortie);
+                    $entityManager->flush();
+                    $this->addFlash('success', 'La sortie a été ajoutée avec succès !');
+                    return $this->redirectToRoute('sortie_list');
+                }
+                else {
+                    $form->get('lieu')->addError(new FormError("Vous devez sélectionner un lieu"));
+                }
             }
         }
 
@@ -129,6 +135,7 @@ class SortieController extends AbstractController
         $sortie = $sortieRepository->find($id);
         $villes = $villeRepository->findAll();
         $user = $this->getUser();
+        $maintenant = new \DateTime();
 
         if(!$sortie || $sortie->getEtat()->name != 'CREEE' || (!in_array("ROLE_ADMIN", $user->getRoles()) && $user !== $sortie->getOrganisateur())) {
             return new Response("Vous n'êtes pas autorisé", 403);
@@ -139,16 +146,22 @@ class SortieController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $lieuSubmitted = $lieuRepository->find($form->get('lieu')->getData() ?? -1);
-            if($lieuSubmitted) {
-                $sortie->setLieu($lieuSubmitted);
-                $entityManager->persist($sortie);
-                $entityManager->flush();
-                $this->addFlash('success', 'La sortie a été modifiée avec succès !');
-                return $this->redirectToRoute('sortie_list');
-            }
-            else {
-                $form->get('lieu')->addError(new FormError("Vous devez sélectionner un lieu"));
+
+            if($sortie->getDateLimiteInscription()->format('Y-m-d H:i:s') > $sortie->getDateHeureDebut()->format('Y-m-d H:i:s')){
+                $this->addFlash('danger', 'La date limite d\'inscription doit être antérieure à la date de la sortie !');
+                return $this->redirectToRoute('sortie_update', ['id' => $id]);
+            } else {
+                $lieuSubmitted = $lieuRepository->find($form->get('lieu')->getData() ?? -1);
+                if($lieuSubmitted) {
+                    $sortie->setLieu($lieuSubmitted);
+                    $entityManager->persist($sortie);
+                    $entityManager->flush();
+                    $this->addFlash('success', 'La sortie a été modifiée avec succès !');
+                    return $this->redirectToRoute('sortie_list');
+                }
+                else {
+                    $form->get('lieu')->addError(new FormError("Vous devez sélectionner un lieu"));
+                }
             }
         }
 
@@ -222,17 +235,26 @@ class SortieController extends AbstractController
             $sortie = $sortieRepository->find($id);
             $participant = $participantRepository->find($user->getId());
             $participants = $sortie->getParticipants()->toArray();
+            $maintenant = new \DateTime();
 
-            if (in_array($participant, $participants)) {
-                $sortie->removeParticipant($participant);
-                $participant->removeSortie($sortie);
-
-                $entityManager->persist($sortie);
-                $entityManager->persist($participant);
-                $entityManager->flush();
-                $this->addFlash('success', 'Votre désistement a bien été prise en compte !');
+            if($sortie->getDateLimiteInscription()->format('Y-m-d H:i:s') < $maintenant->format('Y-m-d H:i:s')) {
+                $this->addFlash('danger', 'Votre désistement n\'est pas possible, la date limite d\'inscription est dépassée !');
             } else {
-                $this->addFlash('danger', 'Vous n\'êtes pas inscrits donc vous ne pouvez pas vous désister !');
+                if (in_array($participant, $participants)) {
+                    $sortie->removeParticipant($participant);
+                    $participant->removeSortie($sortie);
+
+                    if(count($sortie->getParticipants()) < $sortie->getNbInscriptionsMax()) {
+                        $sortie->setEtat(Etat::OUVERTE);
+                    }
+
+                    $entityManager->persist($sortie);
+                    $entityManager->persist($participant);
+                    $entityManager->flush();
+                    $this->addFlash('success', 'Votre désistement a bien été prise en compte !');
+                } else {
+                    $this->addFlash('danger', 'Vous n\'êtes pas inscrits donc vous ne pouvez pas vous désister !');
+                }
             }
         }
         return $this->redirectToRoute('sortie_detail', ['id' => $id]);
