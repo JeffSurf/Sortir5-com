@@ -28,6 +28,7 @@ Encore
     .addEntry('map-sortie', './assets/map-sortie.js')
     .addEntry('ville', './assets/ville.js')
     .addEntry('datatableConfig', './assets/datatableConfig.js')
+    .addEntry('datatableConfigSortie', './assets/datatableConfigSortie.js')
 
 
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
