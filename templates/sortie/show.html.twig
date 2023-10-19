@@ -92,6 +92,10 @@
             </div>
         </div>
 
+        {% if sortie.etat.name == "ANNULEE" %}
+            <p class="text-danger">Motif annulation : {{ sortie.motifAnnulation }}</p>
+        {% endif %}
+
         <h3 class="text-center text-primary my-lg-3">Participants inscrits</h3>
         <hr class="my-lg-3 fw-bold"/>
 
