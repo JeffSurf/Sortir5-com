@@ -28,4 +28,5 @@ npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
 
+!/public/uploads/participants/default_profile_picture.png
 /public/uploads/
