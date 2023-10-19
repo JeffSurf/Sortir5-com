@@ -38,7 +38,6 @@ class FilterFormType extends AbstractType
                         ->orderBy('s.nom', 'ASC');
                 },
                 'choice_label' => 'nom',
-                "data" => $options["user"]->getSite(),
             ])
 
             ->add('etat', ChoiceType::class, [
@@ -104,7 +103,5 @@ class FilterFormType extends AbstractType
             'method' => 'GET',
             'csrf_protection' => false
         ]);
-
-        $resolver->setRequired("user");
     }
 }
