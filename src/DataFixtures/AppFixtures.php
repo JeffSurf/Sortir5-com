@@ -20,7 +20,7 @@ class AppFixtures extends Fixture
         $this->passwordHasher = $passwordHasher;
     }
     public function load(ObjectManager $manager): void
-    {
+    {/*
         $sites = [
             ['nom' => 'CAMPUS NIORT'],
             ['nom' => 'CAMPUS NANTES'],
@@ -118,7 +118,7 @@ class AppFixtures extends Fixture
             $newSortie->setOrganisateur($participant);
             $manager->persist($newSortie);
         }
-
+        */
         $manager->flush();
     }
 }
