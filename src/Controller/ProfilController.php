@@ -70,6 +70,8 @@ class ProfilController extends AbstractController
     public function edit(Request $request, ParticipantRepository $participantRepository, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $em, UploadService $fileUploader,  string $pseudo): \Symfony\Component\HttpFoundation\RedirectResponse|Response
     {
         $dataUser = $participantRepository->findByPseudo($pseudo);
+        $user = $participantRepository->findByPseudo($pseudo);
+        $prevData = clone $participantRepository->findByPseudo($pseudo);
 
         if($dataUser != $this->getUser()) {
             throw $this->createAccessDeniedException();
@@ -80,11 +82,18 @@ class ProfilController extends AbstractController
 
         if($form->isSubmitted() && $form->isValid())
         {
-            /** @var Participant $user */
-            $user = $participantRepository->findByPseudo($pseudo);
             if(!$userPasswordHasher->isPasswordValid($user, $form->get('plainPassword')->getData()))
             {
                 $form->get("plainPassword")->addError(new FormError( "Le mot de passe n'est pas correct"));
+            }
+            else if($prevData->getNom() !== $dataUser->getNom())
+            {
+                $form->get("nom")->addError(new FormError("Vous ne pouvez pas modifier le champ"));
+
+            }
+            else if($prevData->getPrenom() !== $dataUser->getPrenom())
+            {
+                $form->get("prenom")->addError(new FormError("Vous ne pouvez pas modifier le champ"));
             }
             else
             {
@@ -98,6 +107,7 @@ class ProfilController extends AbstractController
                         ->setTelephone($dataUser->getTelephone())
                         ->setPseudo($dataUser->getPseudo())
                         ->setEmail($dataUser->getEmail());
+
                 }
 
                 $inputIMG = $form->get('image')->getData();
