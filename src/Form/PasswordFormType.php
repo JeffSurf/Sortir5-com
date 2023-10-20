@@ -19,7 +19,7 @@ class PasswordFormType extends AbstractType
             ->add('oldPassword', PasswordType::class, [
                 'mapped' => false,
                 'required' => true,
-                'label' => "Mot de passe",
+                'label' => "Mot de passe actuel",
                 'attr' => ['autocomplete' => 'new-password'],
                 'constraints' => [
                     new NotBlank([
