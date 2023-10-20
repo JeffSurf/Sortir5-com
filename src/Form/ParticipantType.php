@@ -86,7 +86,7 @@ class ParticipantType extends AbstractType
                 'required' => false,
                 'label' => "Mot de passe",
                 'attr' => ['autocomplete' => 'new-password'],
-                'help' => 'Par défaut : nomprenom@S2023',
+                'help' => 'Par défaut : nomprenom@SORTIR2023',
                 'constraints' => [
                     new Length([
                         'min' => 3, 'minMessage' => 'Le mot de passe doit faire au moins {{ limit }} caractères',

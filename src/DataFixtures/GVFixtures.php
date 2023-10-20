@@ -123,7 +123,7 @@ class GVFixtures extends Fixture
         $participant3->setNom('SEBBAGHI');
         $participant3->setPrenom('Sofiane');
         $participant3->setEmail('ssebbaghi@sortir.com');
-        $participant3->setRoles(['ROLE_USER']);
+        $participant3->setRoles(['ROLE_BAN']);
         $participant3->setTelephone(('0606060603'));
         $password3 = $this->passwordHasher->hashPassword($participant3, 'SSSortir.com1');
         $participant3->setPassword($password3);
@@ -141,6 +141,18 @@ class GVFixtures extends Fixture
         $participant4->setPassword($password4);
         $participant4->setSite($site1);
         $manager->persist($participant4);
+
+        $participant5 = new Participant();
+        $participant5->setPseudo('jdupont');
+        $participant5->setNom('DUPONT');
+        $participant5->setPrenom('Jean');
+        $participant5->setEmail('jdupont@gmail.com');
+        $participant5->setRoles(['ROLE_USER']);
+        $participant5->setTelephone(('0606060605'));
+        $password5 = $this->passwordHasher->hashPassword($participant5, strtolower($participant5->getNom() . $participant5->getPrenom()) . "@SORTIR2023");
+        $participant5->setPassword($password5);
+        $participant5->setSite($site3);
+        $manager->persist($participant5);
 
         $sortie1 = new Sortie();
         $sortie1->setNom('Ciné entre étudiants');
