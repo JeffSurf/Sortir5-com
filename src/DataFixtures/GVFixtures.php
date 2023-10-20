@@ -163,10 +163,14 @@ class GVFixtures extends Fixture
         $sortie2->setLieu($lieu3);
         $sortie2->setEtat(Etat::OUVERTE);
         $sortie2->addParticipant($participant1);
-        $sortie2->addParticipant($participant2);
+        $sortie2->addParticipant($participant3);
         $manager->persist($sortie2);
 
         $participant1->addSortie($sortie2);
+        $manager->persist($participant1);
+
+        $participant3->addSortie($sortie2);
+        $manager->persist($participant3);
 
         $sortie3 = new Sortie();
         $sortie3->setNom('Balade au parc');
