@@ -154,7 +154,7 @@ class GVFixtures extends Fixture
         $manager->persist($sortie1);
 
         $sortie2 = new Sortie();
-        $sortie2->setNom('Restaurant');
+        $sortie2->setNom('Restaurant découverte');
         $sortie2->setDateHeureDebut(new \DateTime('2023-10-31 00:00:00'));
         $sortie2->setDateLimiteInscription(new \DateTime('2023-10-30 00:00:00'));
         $sortie2->setNbInscriptionsMax(10);
@@ -163,12 +163,13 @@ class GVFixtures extends Fixture
         $sortie2->setLieu($lieu3);
         $sortie2->setEtat(Etat::OUVERTE);
         $sortie2->addParticipant($participant1);
+        $sortie2->addParticipant($participant2);
         $manager->persist($sortie2);
 
         $participant1->addSortie($sortie2);
 
         $sortie3 = new Sortie();
-        $sortie3->setNom('Restaurant Nantes');
+        $sortie3->setNom('Balade au parc');
         $sortie3->setDateHeureDebut(new \DateTime('2023-10-31 00:00:00'));
         $sortie3->setDateLimiteInscription(new \DateTime('2023-10-30 00:00:00'));
         $sortie3->setNbInscriptionsMax(2);
