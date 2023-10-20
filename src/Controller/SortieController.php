@@ -138,7 +138,7 @@ class SortieController extends AbstractController
         $maintenant = new \DateTime();
 
         if(!$sortie || $sortie->getEtat()->name != 'CREEE' || (!in_array("ROLE_ADMIN", $user->getRoles()) && $user !== $sortie->getOrganisateur())) {
-            return new Response("Vous n'êtes pas autorisé", 403);
+            throw $this->createAccessDeniedException();
         }
 
         $form = $this->createForm(SortieFormType::class, $sortie);
@@ -179,7 +179,7 @@ class SortieController extends AbstractController
         $sortie = $sortieRepository->find($id);
 
         if(!$sortie || $sortie->getEtat()->name == 'CREEE') {
-            return new Response("Vous n'êtes pas autorisé", 403);
+            throw $this->createAccessDeniedException();
         }
 
         $lieu = $sortie->getLieu();
