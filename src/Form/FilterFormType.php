@@ -68,21 +68,21 @@ class FilterFormType extends AbstractType
                 'mapped' => false
             ])
             ->add('estOrganise', CheckboxType::class, [
-                'label'=> 'Sorties dont je suis l\'organisateur.trice',
+                'label'=> 'Sorties dont je suis l\'organisateur',
                 'required' => false,
                 'mapped' => false,
                 "attr" => ["checked" => true]
             ])
 
             ->add('estInscrit', CheckboxType::class, [
-                'label'=> 'Sorties auxquelles je suis inscrit.e',
+                'label'=> 'Sorties auxquelles je suis inscrit',
                 'required' => false,
                 'mapped' => false,
                 "attr" => ["checked" => true]
             ])
 
             ->add('estPasInscrit', CheckboxType::class, [
-                'label'=> 'Sorties auxquelles je ne suis pas inscrit.e',
+                'label'=> 'Sorties auxquelles je ne suis pas inscrit',
                 'required' => false,
                 'mapped' => false,
                 "attr" => ["checked" => true]
